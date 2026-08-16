@@ -1,0 +1,143 @@
+import { useState, useCallback, useEffect } from 'react';
+import Landing from './components/Landing';
+import Quiz from './components/Quiz';
+import Analyzing from './components/Analyzing';
+import ResultPreview from './components/ResultPreview';
+import Report from './components/Report';
+import Paywall from './components/Paywall';
+import Share from './components/Share';
+
+export type Screen = 'landing' | 'quiz' | 'analyzing' | 'result' | 'report' | 'paywall' | 'share';
+
+export interface QuizAnswer {
+  questionId: string;
+  value: string | string[];
+}
+
+function App() {
+  const [currentScreen, setCurrentScreen] = useState<Screen>('landing');
+  const [answers, setAnswers] = useState<QuizAnswer[]>([]);
+  const [userName, setUserName] = useState('');
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [uploadedPhoto, setUploadedPhoto] = useState<string | null>(null);
+
+  const handleStartQuiz = useCallback(() => {
+    setCurrentScreen('quiz');
+    setCurrentQuestionIndex(0);
+  }, []);
+
+  const handleAnswer = useCallback((questionId: string, value: string | string[]) => {
+    setAnswers(prev => {
+      const existing = prev.findIndex(a => a.questionId === questionId);
+      if (existing >= 0) {
+        const updated = [...prev];
+        updated[existing] = { questionId, value };
+        return updated;
+      }
+      return [...prev, { questionId, value }];
+    });
+  }, []);
+
+  const handleNextQuestion = useCallback(() => {
+    setCurrentQuestionIndex(prev => prev + 1);
+  }, []);
+
+  const handlePrevQuestion = useCallback(() => {
+    setCurrentQuestionIndex(prev => Math.max(0, prev - 1));
+  }, []);
+
+  const handlePhotoUpload = useCallback((photoData: string) => {
+    setUploadedPhoto(photoData);
+  }, []);
+
+  const handleStartAnalysis = useCallback(() => {
+    setCurrentScreen('analyzing');
+  }, []);
+
+  const handleAnalysisComplete = useCallback(() => {
+    setCurrentScreen('result');
+  }, []);
+
+  const handleViewReport = useCallback(() => {
+    setCurrentScreen('report');
+  }, []);
+
+  const handlePaywall = useCallback(() => {
+    setCurrentScreen('paywall');
+  }, []);
+
+  const handleShare = useCallback(() => {
+    setCurrentScreen('share');
+  }, []);
+
+  const handleNameSubmit = useCallback((name: string) => {
+    setUserName(name);
+    setCurrentQuestionIndex(prev => prev + 1);
+  }, []);
+
+  const handleRestart = useCallback(() => {
+    setCurrentScreen('landing');
+    setAnswers([]);
+    setUserName('');
+    setCurrentQuestionIndex(0);
+    setUploadedPhoto(null);
+  }, []);
+
+  useEffect(() => {
+    if (currentScreen === 'landing') {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [currentScreen]);
+
+  return (
+    <div id="app">
+      {currentScreen === 'landing' && (
+        <Landing onStart={handleStartQuiz} />
+      )}
+      {currentScreen === 'quiz' && (
+        <Quiz
+          questionIndex={currentQuestionIndex}
+          answers={answers}
+          userName={userName}
+          uploadedPhoto={uploadedPhoto}
+          onAnswer={handleAnswer}
+          onNext={handleNextQuestion}
+          onPrev={handlePrevQuestion}
+          onPhotoUpload={handlePhotoUpload}
+          onNameSubmit={handleNameSubmit}
+          onStartAnalysis={handleStartAnalysis}
+        />
+      )}
+      {currentScreen === 'analyzing' && (
+        <Analyzing onComplete={handleAnalysisComplete} />
+      )}
+      {currentScreen === 'result' && (
+        <ResultPreview
+          userName={userName}
+          onViewReport={handleViewReport}
+          onPaywall={handlePaywall}
+        />
+      )}
+      {currentScreen === 'report' && (
+        <Report
+          userName={userName}
+          onShare={handleShare}
+          onRestart={handleRestart}
+        />
+      )}
+      {currentScreen === 'paywall' && (
+        <Paywall onBack={() => setCurrentScreen('result')} />
+      )}
+      {currentScreen === 'share' && (
+        <Share onBack={() => setCurrentScreen('report')} />
+      )}
+    </div>
+  );
+}
+
+export default App;
