@@ -241,10 +241,12 @@ export default function Quiz({
   const hasAnswer = currentAnswer !== undefined || isFirstQuestion;
 
   const handleImageSelect = (optionId: string) => {
+    if (!currentQuestion) return;
     onAnswer(currentQuestion.id, optionId);
   };
 
   const handleChipSelect = (chipId: string) => {
+    if (!currentQuestion) return;
     const current = (currentAnswer?.value as string[]) || [];
     if (current.includes(chipId)) {
       onAnswer(currentQuestion.id, current.filter(c => c !== chipId));
@@ -254,10 +256,12 @@ export default function Quiz({
   };
 
   const handleChoiceSelect = (choiceId: string) => {
+    if (!currentQuestion) return;
     onAnswer(currentQuestion.id, choiceId);
   };
 
   const handleColorSelect = (colorId: string) => {
+    if (!currentQuestion) return;
     const current = (currentAnswer?.value as string[]) || [];
     if (current.includes(colorId)) {
       onAnswer(currentQuestion.id, current.filter(c => c !== colorId));
@@ -291,6 +295,8 @@ export default function Quiz({
   };
 
   const renderQuestion = () => {
+    if (!currentQuestion) return null;
+
     switch (currentQuestion.type) {
       case 'name-email':
         return (
