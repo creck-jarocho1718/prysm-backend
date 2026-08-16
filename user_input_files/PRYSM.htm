@@ -1,0 +1,4577 @@
+<!DOCTYPE html>
+<!-- saved from url=(0039)https://xe3f2urkfu0jy.space.minimax.io/ -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ffffff">
+<title>PRYSM — Descubre la mejor versión de ti</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="./PRYSM_files/css2" rel="stylesheet">
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:'Outfit',sans-serif;
+  background:#fff;
+  color:#000;
+  line-height:1.5;
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  font-weight:300;
+  font-size:15px;
+  height:100vh;
+  height:100dvh;
+}
+::selection{background:#000;color:#fff}
+
+::-webkit-scrollbar{width:0;height:0}
+*{scrollbar-width:none}
+
+/* ===== TOKENS ===== */
+:root{
+  --white:#ffffff;
+  --black:#000000;
+  --ivory:#f8f6f1;
+  --grey-1:#f5f5f3;
+  --grey-2:#eeeeec;
+  --grey-3:#e0e0de;
+  --grey-4:#b0b0ae;
+  --grey-5:#6a6a68;
+  --serif:'Instrument Serif',serif;
+  --sans:'Outfit',sans-serif;
+  --ease:cubic-bezier(0.16,1,0.3,1);
+  --ease-slow:cubic-bezier(0.65,0,0.35,1);
+  --dur:600ms;
+  --dur-slow:900ms;
+}
+
+/* ===== APP SHELL ===== */
+#app{
+  width:100vw;
+  height:100vh;
+  height:100dvh;
+  position:relative;
+  overflow:hidden;
+}
+
+/* ===== SCREEN SYSTEM ===== */
+.screen{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(24px);
+  transition:opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+  overflow-y:auto;
+  overflow-x:hidden;
+}
+.screen.active{
+  opacity:1;
+  pointer-events:auto;
+  transform:translateY(0);
+}
+.screen.exit{
+  opacity:0;
+  transform:translateY(-16px);
+}
+
+/* ===== TYPOGRAPHY ===== */
+.serif{font-family:var(--serif)}
+.sans{font-family:var(--sans)}
+.display{
+  font-family:var(--serif);
+  font-size:clamp(52px,11vw,140px);
+  line-height:0.88;
+  letter-spacing:-0.025em;
+  font-weight:400;
+}
+.headline{
+  font-family:var(--serif);
+  font-size:clamp(36px,6vw,72px);
+  line-height:0.95;
+  letter-spacing:-0.02em;
+  font-weight:400;
+}
+.title{
+  font-family:var(--serif);
+  font-size:clamp(28px,4.5vw,52px);
+  line-height:1.05;
+  letter-spacing:-0.015em;
+  font-weight:400;
+}
+.label{
+  font-family:var(--sans);
+  font-size:10px;
+  font-weight:400;
+  letter-spacing:0.35em;
+  text-transform:uppercase;
+  color:var(--grey-5);
+}
+.italic{font-style:italic}
+.light{font-weight:200}
+.thin{font-weight:100}
+
+/* ===== PROGRESS BAR ===== */
+.progress-bar{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  height:2px;
+  background:rgba(0,0,0,0.06);
+  transform-origin:left;
+}
+.progress-bar-fill{
+  height:100%;
+  background:#000;
+  transform:scaleX(0);
+  transform-origin:left;
+  transition:transform 1.2s cubic-bezier(0.16,1,0.3,1);
+}
+
+/* ===== STAGE LABEL ===== */
+.stage-label{
+  position:fixed;bottom:44px;left:0;right:0;
+  text-align:center;
+  font-family:var(--sans);
+  font-size:9px;
+  letter-spacing:0.5em;
+  text-transform:uppercase;
+  color:var(--grey-4);
+  pointer-events:none;
+  z-index:100;
+  transition:opacity 0.5s var(--ease);
+}
+.stage-label.hidden{opacity:0}
+
+/* ===== NAV ===== */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:150;
+  padding:28px 40px;
+  display:flex;align-items:center;justify-content:space-between;
+  mix-blend-mode:difference;
+  color:#fff;
+}
+.nav.dark{mix-blend-mode:normal;color:#000}
+.nav-logo{
+  font-family:var(--serif);
+  font-size:16px;
+  letter-spacing:0.2em;
+  cursor:pointer;
+  font-weight:400;
+}
+.nav-back{
+  width:40px;height:40px;
+  display:none;align-items:center;justify-content:center;
+  cursor:pointer;opacity:0.5;transition:opacity 0.3s;
+  border:1px solid currentColor;border-radius:50%;
+}
+.nav-back:hover{opacity:1}
+.nav-back svg{width:16px;height:16px}
+
+/* ===== LANDING ===== */
+.landing{
+  background:var(--black);
+  color:#fff;
+  justify-content:space-between;
+  padding:0;
+}
+.landing-hero{
+  flex:1;
+  position:relative;
+  overflow:hidden;
+  display:flex;align-items:flex-end;
+}
+.landing-img{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  object-position:center 25%;
+  filter:brightness(0.45) saturate(0.6);
+  transform:scale(1.04);
+  animation:heroReveal 2.5s var(--ease-slow) 0.3s backwards;
+}
+@keyframes heroReveal{to{transform:scale(1)}}
+.landing-content{
+  position:relative;z-index:2;
+  padding:60px 48px;
+  width:100%;
+}
+.landing-eyebrow{
+  font-size:9px;letter-spacing:0.6em;text-transform:uppercase;
+  color:rgba(255,255,255,.4);margin-bottom:24px;
+  animation:fadeUp 1s var(--ease) 0.8s backwards;
+}
+.landing-title{
+  font-family:var(--serif);
+  font-size:clamp(56px,12vw,160px);
+  line-height:0.88;
+  letter-spacing:-0.03em;
+  color:#fff;
+  margin-bottom:20px;
+  animation:fadeUp 1s var(--ease) 1s backwards;
+}
+.landing-title em{font-style:italic}
+.landing-body{
+  font-size:14px;font-weight:300;line-height:1.8;
+  color:rgba(255,255,255,.5);
+  max-width:440px;
+  margin-bottom:48px;
+  animation:fadeUp 1s var(--ease) 1.2s backwards;
+}
+.landing-cta{
+  display:inline-flex;align-items:center;gap:16px;
+  font-family:var(--sans);
+  font-size:10px;font-weight:400;
+  letter-spacing:0.4em;text-transform:uppercase;
+  color:#fff;
+  border:1px solid rgba(255,255,255,.3);
+  padding:20px 48px;cursor:pointer;
+  background:transparent;
+  transition:all 0.5s var(--ease);
+  animation:fadeUp 1s var(--ease) 1.4s backwards;
+}
+.landing-cta:hover{background:#fff;color:#000;border-color:#fff}
+.landing-footer{
+  padding:32px 48px;
+  border-top:1px solid rgba(255,255,255,.08);
+  display:flex;justify-content:space-between;align-items:center;
+  animation:fadeUp 1s var(--ease) 1.6s backwards;
+}
+.landing-promise{
+  font-size:11px;letter-spacing:0.1em;
+  color:rgba(255,255,255,.3);
+}
+.landing-modules{
+  display:flex;gap:32px;
+}
+.landing-module{
+  font-size:9px;letter-spacing:0.25em;text-transform:uppercase;
+  color:rgba(255,255,255,.25);
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== CARD QUESTION ===== */
+.card-screen{
+  background:#fff;
+  justify-content:flex-start;
+  align-items:flex-start;
+  padding:80px 48px 120px;
+}
+.card-inner{
+  width:100%;max-width:760px;
+}
+.card-question{
+  margin-bottom:48px;
+}
+.card-eyebrow{
+  font-size:9px;letter-spacing:0.55em;text-transform:uppercase;
+  color:var(--grey-4);margin-bottom:20px;
+}
+.card-title{
+  font-family:var(--serif);
+  font-size:clamp(34px,6vw,62px);
+  line-height:1;letter-spacing:-0.025em;
+  color:#000;
+}
+.card-title em{font-style:italic}
+.card-subtitle{
+  font-size:13px;color:var(--grey-5);margin-top:18px;line-height:1.7;
+  font-weight:300;letter-spacing:0.01em;
+}
+
+/* ===== ADAPTIVE BADGE ===== */
+.adaptive-card-badge{
+  display:inline-block;
+  font-family:var(--sans);
+  font-size:9px;font-weight:400;
+  letter-spacing:0.25em;text-transform:uppercase;
+  color:#000;
+  background:var(--grey-1);
+  border:1px solid var(--grey-2);
+  padding:6px 14px;
+  margin-bottom:20px;
+  border-radius:100px;
+}
+
+/* ===== IMAGE CHOICE GRID ===== */
+.image-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:16px;
+}
+/* 5-item grid: 3 on top, 2 centered below */
+.image-grid-5{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+  max-width:700px;
+}
+.image-grid-5 .image-choice:last-child:nth-child(4) ~ .image-choice,
+.image-grid-5 .image-choice:nth-child(4):nth-last-child(2){
+  grid-column: 2;
+  justify-self:center;
+  width:50%;
+}
+/* 6-item style grid: 3 columns × 2 rows */
+.image-grid-6{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+/* 8-item style grid: 4 columns × 2 rows */
+.image-grid-8{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  max-width:860px;
+  margin:0 auto;
+}
+@media(max-width:640px){
+  .image-grid-8{grid-template-columns:repeat(2,1fr)}
+}
+/* Image selection — elegant border, no dark overlay */
+.image-choice.selected::after{
+  content:'';position:absolute;inset:0;
+  border:2px solid #000;
+  pointer-events:none;
+  z-index:2;
+}
+.image-choice.selected .image-choice-check{
+  opacity:1 !important;
+  transform:scale(1) !important;
+}
+/* Continue btn pulse when ready */
+.continue-btn.ready::before{
+  content:'';position:absolute;inset:-3px;
+  border:1px solid rgba(0,0,0,.12);
+  animation:btnPulse 2s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes btnPulse{
+  0%,100%{opacity:0;transform:scale(1)}
+  50%{opacity:1;transform:scale(1.01)}
+}
+.image-choice{
+  position:relative;
+  overflow:hidden;
+  cursor:pointer;
+  border:1.5px solid transparent;
+  transition:all 0.45s var(--ease);
+  background:var(--grey-1);
+  aspect-ratio:3/4;
+}
+.image-choice img{
+  width:100%;height:100%;
+  object-fit:cover;
+  transition:transform 0.7s var(--ease), filter 0.45s ease;
+  filter:brightness(0.88) saturate(0.85);
+}
+.image-choice:hover{border-color:#000}
+.image-choice:hover img{transform:scale(1.04);filter:brightness(1) saturate(1)}
+.image-choice.selected{border-color:#000;border-width:2px}
+.image-choice.selected img{filter:brightness(0.75) saturate(0.7)}
+.image-choice-label{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:28px 20px 20px;
+  background:linear-gradient(to top,rgba(0,0,0,.72) 0%,rgba(0,0,0,.3) 60%,transparent 100%);
+}
+.image-choice-label span{
+  font-family:var(--serif);
+  font-size:16px;
+  font-style:italic;
+  color:#fff;
+  letter-spacing:0.01em;
+}
+.image-choice-check{
+  position:absolute;top:14px;right:14px;
+  width:30px;height:30px;
+  border-radius:50%;
+  background:#000;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transform:scale(0.5);
+  transition:all 0.4s var(--ease);
+  border:1.5px solid rgba(255,255,255,.2);
+}
+.image-choice.selected .image-choice-check{opacity:1;transform:scale(1)}
+.image-choice-check svg{width:13px;height:13px;stroke:#fff;stroke-width:2.5}
+
+/* ===== COLOR SWATCHES ===== */
+.swatch-grid{
+  display:flex;gap:10px;flex-wrap:wrap;
+}
+.swatch-btn{
+  width:52px;height:52px;
+  border-radius:50%;
+  cursor:pointer;
+  border:2px solid transparent;
+  transition:all 0.35s var(--ease);
+  position:relative;
+}
+.swatch-btn:hover{transform:scale(1.1)}
+.swatch-btn.selected{border-color:#000;transform:scale(1.1)}
+.swatch-btn.selected::after{
+  content:'';position:absolute;inset:-5px;
+  border-radius:50%;border:1px solid rgba(0,0,0,.15);
+}
+
+/* ===== TEXT CHIP GRID ===== */
+.chip-grid{
+  display:flex;flex-wrap:wrap;gap:12px;
+}
+.chip{
+  padding:16px 28px;
+  border:1.5px solid var(--grey-2);
+  border-radius:4px;
+  cursor:pointer;
+  font-family:var(--sans);
+  font-size:13px;font-weight:300;
+  color:#000;
+  letter-spacing:0.03em;
+  transition:all 0.35s var(--ease);
+  background:#fff;
+  box-shadow:0 1px 3px rgba(0,0,0,.04);
+}
+.chip:hover{border-color:#000;background:#fff;color:#000;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.chip.selected{border-color:#000;background:#000;color:#fff;box-shadow:0 4px 16px rgba(0,0,0,.2)}
+.chip.selected:hover{background:#222}
+
+/* ===== COLOR SWATCH GRID ===== */
+.color-swatch-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:12px;
+  margin-bottom:16px;
+  max-height:280px;
+  overflow-y:auto;
+}
+.color-swatch-item{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  cursor:pointer;
+  transition:transform 0.35s cubic-bezier(.16,1,.3,1);
+  padding:4px;
+  border-radius:6px;
+}
+.color-swatch-item:hover{transform:translateY(-3px)}
+.color-swatch-item.selected{transform:translateY(-4px)}
+.color-swatch-circle{
+  width:44px;height:44px;
+  border-radius:50%;
+  border:2px solid transparent;
+  transition:all 0.4s cubic-bezier(.16,1,.3,1);
+  box-shadow:0 2px 8px rgba(0,0,0,.1);
+  flex-shrink:0;
+}
+.color-swatch-item.selected .color-swatch-circle{
+  border-color:#000;
+  transform:scale(1.1);
+  box-shadow:0 6px 20px rgba(0,0,0,.2);
+}
+.color-swatch-label{
+  font-family:var(--sans);
+  font-size:10px;font-weight:300;
+  color:var(--grey-4);
+  text-align:center;
+  line-height:1.3;
+  white-space:nowrap;
+  letter-spacing:0.02em;
+}
+.color-swatch-item.selected .color-swatch-label{color:#000;font-weight:400}
+.color-swatch-special .color-swatch-label{
+  font-size:9px;letter-spacing:0.04em;
+}
+
+/* ===== CHOICE LIST ===== */
+.choice-list{
+  display:flex;flex-direction:column;gap:0;
+}
+.choice-item{
+  display:flex;align-items:center;gap:20px;
+  padding:24px 0;
+  border-bottom:1px solid var(--grey-2);
+  cursor:pointer;
+  transition:all 0.3s;
+  width:100%;text-align:left;
+  background:transparent;border-left:0;border-right:0;border-top:0;
+  font-family:var(--sans);
+}
+.choice-item:first-child{border-top:1px solid var(--grey-2)}
+.choice-item:hover .choice-text{color:#000}
+.choice-item.selected .choice-text{color:#000;font-weight:400}
+.choice-item.selected .choice-key{opacity:1;color:#000}
+.choice-key{
+  font-family:var(--serif);font-size:11px;
+  color:var(--grey-4);width:24px;flex-shrink:0;
+  opacity:.5;transition:opacity 0.3s;
+}
+.choice-text{
+  font-size:15px;font-weight:300;color:var(--grey-5);
+  flex:1;transition:color 0.3s;
+}
+.choice-check{
+  width:22px;height:22px;border-radius:50%;
+  border:1.5px solid var(--grey-3);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all 0.3s;
+}
+.choice-item.selected .choice-check{border-color:#000;background:#000}
+.choice-check svg{width:10px;height:10px;stroke:#fff;stroke-width:2.5;opacity:0;transition:opacity 0.3s}
+.choice-item.selected .choice-check svg{opacity:1}
+
+/* ===== CONTINUE BUTTON ===== */
+.continue-btn{
+  margin-top:56px;
+  display:inline-flex;align-items:center;gap:16px;
+  font-family:var(--sans);
+  font-size:10px;font-weight:400;
+  letter-spacing:0.4em;text-transform:uppercase;
+  color:#fff;background:#111;
+  padding:24px 56px;cursor:pointer;
+  border:0;transition:all 0.5s var(--ease);
+  letter-spacing:0.45em;
+}
+.continue-btn:hover{background:#000;transform:translateX(4px);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.continue-btn:active{transform:translateX(1px)}
+.continue-btn svg{transition:transform 0.35s}
+.continue-btn.ready:hover svg{transform:translateX(5px)}
+.continue-row{display:flex;justify-content:flex-end}
+
+/* ===== PHOTO UPLOAD ===== */
+.photo-screen{
+  background:#fff;
+  justify-content:center;
+  padding:120px 48px 100px;
+}
+.photo-inner{width:100%;max-width:560px}
+.photo-drop{
+  border:1.5px dashed var(--grey-3);
+  padding:72px 48px;
+  text-align:center;
+  cursor:pointer;
+  transition:all 0.5s var(--ease);
+  position:relative;
+  background:var(--grey-1);
+  border-radius:2px;
+}
+.photo-drop:hover{border-color:#000;border-style:solid;background:#fff}
+.photo-drop input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.photo-drop-icon{
+  font-family:var(--serif);font-size:48px;
+  color:var(--grey-3);margin-bottom:20px;line-height:1;
+  transition:color 0.4s;
+}
+.photo-drop:hover .photo-drop-icon{color:#000}
+.photo-drop-title{font-family:var(--serif);font-size:24px;color:#000;margin-bottom:6px;letter-spacing:-0.01em}
+.photo-drop-sub{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--grey-5)}
+.photo-preview{
+  margin-top:16px;display:none;position:relative;
+}
+.photo-preview.active{display:block}
+.photo-preview img{
+  width:100%;aspect-ratio:4/3;object-fit:cover;
+  border:1px solid var(--grey-2);
+}
+.photo-validated{
+  position:absolute;top:16px;left:16px;
+  background:#fff;padding:8px 16px;
+  font-size:9px;letter-spacing:0.3em;text-transform:uppercase;
+  font-weight:400;
+}
+.photo-validated::before{content:'✓ '}
+.photo-remove{
+  margin-top:12px;
+  font-size:10px;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--grey-4);cursor:pointer;text-align:center;
+  display:block;transition:color 0.3s;
+}
+.photo-remove:hover{color:#000}
+
+/* ===== TEXT INPUT ===== */
+.text-input-wrap{margin-bottom:8px;position:relative}
+.text-input{
+  width:100%;
+  background:transparent;
+  border:0;border-bottom:2px solid var(--grey-3);
+  font-family:var(--serif);
+  font-size:clamp(28px,4vw,44px);
+  font-weight:400;
+  letter-spacing:-0.01em;
+  color:#000;outline:none;
+  padding:14px 0;
+  transition:border-color 0.4s;
+  caret-color:#000;
+}
+.text-input:focus{border-color:#000}
+.text-input::placeholder{color:var(--grey-4);font-style:italic}
+.text-input-label{font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--grey-4);margin-top:12px}
+
+/* ══════════════════════════════════════
+   ANALYZING — SEQUENTIAL PROCESSING
+   ══════════════════════════════════════ */
+.analyzing-screen{
+  background:#0a0a0a;
+  color:#fff;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+.analyzing-wrap{
+  width:100%;
+  max-width:520px;
+  padding:48px 40px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+/* Brand mark */
+.analyzing-brand{
+  font-family:var(--serif);
+  font-size:12px;
+  letter-spacing:0.6em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.15);
+  margin-bottom:64px;
+}
+
+/* Step lines */
+.analyzing-steps{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  gap:0;
+  margin-bottom:64px;
+}
+.analyzing-step{
+  display:grid;
+  grid-template-columns:48px 1fr;
+  align-items:center;
+  gap:20px;
+  padding:18px 0;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  opacity:.3;
+  transition:opacity 0.6s var(--ease), transform 0.6s var(--ease);
+  transform:translateX(-8px);
+}
+.analyzing-step:first-child{border-top:1px solid rgba(255,255,255,.06)}
+.analyzing-step.active{
+  opacity:1;
+  transform:translateX(0);
+}
+.analyzing-step.done{
+  opacity:.6;
+  transform:translateX(0);
+}
+.analyzing-step-icon{
+  width:40px;height:40px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.12);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--sans);
+  font-size:9px;
+  letter-spacing:0.1em;
+  color:rgba(255,255,255,.3);
+  flex-shrink:0;
+  transition:all 0.5s var(--ease);
+}
+.analyzing-step.active .analyzing-step-icon{
+  border-color:rgba(255,255,255,.4);
+  background:rgba(255,255,255,.05);
+  color:rgba(255,255,255,.6);
+}
+.analyzing-step.done .analyzing-step-icon{
+  border-color:#5cc87a;
+  background:rgba(92,200,122,.15);
+  color:#5cc87a;
+}
+.analyzing-step.done .analyzing-step-icon svg{stroke:#5cc87a;stroke-width:2.5}
+.analyzing-step-label{
+  font-family:var(--sans);
+  font-size:12px;
+  font-weight:300;
+  letter-spacing:0.04em;
+  color:rgba(255,255,255,.3);
+  transition:color 0.5s;
+  text-align:left;
+}
+.analyzing-step.active .analyzing-step-label{color:rgba(255,255,255,.7)}
+.analyzing-step.done .analyzing-step-label{color:rgba(255,255,255,.45)}
+
+/* Overall progress */
+.analyzing-progress-wrap{
+  width:100%;
+  margin-bottom:16px;
+}
+.analyzing-progress-bar{
+  width:100%;height:1px;
+  background:rgba(255,255,255,.08);
+  position:relative;
+  overflow:hidden;
+}
+.analyzing-progress-fill{
+  position:absolute;top:0;left:0;height:100%;
+  background:#fff;
+  width:0%;
+  transition:width 1s cubic-bezier(.16,1,.3,1);
+}
+.analyzing-progress-pct{
+  font-family:var(--sans);
+  font-size:9px;
+  letter-spacing:0.5em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.18);
+  margin-top:14px;
+  text-align:right;
+}
+
+/* Animated brand lines */
+.analyzing-lines{
+  position:absolute;inset:0;
+  pointer-events:none;
+  overflow:hidden;
+}
+.analyzing-line{
+  position:absolute;
+  left:0;right:0;height:1px;
+  background:rgba(255,255,255,.04);
+}
+.analyzing-line:nth-child(1){top:20%}
+.analyzing-line:nth-child(2){top:40%}
+.analyzing-line:nth-child(3){top:60%}
+.analyzing-line:nth-child(4){top:80%}
+
+/* ══════════════════════════════════════
+   RESULT PREVIEW — PREMIUM PAYWALL
+   ══════════════════════════════════════ */
+.result-preview-screen{
+  background:#fafaf8;
+  color:#000;
+  overflow-y:auto;
+  overflow-x:hidden;
+}
+
+/* Hero cover */
+.rp-cover{
+  min-height:100vh;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  align-items:flex-end;
+  background:linear-gradient(160deg,#1a1a1a 0%,#2a2118 50%,#1c1510 100%);
+}
+.rp-cover::before{
+  content:'';
+  position:absolute;inset:0;
+  background:repeating-linear-gradient(
+    -45deg,
+    rgba(255,255,255,.012) 0px,
+    rgba(255,255,255,.012) 1px,
+    transparent 1px,
+    transparent 60px
+  );
+}
+.rp-cover img{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;
+  filter:brightness(0.4) saturate(0.5);
+}
+.rp-cover-content{
+  position:relative;z-index:2;
+  padding:64px 48px;
+  width:100%;
+}
+.rp-eyebrow{
+  font-size:9px;letter-spacing:0.5em;text-transform:uppercase;
+  color:rgba(255,255,255,.4);margin-bottom:20px;
+}
+.rp-title{
+  font-family:var(--serif);
+  font-size:clamp(48px,9vw,112px);
+  line-height:0.88;letter-spacing:-0.03em;
+  color:#fff;
+}
+.rp-title em{font-style:italic}
+.rp-score{
+  position:absolute;right:48px;bottom:64px;text-align:right;
+}
+.rp-score-n{
+  font-family:var(--serif);
+  font-size:clamp(60px,12vw,144px);
+  line-height:.85;letter-spacing:-0.04em;
+  color:#fff;
+}
+.rp-score small{
+  font-family:var(--sans);font-size:.07em;
+  letter-spacing:0.4em;text-transform:uppercase;
+  color:rgba(255,255,255,.3);
+  display:block;margin-top:8px;font-weight:300;
+}
+
+/* Report preview blur section */
+.rp-preview-section{
+  padding:80px 48px;
+  border-bottom:1px solid rgba(0,0,0,.07);
+}
+.rp-preview-title{
+  font-family:var(--serif);
+  font-size:clamp(28px,4vw,44px);
+  line-height:1;letter-spacing:-0.02em;
+  color:#000;
+  margin-bottom:8px;
+}
+.rp-preview-sub{
+  font-size:12px;color:var(--grey-5);font-weight:300;
+  letter-spacing:0.02em;margin-bottom:40px;
+}
+
+/* Module cards with blur lock */
+.rp-module-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:12px;
+  margin-bottom:32px;
+}
+.rp-module-card{
+  background:#fff;
+  border:1px solid rgba(0,0,0,.07);
+  border-radius:4px;
+  padding:28px;
+  display:flex;
+  align-items:flex-start;
+  gap:20px;
+  position:relative;
+  overflow:hidden;
+  transition:border-color 0.3s, box-shadow 0.3s;
+}
+.rp-module-card:hover{
+  border-color:rgba(0,0,0,.12);
+  box-shadow:0 4px 16px rgba(0,0,0,.05);
+}
+.rp-module-card-icon{
+  width:44px;height:44px;
+  border-radius:4px;
+  background:var(--grey-1);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  font-size:20px;
+}
+.rp-module-card-body{flex:1}
+.rp-module-card-name{
+  font-family:var(--serif);
+  font-size:16px;
+  color:#000;
+  margin-bottom:4px;
+  letter-spacing:-0.01em;
+}
+.rp-module-card-desc{
+  font-size:11px;
+  color:var(--grey-5);
+  font-weight:300;
+  line-height:1.5;
+}
+.rp-module-card-lock{
+  position:absolute;top:14px;right:14px;
+  width:24px;height:24px;
+  border-radius:50%;
+  background:rgba(0,0,0,.04);
+  display:flex;align-items:center;justify-content:center;
+}
+.rp-module-card-lock svg{width:11px;height:11px;stroke:rgba(0,0,0,.25);stroke-width:2}
+
+/* Premium CTA section */
+.rp-cta-section{
+  padding:72px 48px;
+  background:#fff;
+  text-align:center;
+  position:relative;
+}
+.rp-cta-section::before{
+  content:'';
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:1px;height:40px;
+  background:rgba(0,0,0,.08);
+}
+
+/* Price display */
+.rp-price-wrap{
+  display:flex;align-items:center;justify-content:center;
+  gap:20px;
+  margin-bottom:8px;
+}
+.rp-price-old{
+  font-family:var(--serif);
+  font-size:clamp(24px,3vw,36px);
+  color:var(--grey-3);
+  text-decoration:line-through;
+  letter-spacing:-0.02em;
+}
+.rp-price-current{
+  font-family:var(--serif);
+  font-size:clamp(48px,7vw,80px);
+  line-height:1;
+  letter-spacing:-0.03em;
+  color:#000;
+}
+.rp-price-current sup{
+  font-size:.4em;
+  vertical-align:super;
+  letter-spacing:0;
+}
+.rp-price-label{
+  font-size:11px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--grey-4);margin-bottom:32px;
+  font-weight:300;
+}
+.rp-cta-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:16px;
+  font-family:var(--sans);
+  font-size:11px;font-weight:400;
+  letter-spacing:0.4em;text-transform:uppercase;
+  color:#fff;background:#e83535;
+  padding:28px 64px;cursor:pointer;border:0;
+  transition:all 0.5s var(--ease);
+  border-radius:3px;
+  box-shadow:0 4px 24px rgba(232,53,53,.25);
+  position:relative;
+  overflow:hidden;
+}
+.rp-cta-btn::before{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.12) 0%,transparent 50%);
+}
+.rp-cta-btn:hover{
+  background:#d42020;
+  transform:translateY(-2px);
+  box-shadow:0 8px 32px rgba(232,53,53,.35);
+}
+.rp-cta-btn:active{transform:translateY(0)}
+.rp-cta-btn svg{transition:transform 0.35s}
+.rp-cta-btn:hover svg{transform:translateX(4px)}
+.rp-cta-sub{
+  font-size:11px;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--grey-4);margin-top:20px;
+  font-weight:300;
+}
+.rp-cta-trust{
+  display:flex;align-items:center;justify-content:center;
+  gap:24px;margin-top:28px;
+}
+.rp-cta-trust span{
+  font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--grey-4);font-weight:300;
+}
+.rp-cta-trust span::before{
+  content:'·';margin-right:12px;opacity:.4;
+}
+.rp-cta-trust span:first-child::before{display:none}
+
+/* Validation banner */
+.rp-validation{
+  padding:32px 48px;
+  border-top:1px solid rgba(0,0,0,.06);
+  border-bottom:1px solid rgba(0,0,0,.06);
+  background:#fafaf8;
+  text-align:center;
+}
+.rp-validation-label{
+  font-size:9px;letter-spacing:0.5em;text-transform:uppercase;
+  color:var(--grey-4);margin-bottom:20px;
+  font-weight:400;
+}
+.rp-validation-logos{
+  display:flex;align-items:center;justify-content:center;
+  gap:40px;
+  flex-wrap:wrap;
+}
+.rp-validation-logo{
+  font-family:var(--serif);
+  font-size:16px;
+  font-style:italic;
+  color:var(--grey-4);
+  letter-spacing:-0.01em;
+  opacity:.7;
+  transition:opacity 0.3s;
+}
+.rp-validation-logo:hover{opacity:1}
+.rp-validation-logo span{
+  font-family:var(--sans);
+  font-size:8px;
+  font-style:normal;
+  letter-spacing:0.3em;
+  text-transform:uppercase;
+  color:var(--grey-4);
+  opacity:.6;
+  display:block;margin-top:2px;
+}
+.rp-validation-dot{
+  width:4px;height:4px;border-radius:50%;
+  background:var(--grey-3);
+  flex-shrink:0;
+}
+
+/* ══════════════════════════════════════
+   VALUE CARDS — fashion photo cards
+   ══════════════════════════════════════ */
+.rp-value-section{
+  padding:80px 48px 0;
+  background:#fafaf8;
+}
+.rp-value-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:48px;
+  padding-bottom:24px;
+  border-bottom:1px solid rgba(0,0,0,.07);
+}
+.rp-value-live{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.rp-live-dot{
+  width:8px;height:8px;
+  border-radius:50%;
+  background:#4ade80;
+  box-shadow:0 0 0 3px rgba(74,222,128,.2);
+  animation:livePulse 2s ease-in-out infinite;
+}
+@keyframes livePulse{
+  0%,100%{box-shadow:0 0 0 3px rgba(74,222,128,.2)}
+  50%{box-shadow:0 0 0 6px rgba(74,222,128,.08)}
+}
+.rp-live-label{
+  font-family:var(--sans);
+  font-size:10px;
+  letter-spacing:0.3em;
+  text-transform:uppercase;
+  color:#4ade80;
+  font-weight:400;
+}
+.rp-value-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:24px;
+  margin-bottom:80px;
+}
+@media(max-width:768px){
+  .rp-value-grid{grid-template-columns:repeat(2,1fr);gap:16px}
+}
+@media(max-width:480px){
+  .rp-value-grid{grid-template-columns:1fr;gap:16px}
+  .rp-value-section{padding:56px 24px 0}
+}
+.rp-value-card{
+  display:flex;
+  flex-direction:column;
+  background:#fff;
+  border:1px solid rgba(0,0,0,.06);
+  border-radius:6px;
+  overflow:hidden;
+  transition:transform 0.4s var(--ease), box-shadow 0.4s var(--ease), border-color 0.3s;
+}
+.rp-value-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 12px 40px rgba(0,0,0,.1);
+  border-color:rgba(0,0,0,.12);
+}
+.rpvc-photo-wrap{
+  position:relative;
+  overflow:hidden;
+  aspect-ratio:3/4;
+  background:var(--grey-1);
+}
+.rpvc-photo{
+  width:100%;height:100%;
+  object-fit:cover;
+  filter:brightness(0.75) saturate(0.7);
+  transition:transform 0.7s var(--ease), filter 0.5s ease;
+}
+.rp-value-card:hover .rpvc-photo{
+  transform:scale(1.04);
+  filter:brightness(0.85) saturate(0.9);
+}
+.rpvc-overlay{
+  position:absolute;inset:0;
+  background:rgba(0,0,0,.25);
+  display:flex;align-items:center;justify-content:center;
+  backdrop-filter:blur(2px);
+  transition:background 0.4s;
+}
+.rp-value-card:hover .rpvc-overlay{background:rgba(0,0,0,.18)}
+.rpvc-lock{
+  width:40px;height:40px;
+  border-radius:50%;
+  background:rgba(255,255,255,.15);
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.25);
+  display:flex;align-items:center;justify-content:center;
+}
+.rpvc-lock svg{width:16px;height:16px;stroke:rgba(255,255,255,.8);stroke-width:1.5}
+.rpvc-shimmer{
+  position:absolute;
+  top:0;left:-100%;
+  width:60%;height:100%;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.12) 50%,transparent 100%);
+  animation:shimmerMove 3s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes shimmerMove{
+  0%{left:-60%}
+  60%{left:120%}
+  100%{left:120%}
+}
+.rp-value-card:nth-child(2) .rpvc-shimmer{animation-delay:.5s;animation-duration:3.5s}
+.rp-value-card:nth-child(3) .rpvc-shimmer{animation-delay:1s;animation-duration:2.8s}
+.rp-value-card:nth-child(4) .rpvc-shimmer{animation-delay:1.5s;animation-duration:3.2s}
+.rp-value-card:nth-child(5) .rpvc-shimmer{animation-delay:2s;animation-duration:3.8s}
+.rp-value-card:nth-child(6) .rpvc-shimmer{animation-delay:0.8s;animation-duration:2.6s}
+.rpvc-body{
+  padding:24px;
+  background:#fff;
+  flex:1;
+}
+.rpvc-category{
+  font-family:var(--sans);
+  font-size:9px;
+  letter-spacing:0.4em;
+  text-transform:uppercase;
+  color:var(--grey-4);
+  margin-bottom:8px;
+  font-weight:400;
+}
+.rpvc-title{
+  font-family:var(--serif);
+  font-size:20px;
+  line-height:1.1;
+  letter-spacing:-0.01em;
+  color:#000;
+  margin-bottom:8px;
+}
+.rpvc-desc{
+  font-size:12px;
+  color:var(--grey-5);
+  line-height:1.6;
+  font-weight:300;
+}
+
+/* Social proof */
+.rp-social{
+  padding:72px 48px;
+  background:#fff;
+}
+.rp-social-title{
+  font-family:var(--serif);
+  font-size:clamp(22px,3vw,32px);
+  text-align:center;
+  letter-spacing:-0.02em;
+  margin-bottom:8px;
+  color:#000;
+}
+.rp-social-sub{
+  font-size:11px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--grey-4);text-align:center;margin-bottom:48px;
+  font-weight:300;
+}
+.rp-testimonials{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:20px;
+  max-width:900px;
+  margin:0 auto;
+}
+.rp-testimonial{
+  background:#fafaf8;
+  border:1px solid rgba(0,0,0,.06);
+  border-radius:4px;
+  padding:28px;
+  transition:border-color 0.3s, box-shadow 0.3s;
+}
+.rp-testimonial:hover{
+  border-color:rgba(0,0,0,.12);
+  box-shadow:0 4px 16px rgba(0,0,0,.04);
+}
+.rp-testimonial-stars{
+  display:flex;gap:3px;margin-bottom:16px;
+}
+.rp-star{font-size:12px;color:#f5a623;letter-spacing:1px}
+.rp-testimonial-text{
+  font-family:var(--serif);
+  font-size:15px;
+  font-style:italic;
+  color:#000;
+  line-height:1.6;
+  margin-bottom:20px;
+  letter-spacing:-0.01em;
+}
+.rp-testimonial-author{
+  display:flex;align-items:center;gap:12px;
+}
+.rp-testimonial-avatar{
+  width:48px;height:48px;
+  border-radius:50%;
+  flex-shrink:0;
+  overflow:hidden;
+  background:var(--grey-2);
+}
+.rp-testimonial-avatar img{
+  width:100%;height:100%;
+  object-fit:cover;
+  border-radius:50%;
+}
+.rp-testimonial-name{
+  font-family:var(--sans);
+  font-size:12px;font-weight:400;
+  color:#000;
+  letter-spacing:0.02em;
+}
+.rp-testimonial-meta{
+  font-size:10px;color:var(--grey-4);
+  letter-spacing:0.05em;
+  margin-top:2px;
+}
+
+/* ===== PAYWALL ===== */
+.paywall-screen{
+  background:#000;color:#fff;
+  justify-content:center;align-items:center;
+}
+.pay-inner{max-width:440px;width:100%;padding:48px}
+.pay-tag{
+  display:inline-block;
+  font-size:9px;letter-spacing:0.35em;text-transform:uppercase;
+  color:#000;background:#fff;
+  padding:6px 16px;margin-bottom:32px;
+}
+.pay-title{
+  font-family:var(--serif);
+  font-size:clamp(36px,5.5vw,60px);
+  line-height:1;letter-spacing:-0.02em;
+  margin-bottom:16px;
+}
+.pay-title em{font-style:italic}
+.pay-sub{font-size:13px;color:rgba(255,255,255,.4);margin-bottom:48px;line-height:1.7}
+.pay-card{
+  border:1px solid rgba(255,255,255,.1);
+  padding:40px;margin-bottom:24px;
+}
+.pay-row{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  margin-bottom:32px;padding-bottom:32px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.pay-product{font-family:var(--serif);font-size:22px;color:#fff;margin-bottom:4px}
+.pay-desc{font-size:9px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.pay-price{font-family:var(--serif);font-size:36px;color:#fff;text-align:right}
+.pay-price small{display:block;font-family:var(--sans);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-top:2px}
+.pay-old{font-size:18px;color:rgba(255,255,255,.3);text-decoration:line-through;margin-bottom:8px}
+.pay-savings{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#fff;margin-bottom:32px}
+.pay-field{margin-bottom:16px}
+.pay-field label{font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:rgba(255,255,255,.3);display:block;margin-bottom:10px}
+.pay-input{
+  width:100%;padding:16px;
+  background:transparent;
+  border:1px solid rgba(255,255,255,.1);
+  color:#fff;font-size:14px;outline:none;
+  transition:border-color 0.3s;
+  font-family:var(--sans);font-weight:300;
+}
+.pay-input:focus{border-color:rgba(255,255,255,.3)}
+.pay-input::placeholder{color:rgba(255,255,255,.2)}
+.pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pay-submit{
+  width:100%;padding:22px;
+  background:#fff;color:#000;
+  border:0;cursor:pointer;
+  font-family:var(--sans);font-size:10px;font-weight:400;
+  letter-spacing:0.4em;text-transform:uppercase;
+  margin-top:8px;transition:all 0.4s var(--ease);
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.pay-submit:hover{transform:translateY(-1px)}
+  .pay-tax-note{
+    font-size:11px;
+    color:rgba(255,255,255,0.45);
+    text-align:center;
+    margin-bottom:16px;
+    letter-spacing:0.02em;
+  }
+  .pay-trust{text-align:center;font-size:9px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(255,255,255,.2);margin-top:20px}
+
+/* ===== REPORT ===== */
+.report-screen{
+  background:#fff;color:#000;
+  overflow-y:auto;overflow-x:hidden;
+}
+.report-hero{
+  min-height:100vh;
+  position:relative;overflow:hidden;
+  display:flex;align-items:flex-end;
+}
+.report-hero img{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;
+  filter:brightness(0.5) saturate(0.4);
+}
+.report-hero-content{
+  position:relative;z-index:2;
+  padding:80px 48px;
+  width:100%;
+}
+.report-season{
+  font-family:var(--serif);
+  font-size:clamp(64px,13vw,180px);
+  line-height:0.85;letter-spacing:-0.03em;
+  color:#fff;
+}
+.report-season em{font-style:italic}
+.report-meta{
+  display:flex;align-items:center;gap:24px;
+  font-size:9px;letter-spacing:0.4em;text-transform:uppercase;
+  color:rgba(255,255,255,.4);
+  margin-top:24px;
+}
+.report-score{
+  position:absolute;right:48px;bottom:80px;text-align:right;
+}
+.report-score-n{
+  font-family:var(--serif);
+  font-size:clamp(72px,14vw,180px);
+  line-height:.85;letter-spacing:-0.04em;
+  color:#fff;
+}
+.report-score small{
+  font-family:var(--sans);font-size:.08em;
+  letter-spacing:0.4em;text-transform:uppercase;
+  color:rgba(255,255,255,.3);display:block;margin-top:8px;font-weight:300;
+}
+
+/* Report nav */
+.report-nav{
+  position:sticky;top:0;z-index:50;
+  background:#fff;
+  border-bottom:1px solid var(--grey-2);
+  padding:0 48px;
+  display:flex;gap:0;overflow-x:auto;
+  scrollbar-width:none;
+}
+.report-nav::-webkit-scrollbar{display:none}
+.report-nav-btn{
+  flex-shrink:0;
+  padding:20px 0;margin-right:48px;
+  font-family:var(--sans);
+  font-size:9px;font-weight:400;
+  letter-spacing:0.3em;text-transform:uppercase;
+  color:var(--grey-4);background:transparent;border:0;
+  cursor:pointer;
+  transition:color 0.3s;
+  border-bottom:1px solid transparent;margin-bottom:-1px;
+}
+.report-nav-btn:hover{color:#000}
+.report-nav-btn.active{color:#000;border-bottom-color:#000}
+
+/* Report sections */
+.report-section{
+  padding:80px 48px;
+  border-bottom:1px solid var(--grey-2);
+  max-width:960px;
+}
+.report-section-label{
+  font-size:9px;letter-spacing:0.5em;text-transform:uppercase;
+  color:var(--grey-4);margin-bottom:32px;
+}
+.report-section-title{
+  font-family:var(--serif);
+  font-size:clamp(40px,6vw,72px);
+  line-height:0.9;letter-spacing:-0.025em;
+  color:#000;margin-bottom:16px;
+}
+/* ── Report hero photo ── */
+.report-hero-photo{
+  position:relative;
+  width:100%;
+  max-width:420px;
+  margin:0 auto 40px;
+  border-radius:4px;
+  overflow:hidden;
+  box-shadow:0 8px 32px rgba(0,0,0,.12);
+}
+.report-hero-photo img{
+  width:100%;
+  aspect-ratio:2/3;
+  object-fit:cover;
+  display:block;
+}
+.report-hero-photo-label{
+  position:absolute;
+  bottom:0;left:0;right:0;
+  padding:32px 20px 16px;
+  background:linear-gradient(to top,rgba(0,0,0,.55) 0%,transparent 100%);
+  font-family:var(--sans);
+  font-size:9px;
+  letter-spacing:0.35em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.7);
+  font-weight:400;
+}
+
+.report-section-title em{font-style:italic}
+
+/* Palette */
+.palette-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;margin:40px 0;
+}
+.palette-swatch{
+  aspect-ratio:0.75/1;
+  display:flex;align-items:flex-end;
+  padding:16px;
+  position:relative;overflow:hidden;
+}
+.palette-swatch-name{
+  font-family:var(--serif);font-size:14px;color:#fff;position:relative;z-index:2;
+}
+.palette-swatch-hex{
+  position:absolute;bottom:8px;right:10px;
+  font-family:var(--sans);font-size:8px;letter-spacing:0.05em;
+  color:rgba(255,255,255,.4);
+}
+.palette-swatch-tag{
+  position:absolute;top:10px;left:10px;
+  font-size:8px;letter-spacing:0.2em;text-transform:uppercase;
+  color:rgba(255,255,255,.35);
+}
+
+/* Outfit grid */
+.outfit-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:1px;background:var(--grey-2);margin-top:32px;
+}
+.outfit-card{background:#fff;padding:36px 28px}
+.outfit-occasion{font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--grey-4);margin-bottom:14px}
+.outfit-look{font-family:var(--serif);font-size:16px;font-style:italic;color:#000;line-height:1.5}
+
+/* Editorial list */
+.editorial-list{display:flex;flex-direction:column;margin-top:32px}
+.editorial-item{
+  display:grid;grid-template-columns:48px 1fr;
+  gap:24px;align-items:start;
+  padding:28px 0;border-bottom:1px solid var(--grey-2);
+}
+.editorial-item:first-child{border-top:1px solid var(--grey-2)}
+.editorial-num{font-family:var(--serif);font-size:13px;color:var(--grey-4);padding-top:2px}
+.editorial-item h4{font-family:var(--serif);font-size:18px;font-weight:400;color:#000;margin-bottom:6px}
+.editorial-item p{font-size:13px;font-weight:300;color:var(--grey-5);line-height:1.7}
+
+/* Report download bar */
+.report-download{
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(255,255,255,.97);
+  backdrop-filter:blur(20px);
+  border-top:1px solid var(--grey-2);
+  padding:16px 48px;
+  display:flex;justify-content:space-between;align-items:center;
+  z-index:80;
+}
+.report-dl-title{font-family:var(--serif);font-size:16px;color:#000}
+.report-dl-sub{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--grey-4);margin-top:2px}
+.report-dl-actions{display:flex;gap:8px}
+.report-dl-btn{
+  font-family:var(--sans);font-size:9px;font-weight:400;
+  letter-spacing:0.3em;text-transform:uppercase;
+  padding:12px 24px;cursor:pointer;
+  border:1px solid rgba(0,0,0,.15);background:transparent;color:#000;
+  transition:all 0.3s;
+  display:flex;align-items:center;gap:8px;
+}
+.report-dl-btn:hover{background:#000;color:#fff;border-color:#000}
+.report-dl-btn.primary{background:#000;color:#fff;border-color:#000}
+.report-dl-btn.primary:hover{background:#333}
+
+/* PDF preview */
+.pdf-screen{background:#fff;color:#000}
+.pdf-book{display:grid;grid-template-columns:1fr 1fr;min-height:100vh}
+.pdf-page{
+  padding:80px 56px;
+  border-right:1px solid var(--grey-2);
+  display:flex;flex-direction:column;justify-content:space-between;
+  min-height:100vh;
+}
+.pdf-page:last-child{border-right:0}
+.pdf-page-label{font-size:8px;letter-spacing:0.5em;text-transform:uppercase;color:var(--grey-4)}
+.pdf-brand{font-family:var(--serif);font-size:13px;letter-spacing:0.2em;margin-bottom:48px}
+.pdf-station{font-family:var(--serif);font-size:clamp(32px,4.5vw,52px);line-height:.95;letter-spacing:-0.02em;margin-bottom:16px}
+.pdf-station em{font-style:italic}
+.pdf-photo{width:100%;aspect-ratio:4/5;object-fit:cover;margin:24px 0;filter:grayscale(0.2)}
+.pdf-score{font-family:var(--serif);font-size:clamp(56px,9vw,88px);line-height:.85;letter-spacing:-0.03em;margin:24px 0 8px}
+.pdf-score small{display:block;font-family:var(--sans);font-size:.08em;letter-spacing:0.4em;text-transform:uppercase;color:var(--grey-4);font-weight:300;margin-top:8px}
+.pdf-phrase{font-family:var(--serif);font-size:16px;font-style:italic;color:var(--grey-5);line-height:1.5}
+.pdf-section-title{font-family:var(--serif);font-size:clamp(26px,3.5vw,38px);line-height:1;letter-spacing:-0.015em;margin-bottom:24px}
+.pdf-section-title em{font-style:italic;color:var(--grey-5)}
+.pdf-swatches{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:24px 0}
+.pdf-swatch{aspect-ratio:1/1.2;display:flex;align-items:flex-end;padding:10px}
+.pdf-swatch-name{font-family:var(--serif);font-size:10px;color:#fff}
+.pdf-divider{height:1px;background:var(--grey-2);margin:24px 0}
+.pdf-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pdf-metric{border:1px solid var(--grey-2);padding:16px}
+.pdf-metric-label{font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--grey-4);margin-bottom:6px}
+.pdf-metric-value{font-family:var(--serif);font-size:18px;color:#000}
+.pdf-cta-dark{background:#000;color:#fff;padding:40px;text-align:center}
+.pdf-cta-dark h3{font-family:var(--serif);font-size:24px;margin-bottom:10px}
+.pdf-cta-dark p{font-size:12px;color:rgba(255,255,255,.5);margin-bottom:20px}
+.pdf-dl-btn{
+  font-family:var(--sans);font-size:9px;font-weight:400;letter-spacing:0.4em;text-transform:uppercase;
+  color:#000;background:#fff;border:0;padding:16px 32px;cursor:pointer;transition:all 0.4s;
+}
+.pdf-dl-btn:hover{transform:translateX(3px)}
+
+/* Share */
+.share-screen{background:#000;color:#fff;justify-content:center;align-items:center}
+.share-inner{max-width:480px;width:100%;padding:48px;text-align:center}
+.share-eyebrow{font-size:9px;letter-spacing:0.5em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:24px}
+.share-title{font-family:var(--serif);font-size:clamp(36px,5.5vw,56px);line-height:1;letter-spacing:-0.02em;margin-bottom:8px}
+.share-title em{font-style:italic}
+.share-sub{font-size:13px;color:rgba(255,255,255,.35);margin-bottom:48px}
+.share-card{
+  aspect-ratio:1/1;
+  background:linear-gradient(135deg,#111 0%,#0a0a0a 100%);
+  border:1px solid rgba(255,255,255,.07);
+  padding:40px;margin-bottom:40px;
+  display:flex;flex-direction:column;justify-content:space-between;
+  position:relative;overflow:hidden;
+}
+.share-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 30%,rgba(255,255,255,.03),transparent 60%)}
+.share-card>*{position:relative;z-index:1}
+.share-card-top{display:flex;justify-content:space-between;align-items:flex-start}
+.share-card-brand{font-family:var(--serif);font-size:16px;letter-spacing:0.15em}
+.share-card-module{font-size:9px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.share-card-score{text-align:center;font-family:var(--serif);font-size:clamp(72px,14vw,100px);line-height:.85;color:#fff;position:relative;display:inline-block;margin:16px 0}
+.share-card-score small{display:block;font-family:var(--sans);font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:4px;font-weight:300}
+.share-card-phrase{font-family:var(--serif);font-size:16px;font-style:italic;color:rgba(255,255,255,.6);text-align:center;line-height:1.4}
+.share-card-bottom{display:flex;justify-content:space-between;align-items:flex-end;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,.25)}
+.share-platforms{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
+.share-platform{padding:20px;border:1px solid rgba(255,255,255,.08);text-align:center;cursor:pointer;transition:all 0.3s}
+.share-platform:hover{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.04)}
+.share-platform svg{width:16px;height:16px;opacity:.5;margin:0 auto 8px;display:block}
+.share-platform span{font-size:8px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.share-actions{display:flex;gap:12px;justify-content:center}
+.share-dl{
+  font-family:var(--sans);font-size:9px;font-weight:400;letter-spacing:0.3em;text-transform:uppercase;
+  padding:14px 28px;border:1px solid rgba(255,255,255,.15);background:transparent;color:#fff;
+  cursor:pointer;transition:all 0.3s;
+  display:flex;align-items:center;gap:8px;
+}
+.share-dl:hover{background:#fff;color:#000;border-color:#fff}
+
+/* Profile */
+.profile-screen{background:#000;color:#fff;justify-content:center;align-items:center}
+.profile-inner{max-width:440px;width:100%;padding:48px}
+.profile-label{font-size:9px;letter-spacing:0.5em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:40px}
+.profile-name{font-family:var(--serif);font-size:clamp(40px,7vw,64px);line-height:1;letter-spacing:-0.02em;margin-bottom:8px}
+.profile-handle{font-size:12px;letter-spacing:0.1em;color:rgba(255,255,255,.3);margin-bottom:48px}
+.profile-id{
+  display:inline-flex;align-items:center;gap:16px;
+  border:1px solid rgba(255,255,255,.1);padding:14px 24px;margin-bottom:48px;
+  font-family:var(--sans);font-size:11px;letter-spacing:0.15em;color:rgba(255,255,255,.5);
+}
+.profile-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  border-top:1px solid rgba(255,255,255,.06);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.profile-stat{padding:32px 0;text-align:center;border-right:1px solid rgba(255,255,255,.06)}
+.profile-stat:last-child{border-right:0}
+.profile-stat .num{font-family:var(--serif);font-size:28px;color:#fff;display:block;line-height:1}
+.profile-stat .lbl{font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-top:8px;display:block}
+
+/* Animated check */
+@keyframes checkBloom{
+  0%{transform:scale(0);opacity:0}
+  60%{transform:scale(1.2)}
+  100%{transform:scale(1);opacity:1}
+}
+.check-bloom{animation:checkBloom 0.4s var(--ease) forwards}
+
+/* Card slide animation */
+@keyframes cardOut{
+  0%{opacity:1;transform:translateX(0)}
+  100%{opacity:0;transform:translateX(-60px)}
+}
+.card-exit{animation:cardOut 0.35s var(--ease) forwards}
+
+/* Confetti burst */
+@keyframes confettiFall{
+  0%{transform:translateY(-20px) rotate(0deg);opacity:1}
+  100%{transform:translateY(60px) rotate(360deg);opacity:0}
+}
+.confetti-particle{
+  position:fixed;pointer-events:none;z-index:9999;
+  font-size:14px;
+  animation:confettiFall 1.2s var(--ease-slow) forwards;
+}
+
+/* Stagger animation */
+@keyframes staggerIn{
+  from{opacity:0;transform:translateY(16px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.stagger-item{opacity:0;animation:staggerIn 0.5s var(--ease) forwards}
+.stagger-item:nth-child(1){animation-delay:0.05s}
+.stagger-item:nth-child(2){animation-delay:0.1s}
+.stagger-item:nth-child(3){animation-delay:0.15s}
+.stagger-item:nth-child(4){animation-delay:0.2s}
+.stagger-item:nth-child(5){animation-delay:0.25s}
+.stagger-item:nth-child(6){animation-delay:0.3s}
+.stagger-item:nth-child(7){animation-delay:0.35s}
+.stagger-item:nth-child(8){animation-delay:0.4s}
+
+/* ===== PHOTO VALIDATION ===== */
+.photo-validation-overlay{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(10,10,10,.85);
+  backdrop-filter:blur(12px);
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:32px;
+  animation:fadeIn 0.3s ease;
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.photo-validation-icon{
+  width:80px;height:80px;
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+}
+.photo-validation-icon svg{opacity:0.6}
+.photo-validation-spinner{
+  width:48px;height:48px;
+  border:1.5px solid rgba(255,255,255,.1);
+  border-top-color:rgba(255,255,255,.6);
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.photo-validation-text{
+  font-family:var(--sans);
+  font-size:10px;letter-spacing:0.35em;text-transform:uppercase;
+  color:rgba(255,255,255,.4);
+  text-align:center;
+}
+.photo-validation-result{
+  flex-direction:column;gap:24px;
+}
+.photo-validation-result .photo-validation-icon{
+  width:64px;height:64px;
+}
+.photo-validation-result.error .photo-validation-icon{
+  border-color:rgba(220,80,60,.4);
+}
+.photo-validation-result.success .photo-validation-icon{
+  border-color:rgba(80,200,120,.4);
+}
+.photo-validation-result .photo-validation-icon svg{opacity:0.8}
+.photo-validation-msg{
+  font-family:var(--serif);
+  font-size:clamp(20px,3.5vw,32px);
+  color:#fff;text-align:center;
+  max-width:400px;line-height:1.3;
+}
+.photo-validation-sub{
+  font-family:var(--sans);
+  font-size:12px;color:rgba(255,255,255,.4);
+  text-align:center;max-width:360px;line-height:1.7;
+}
+.photo-validation-retry{
+  padding:14px 32px;
+  border:1px solid rgba(255,255,255,.2);
+  background:transparent;color:#fff;
+  font-family:var(--sans);font-size:10px;
+  letter-spacing:0.3em;text-transform:uppercase;
+  cursor:pointer;transition:all 0.3s;
+}
+.photo-validation-retry:hover{background:#fff;color:#000;border-color:#fff}
+.photo-validation-ok{
+  padding:14px 32px;
+  background:#fff;color:#000;border:0;
+  font-family:var(--sans);font-size:10px;
+  letter-spacing:0.3em;text-transform:uppercase;
+  cursor:pointer;transition:all 0.3s;
+}
+.photo-validation-ok:hover{transform:translateY(-1px)}
+
+/* Photo guide overlay */
+.photo-guide-overlay{
+  position:fixed;inset:0;z-index:180;
+  background:#fff;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;
+  padding:48px 24px;
+  overflow-y:auto;
+}
+.photo-guide-close{
+  position:fixed;top:24px;right:28px;
+  font-size:9px;letter-spacing:0.35em;text-transform:uppercase;
+  color:var(--grey-4);cursor:pointer;
+  font-family:var(--sans);padding:8px;
+  transition:color 0.2s;
+}
+.photo-guide-close:hover{color:#000}
+.photo-guide-title{
+  font-family:var(--serif);
+  font-size:clamp(30px,5.5vw,52px);
+  line-height:1;letter-spacing:-0.02em;
+  text-align:center;margin-bottom:12px;
+}
+.photo-guide-sub{
+  font-size:13px;color:var(--grey-5);text-align:center;
+  margin-bottom:56px;line-height:1.6;
+}
+.photo-guide-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:16px;
+  max-width:720px;width:100%;
+  margin-bottom:56px;
+}
+.photo-guide-card{
+  border:1px solid var(--grey-2);
+  padding:32px;
+  display:flex;flex-direction:column;gap:16px;
+  transition:border-color 0.3s, box-shadow 0.3s;
+  border-radius:2px;
+}
+.photo-guide-card.good{border-color:var(--grey-3)}
+.photo-guide-card.bad{border-color:rgba(200,60,40,.2)}
+.photo-guide-icon{
+  width:52px;height:52px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;
+}
+.photo-guide-card.good .photo-guide-icon{background:#f0f5ee}
+.photo-guide-card.bad .photo-guide-icon{background:#fdf0ee}
+.photo-guide-card-label{
+  font-size:9px;letter-spacing:0.35em;text-transform:uppercase;
+  color:var(--grey-4);
+}
+.photo-guide-card-title{
+  font-family:var(--serif);font-size:20px;
+  letter-spacing:-0.01em;
+}
+.photo-guide-card.bad .photo-guide-card-title{color:var(--grey-4)}
+.photo-guide-card-tip{
+  font-size:12px;color:var(--grey-5);line-height:1.7;font-weight:300;
+}
+.photo-guide-examples{
+  max-width:700px;width:100%;
+}
+.photo-guide-example-title{
+  font-size:9px;letter-spacing:0.3em;text-transform:uppercase;
+  color:var(--grey-4);margin-bottom:16px;
+}
+.photo-guide-example-row{
+  display:flex;gap:12px;margin-bottom:12px;
+  overflow-x:auto;padding-bottom:4px;
+}
+.photo-guide-example-item{
+  flex:0 0 auto;width:120px;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+}
+.photo-guide-example-img{
+  width:120px;height:90px;
+  border-radius:4px;
+  object-fit:cover;
+  border:1px solid var(--grey-2);
+}
+.photo-guide-example-label{
+  font-size:9px;color:var(--grey-5);text-align:center;
+  letter-spacing:0.05em;
+}
+.photo-guide-example-item.good .photo-guide-example-label{color:#4a7c4a}
+.photo-guide-example-item.bad .photo-guide-example-label{color:#8c4a3a}
+
+.photo-guide-cta{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:18px 40px;
+  background:#000;color:#fff;
+  font-family:var(--sans);font-size:10px;
+  letter-spacing:0.3em;text-transform:uppercase;
+  cursor:pointer;border:0;transition:all 0.3s;
+  margin-top:16px;
+}
+.photo-guide-cta:hover{transform:translateY(-1px);opacity:0.85}
+
+/* Photo guide mini preview (inside card) */
+.photo-guide-preview{
+  background:var(--ivory);
+  border:1px solid var(--grey-2);
+  padding:28px;
+  margin-bottom:8px;
+}
+.photo-guide-mini-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:16px;margin-bottom:20px;
+}
+.photo-guide-mini-card{
+  display:flex;flex-direction:column;gap:8px;
+}
+.photo-guide-mini-icon{
+  font-size:18px;
+}
+.photo-guide-mini-title{
+  font-family:var(--serif);font-size:14px;
+}
+.photo-guide-mini-desc{
+  font-size:10px;color:var(--grey-5);line-height:1.5;
+}
+.photo-guide-open{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font-size:9px;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--grey-4);cursor:pointer;
+  padding:10px;border:1px solid var(--grey-2);
+  transition:all 0.2s;
+}
+.photo-guide-open:hover{color:#000;border-color:#999}
+.photo-guide-link{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  font-size:9px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--grey-4);cursor:pointer;
+  transition:color 0.2s;
+}
+.photo-guide-link:hover{color:#000}
+
+/* Adaptive stage 4 card style */
+.adaptive-card-badge{
+  display:inline-block;
+  font-size:8px;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--grey-4);padding:3px 10px;
+  border:1px solid var(--grey-2);
+  margin-bottom:16px;
+}
+
+/* Photo validation guide dots on each card */
+.photo-tip-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 16px;
+  border:1px solid var(--grey-2);
+  font-size:9px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--grey-4);
+  margin-bottom:20px;
+}
+
+/* Responsive */
+@media(max-width:768px){
+  .nav{padding:20px 24px}
+  .landing-content,.landing-footer{padding:40px 24px}
+  .card-screen{padding:100px 24px 80px}
+  .image-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+  .photo-screen{padding:100px 24px 80px}
+  .rp-cover-content,.rp-done,.rp-modules,.rp-unlock{padding:32px 24px}
+  .report-nav{padding:0 24px}
+  .report-section{padding:60px 24px}
+  .palette-grid{grid-template-columns:repeat(2,1fr)}
+  .outfit-grid{grid-template-columns:1fr}
+  .pdf-book{grid-template-columns:1fr}
+  .pdf-page{padding:60px 24px;border-right:0;border-bottom:1px solid var(--grey-2)}
+  .pdf-swatches{grid-template-columns:repeat(2,1fr)}
+  .report-download{flex-direction:column;gap:12px;padding:16px 24px}
+  .report-dl-actions{width:100%}
+  .report-dl-btn{flex:1;justify-content:center}
+  .pay-inner{padding:48px 24px}
+  .share-inner{padding:48px 24px}
+  .profile-inner{padding:48px 24px}
+}
+/* Hide minimax watermark */
+#minimax-floating-ball, .minimax-ball-content, .minimax-logo-wave, .minimax-ball-text, .minimax-close-icon { display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }
+</style>
+<script src="./PRYSM_files/supabase.js.descarga" defer=""></script>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- Progress bar -->
+  <div class="progress-bar">
+    <div class="progress-bar-fill" id="progressFill"></div>
+  </div>
+
+  <!-- Stage poetic label -->
+  <div class="stage-label" id="stageLabel"></div>
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <div style="display:flex;align-items:center;gap:20px">
+      <button class="nav-back" id="navBack" onclick="app.back()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg>
+      </button>
+      <div class="nav-logo" onclick="app.go(&#39;landing&#39;)">PRYSM</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:32px">
+      <div class="label" id="navResultsLink" style="cursor:pointer;opacity:0;pointer-events:none;transition:opacity 0.5s" onclick="app.go(&#39;report&#39;)">Informe</div>
+      <div class="label" id="navProfileLink" style="cursor:pointer;opacity:0;pointer-events:none;transition:opacity 0.5s" onclick="app.go(&#39;profile&#39;)">Perfil</div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- LANDING                                 -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="screen" data-screen="landing" style="display:flex!important;opacity:1;pointer-events:auto;transform:none!important;">
+    <div class="landing">
+      <div class="landing-hero">
+        <img class="landing-img" src="./PRYSM_files/photo-1509631179647-0177331693ae" alt="Editorial portrait">
+        <div class="landing-content">
+          <div class="landing-eyebrow">Personal Image Intelligence · 2026</div>
+          <div class="landing-title">Descubre la<br>mejor<br><em>versión</em><br>de ti.</div>
+          <div class="landing-body">
+            La Inteligencia Artificial analizará tu imagen y creará una guía personalizada para ayudarte a vestir mejor, elegir los colores que más te favorecen y proyectar una imagen más segura y elegante.
+          </div>
+          <button class="landing-cta" onclick="app.go(&#39;stage1&#39;)">
+            Comenzar mi análisis
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M13 5l7 7-7 7"></path></svg>
+          </button>
+        </div>
+      </div>
+      <div class="landing-footer">
+        <div class="landing-promise">PDF Premium · Guía personalizada · Acceso permanente</div>
+        <div class="landing-modules">
+          <span class="landing-module">Colores</span>
+          <span class="landing-module">Estilo</span>
+          <span class="landing-module">Outfits</span>
+          <span class="landing-module">Cabello</span>
+          <span class="landing-module">Accesorios</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- STAGE 1: CONOZCAMONOS                  -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="screen" data-screen="stage1">
+    <div class="card-screen" id="stage1Cards">
+      <!-- Card injected by JS -->
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- STAGE 2: TU ESTILO ACTUAL             -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="screen" data-screen="stage2">
+    <div class="card-screen" id="stage2Cards">
+      <!-- Card injected by JS -->
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- STAGE 3: FOTOGRAFÍAS                  -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="screen" data-screen="stage3">
+    <div class="card-screen">
+      <div class="card-inner">
+        <div class="card-question" id="stage3Question"></div>
+        <div id="stage3Content"></div>
+        <div class="continue-row">
+          <button class="continue-btn" id="stage3Continue" onclick="window.app.nextPhoto()">
+            Continuar
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M13 5l7 7-7 7"></path></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- STAGE 4: PERFIL                       -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="screen" data-screen="stage4">
+    <div class="card-screen" id="stage4Cards">
+      <!-- Card injected by JS -->
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- ANALYZING — SEQUENTIAL PROCESSING     -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="screen" data-screen="analyzing">
+    <div class="analyzing-screen">
+      <!-- Subtle background lines -->
+      <div class="analyzing-lines">
+        <div class="analyzing-line"></div>
+        <div class="analyzing-line"></div>
+        <div class="analyzing-line"></div>
+        <div class="analyzing-line"></div>
+      </div>
+
+      <div class="analyzing-wrap">
+        <div class="analyzing-brand">PRYSM</div>
+
+        <!-- Sequential analysis steps -->
+        <div class="analyzing-steps" id="analyzingSteps">
+          <div class="analyzing-step" data-step="color">
+            <div class="analyzing-step-icon" id="stepIcon-color">01</div>
+            <div class="analyzing-step-label" id="stepLabel-color">Analizando tu perfil cromático</div>
+          </div>
+          <div class="analyzing-step" data-step="style">
+            <div class="analyzing-step-icon" id="stepIcon-style">02</div>
+            <div class="analyzing-step-label" id="stepLabel-style">Identificando tu estilo</div>
+          </div>
+          <div class="analyzing-step" data-step="face">
+            <div class="analyzing-step-icon" id="stepIcon-face">03</div>
+            <div class="analyzing-step-label" id="stepLabel-face">Mapeando proporciones faciales</div>
+          </div>
+          <div class="analyzing-step" data-step="palette">
+            <div class="analyzing-step-icon" id="stepIcon-palette">04</div>
+            <div class="analyzing-step-label" id="stepLabel-palette">Construyendo tu paleta personalizada</div>
+          </div>
+          <div class="analyzing-step" data-step="report">
+            <div class="analyzing-step-icon" id="stepIcon-report">05</div>
+            <div class="analyzing-step-label" id="stepLabel-report">Generando tu informe completo</div>
+          </div>
+        </div>
+
+        <!-- Overall progress -->
+        <div class="analyzing-progress-wrap">
+          <div class="analyzing-progress-bar">
+            <div class="analyzing-progress-fill" id="analyzingProgressFill"></div>
+          </div>
+          <div class="analyzing-progress-pct" id="analyzingPct">0%</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- RESULT PREVIEW — PREMIUM PAYWALL      -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="screen" data-screen="result-preview">
+    <div class="result-preview-screen">
+
+      <!-- HERO COVER -->
+      <div class="rp-cover" id="rpCoverEl">
+        <!-- Photo (shown if uploaded) -->
+        <div id="rpPhotoWrapper" style="display:none;position:absolute;inset:0">
+          <img id="rpPhoto" src="https://xe3f2urkfu0jy.space.minimax.io/" alt="Portrait" style="width:100%;height:100%;object-fit:cover">
+        </div>
+        <!-- Editorial fallback -->
+        <div id="rpEditorialFallback" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+          <div style="position:absolute;top:40px;left:48px;font-family:var(--serif);font-size:11px;letter-spacing:0.5em;color:rgba(255,255,255,.2);text-transform:uppercase">PRYSM</div>
+          <div id="rpFallbackName" style="font-family:var(--serif);font-size:clamp(48px,8vw,96px);line-height:.88;letter-spacing:-0.025em;color:rgba(255,255,255,.9);text-align:center;margin-bottom:20px"></div>
+          <div style="font-family:var(--sans);font-size:9px;letter-spacing:0.5em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:8px">PRYSM Score</div>
+          <div id="rpFallbackScore" style="font-family:var(--serif);font-size:clamp(64px,11vw,128px);line-height:.85;letter-spacing:-0.04em;color:rgba(255,255,255,.5)">9.4</div>
+        </div>
+        <!-- Content overlay -->
+        <div class="rp-cover-content">
+          <div class="rp-eyebrow" id="rpEyebrow">Análisis completado · PRYSM Engine 2026</div>
+          <div class="rp-title">Tu análisis<br><em>está listo.</em></div>
+        </div>
+        <div class="rp-score" id="rpScoreEl">
+          <div class="rp-score-n" id="rpScoreN">9.4<small>PRYSM Score</small></div>
+        </div>
+      </div>
+
+      <!-- VALUE CARDS — aspirational fashion photography -->
+      <div class="rp-value-section">
+        <!-- Header with live personalization indicator -->
+        <div class="rp-value-header">
+          <div class="rp-value-live">
+            <div class="rp-live-dot"></div>
+            <div class="rp-live-label">Personalizando tu informe en tiempo real</div>
+          </div>
+        </div>
+
+        <div class="rp-value-grid">
+          <!-- Card 1: Colorimetría -->
+          <div class="rp-value-card" id="rpvc-color">
+            <div class="rpvc-photo-wrap">
+              <img class="rpvc-photo" src="./PRYSM_files/photo-1522335789203-aabd1fc54bc9" alt="Colorimetría" loading="lazy">
+              <div class="rpvc-overlay">
+                <div class="rpvc-lock">
+                  <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                </div>
+              </div>
+              <div class="rpvc-shimmer"></div>
+            </div>
+            <div class="rpvc-body">
+              <div class="rpvc-category">Colorimetría</div>
+              <div class="rpvc-title">Tus colores exactos</div>
+              <div class="rpvc-desc">12 tonos que iluminan tu piel y realzan tu mirada</div>
+            </div>
+          </div>
+
+          <!-- Card 2: Estilo -->
+          <div class="rp-value-card" id="rpvc-style">
+            <div class="rpvc-photo-wrap">
+              <img class="rpvc-photo" src="./PRYSM_files/photo-1509631179647-0177331693ae(1)" alt="Estilo" loading="lazy">
+              <div class="rpvc-overlay">
+                <div class="rpvc-lock">
+                  <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                </div>
+              </div>
+              <div class="rpvc-shimmer"></div>
+            </div>
+            <div class="rpvc-body">
+              <div class="rpvc-category">Estilo</div>
+              <div class="rpvc-title">Tu silueta perfecta</div>
+              <div class="rpvc-desc">Proporciones, cuts y caídas que realzan tu figura</div>
+            </div>
+          </div>
+
+          <!-- Card 3: Outfits -->
+          <div class="rp-value-card" id="rpvc-outfits">
+            <div class="rpvc-photo-wrap">
+              <img class="rpvc-photo" src="./PRYSM_files/photo-1515886657613-9f3515b0c78f" alt="Outfits" loading="lazy">
+              <div class="rpvc-overlay">
+                <div class="rpvc-lock">
+                  <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                </div>
+              </div>
+              <div class="rpvc-shimmer"></div>
+            </div>
+            <div class="rpvc-body">
+              <div class="rpvc-category">Outfits</div>
+              <div class="rpvc-title">10 looks a tu medida</div>
+              <div class="rpvc-desc">Para cada ocasión, adaptados a tu presupuesto</div>
+            </div>
+          </div>
+
+          <!-- Card 4: Cabello + Morfología Facial -->
+          <div class="rp-value-card" id="rpvc-hair">
+            <div class="rpvc-photo-wrap">
+              <img class="rpvc-photo" src="./PRYSM_files/photo-1560066984-138dadb4c035" alt="Cabello y Morfología" loading="lazy">
+              <div class="rpvc-overlay">
+                <div class="rpvc-lock">
+                  <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                </div>
+              </div>
+              <div class="rpvc-shimmer"></div>
+            </div>
+            <div class="rpvc-body">
+              <div class="rpvc-category">Cabello &amp; Morfología</div>
+              <div class="rpvc-title">Tu corte, color y forma de rostro</div>
+              <div class="rpvc-desc">Corte exacto + carta de colores según tu morfología facial y tono de piel</div>
+            </div>
+          </div>
+
+          <!-- Card 5: Lentes Recomendados -->
+          <div class="rp-value-card" id="rpvc-lenses">
+            <div class="rpvc-photo-wrap">
+              <img class="rpvc-photo" src="./PRYSM_files/photo-1574258495973-f010dfbb5371" alt="Lentes Recomendados" loading="lazy">
+              <div class="rpvc-overlay">
+                <div class="rpvc-lock">
+                  <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                </div>
+              </div>
+              <div class="rpvc-shimmer"></div>
+            </div>
+            <div class="rpvc-body">
+              <div class="rpvc-category">Lentes Recomendados</div>
+              <div class="rpvc-title">La montura que embellece tu rostro</div>
+              <div class="rpvc-desc">Forma y tamaño ideales según tus proporciones faciales</div>
+            </div>
+          </div>
+
+          <!-- Card 6: Foto & Video -->
+          <div class="rp-value-card" id="rpvc-photo">
+            <div class="rpvc-photo-wrap">
+              <img class="rpvc-photo" src="./PRYSM_files/photo-1531746020798-e6953c6e8e04" alt="Foto y Video" loading="lazy">
+              <div class="rpvc-overlay">
+                <div class="rpvc-lock">
+                  <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                </div>
+              </div>
+              <div class="rpvc-shimmer"></div>
+            </div>
+            <div class="rpvc-body">
+              <div class="rpvc-category">Foto &amp; Video</div>
+              <div class="rpvc-title">Tu mejor ángulo</div>
+              <div class="rpvc-desc">Cómo posar, iluminarte y brillar frente a la cámara</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA / PRICE SECTION -->
+      <div class="rp-cta-section">
+        <div class="rp-price-wrap">
+          <div class="rp-price-old">$599 MXN</div>
+          <div class="rp-price-current"><sup>$</sup>299 MXN</div>
+        </div>
+        <div class="rp-price-label">Pago único · Acceso permanente · PDF Premium incluido</div>
+
+        <button class="rp-cta-btn" onclick="app.go(&#39;paywall&#39;)">
+          Obtener mi informe · $299 MXN
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M13 5l7 7-7 7"></path></svg>
+        </button>
+
+        <div class="rp-cta-sub">Acceso inmediato · PDF incluido · Sin suscripción</div>
+
+        <div class="rp-cta-trust">
+          <span>Pago seguro</span>
+          <span>Sin suscripción</span>
+          <span>Acceso permanente</span>
+        </div>
+      </div>
+
+      <!-- VALIDATION BANNER -->
+      <div class="rp-validation">
+        <div class="rp-validation-label">Metodología respaldada por la industria</div>
+        <div class="rp-validation-logos">
+          <div class="rp-validation-logo">Vogue<span>Style Lab</span></div>
+          <div class="rp-validation-dot"></div>
+          <div class="rp-validation-logo">Elle<span>Editorial</span></div>
+          <div class="rp-validation-dot"></div>
+          <div class="rp-validation-logo">Forbes<span>Style</span></div>
+          <div class="rp-validation-dot"></div>
+          <div class="rp-validation-logo">Harper's<span>Bazaar</span></div>
+        </div>
+      </div>
+
+      <!-- SOCIAL PROOF -->
+      <div class="rp-social">
+        <div class="rp-social-title">Lo que dicen nuestras usuarias</div>
+        <div class="rp-social-sub">Resultados reales · Valoración promedio 4.9/5</div>
+
+        <div class="rp-testimonials">
+          <div class="rp-testimonial">
+            <div class="rp-testimonial-stars">
+              <span class="rp-star">★</span><span class="rp-star">★</span><span class="rp-star">★</span><span class="rp-star">★</span><span class="rp-star">★</span>
+            </div>
+            <div class="rp-testimonial-text">"Nunca supe que el color burdeos me sentaba así de bien. En dos semanas me hicieron 4 cumplidos en el trabajo. El informe cambió cómo me visto para siempre."</div>
+            <div class="rp-testimonial-author">
+              <div class="rp-testimonial-avatar">
+                  <img src="./PRYSM_files/photo-1494790108377-be9c29b29330" alt="Camila" loading="lazy">
+                </div>
+              <div>
+                <div class="rp-testimonial-name">Camila R.</div>
+                <div class="rp-testimonial-meta">PRYSM Score 9.1 · Ciudad de México</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="rp-testimonial">
+            <div class="rp-testimonial-stars">
+              <span class="rp-star">★</span><span class="rp-star">★</span><span class="rp-star">★</span><span class="rp-star">★</span><span class="rp-star">★</span>
+            </div>
+            <div class="rp-testimonial-text">"Pensé que era un test más, pero la guía de compras al final me ahorró $400 USD en ropa que habría comprado y nunca usado. La mejor inversión en mi imagen."</div>
+            <div class="rp-testimonial-author">
+              <div class="rp-testimonial-avatar">
+                  <img src="./PRYSM_files/photo-1438761681033-6461ffad8d80" alt="Valentina" loading="lazy">
+                </div>
+              <div>
+                <div class="rp-testimonial-name">Valentina T.</div>
+                <div class="rp-testimonial-meta">PRYSM Score 9.4 · Bogotá</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="rp-testimonial">
+            <div class="rp-testimonial-stars">
+              <span class="rp-star">★</span><span class="rp-star">★</span><span class="rp-star">★</span><span class="rp-star">★</span><span class="rp-star">★</span>
+            </div>
+            <div class="rp-testimonial-text">"La sección de cabello fue un cambio de vida. Mi estilista no podía creer lo preciso que era. Ahora voy a mis citas con una seguridad que nunca tuve. Gracias, PRYSM."</div>
+            <div class="rp-testimonial-author">
+              <div class="rp-testimonial-avatar">
+                  <img src="./PRYSM_files/photo-1534528741775-53994a69daeb" alt="Andrea" loading="lazy">
+                </div>
+              <div>
+                <div class="rp-testimonial-name">Andrea M.</div>
+                <div class="rp-testimonial-meta">PRYSM Score 9.7 · Buenos Aires</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- PAYWALL                               -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="screen" data-screen="paywall">
+    <div class="paywall-screen">
+      <div class="pay-inner">
+        <div class="pay-tag">Pago seguro</div>
+        <div class="pay-title">Completa<br><em>tu pedido.</em></div>
+        <div class="pay-sub">Acceso permanente · Sin suscripciones · PDF Premium incluido</div>
+        <div class="pay-card">
+          <div class="pay-row">
+            <div>
+              <div class="pay-product">PRYSM Premium</div>
+              <div class="pay-desc">Guía completa · Revista · Acceso de por vida</div>
+            </div>
+            <div style="text-align:right">
+              <div class="pay-price">$299 MXN<small>USD</small></div>
+            </div>
+          </div>
+          <div class="pay-tax-note">+ IVA 16% · Total: $346.84 MXN</div>
+          <a class="pay-submit" id="payBtn" href="https://link.mercadopago.com.mx/prysm" target="_blank">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            Pagar $299 MXN · MercadoPago seguro
+          </a>
+          <div class="pay-trust">🔒 Procesado por MercadoPago · Tus datos nunca se almacenan aquí</div>
+          <div style="text-align:center;margin-top:16px">
+            <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-bottom:8px">Tarifas y política</div>
+            <br><br>
+            <span style="font-size:11px;color:rgba(255,255,255,0.5);cursor:pointer;text-decoration:underline;" onclick="app.showVerifyModal()">Ya pagaste? Verificar</span>
+            <span style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.25);cursor:pointer" onclick="app.go(&#39;result-preview&#39;)">← Volver al resumen</span>
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:24px;color:rgba(255,255,255,0.3);font-size:10px;letter-spacing:0.1em">
+          Pagos procesados por MercadoPago · PRYSM · Ciudad de México
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- REPORT                                -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="screen" data-screen="report">
+    <div class="report-screen">
+      <!-- Portrait cover -->
+      <div class="report-hero" id="reportHeroEl">
+        <!-- Photo (shown if available) -->
+        <div id="rhPhotoWrapper" style="display:none;position:absolute;inset:0">
+          <img id="reportHeroImg" src="https://xe3f2urkfu0jy.space.minimax.io/" alt="Portrait" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.5) saturate(0.4)">
+        </div>
+        <!-- Editorial fallback (no photo) -->
+        <div id="rhEditorialFallback" style="position:absolute;inset:0;display:flex;align-items:flex-end;background:linear-gradient(160deg,#1a1a1a 0%,#2d2418 50%,#1a1410 100%);overflow:hidden;">
+          <div style="position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(255,255,255,.01) 0px,rgba(255,255,255,.01) 1px,transparent 1px,transparent 40px);opacity:.5"></div>
+          <div style="position:absolute;top:40px;right:48px;font-family:var(--serif);font-size:clamp(80px,18vw,200px);line-height:.85;letter-spacing:-0.04em;color:rgba(255,255,255,.04);white-space:nowrap">PRYSM</div>
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center">
+            <div id="rhFallbackName" style="font-family:var(--serif);font-size:clamp(36px,5vw,64px);line-height:1;color:rgba(255,255,255,.12);letter-spacing:-0.02em"></div>
+          </div>
+          <div style="position:absolute;bottom:0;left:0;right:0;height:1px;background:rgba(255,255,255,.06)"></div>
+        </div>
+        <div class="report-hero-content">
+          <div style="font-size:9px;letter-spacing:0.5em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:20px">Tu estación cromática</div>
+          <div class="report-season">Otoño<br><em>Cálido</em><br>Profundo.</div>
+          <div class="report-meta">
+            <span>PRYSM Report</span><span>·</span>
+            <span id="reportNameDisplay">Valentina</span>
+            <span>·</span>
+            <span id="reportIdDisplay">PX-XXXX-XXXX</span>
+          </div>
+        </div>
+        <div class="report-score">
+          <div class="report-score-n">9.4<small>PRYSM Score</small></div>
+        </div>
+      </div>
+
+      <!-- Report navigation -->
+      <div class="report-nav" id="reportNav">
+        <button class="report-nav-btn active" data-tab="overview" onclick="app.showReportTab(&#39;overview&#39;)">Resumen</button>
+        <button class="report-nav-btn" data-tab="color" onclick="app.showReportTab(&#39;color&#39;)">Colores</button>
+        <button class="report-nav-btn" data-tab="style" onclick="app.showReportTab(&#39;style&#39;)">Estilo</button>
+        <button class="report-nav-btn" data-tab="hair" onclick="app.showReportTab(&#39;hair&#39;)">Cabello</button>
+        <button class="report-nav-btn" data-tab="outfits" onclick="app.showReportTab(&#39;outfits&#39;)">Outfits</button>
+        <button class="report-nav-btn" data-tab="accessories" onclick="app.showReportTab(&#39;accessories&#39;)">Accesorios</button>
+        <button class="report-nav-btn" data-tab="plan" onclick="app.showReportTab(&#39;plan&#39;)">Plan 30 días</button>
+        <button class="report-nav-btn" onclick="app.generatePdf()" style="color:var(--grey-4);display:flex;align-items:center;gap:6px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          PDF
+        </button>
+      </div>
+
+      <!-- Overview -->
+      <div id="r-overview" class="report-section">
+        <div class="report-section-label">PRYSM · Resumen</div>
+        <div class="report-section-title">Tu imagen,<br><em>analizada.</em></div>
+        <p style="font-size:14px;color:var(--grey-5);line-height:1.8;max-width:520px;margin-bottom:60px">
+          "Eres una persona que habla a través de la textura, la profundidad y la intención. Tu imagen debe reflejar esa certeza."
+        </p>
+        <div class="report-hero-photo">
+          <img src="./PRYSM_files/hair.jpg" alt="Tu cabello ideal">
+          <div class="report-hero-photo-label">Tu mejor versión · PRYSM</div>
+        </div>
+        <div class="editorial-list">
+          <div class="editorial-item"><div class="editorial-num">01</div><div><h4>Subtono — Cálido</h4><p>Tu piel tiene matices dorados y amarillos. Esta calidez es tu brújula — cada recomendación de color fluye desde ella.</p></div></div>
+          <div class="editorial-item"><div class="editorial-num">02</div><div><h4>Contraste — Alto</h4><p>Llevas la profundidad con facilidad. Los colores ricos y saturados amplifican tu presencia. Evita tonos lavados y pastel.</p></div></div>
+          <div class="editorial-item"><div class="editorial-num">03</div><div><h4>Profundidad — Profunda</h4><p>Tu coloración es rica y completa. Brillas en tonos profundos y saturados. Los neón y pastel compiten con tu intensidad natural.</p></div></div>
+          <div class="editorial-item"><div class="editorial-num">04</div><div><h4>Temperatura — Cálido</h4><p>El oro, el ámbar y los tonos tierra cálidos armonizan con tu piel. La plata y los rosas fríos crean contraste — úsalos como acentos, no como base.</p></div></div>
+        </div>
+      </div>
+
+      <!-- Colors -->
+      <div id="r-color" style="display:none" class="report-section">
+        <div class="report-section-label">PRYSM · Colorimetría</div>
+        <div class="report-section-title">Tu<br><em>paleta.</em></div>
+        <div class="report-hero-photo">
+          <img src="./PRYSM_files/color.jpg" alt="Paleta de colores">
+          <div class="report-hero-photo-label">Paleta personalizada · PRYSM</div>
+        </div>
+        <p style="font-size:13px;color:var(--grey-5);line-height:1.7;margin-bottom:40px">Los colores que más te favorecen, calculados por inteligencia artificial a partir de tu piel, ojos y cabello.</p>
+        <div class="palette-grid">
+          <div class="palette-swatch stagger-item" style="background:#B5651D"><div class="palette-swatch-name">Terracota</div><div class="palette-swatch-hex">#B5651D</div><div class="palette-swatch-tag">Primario</div></div>
+          <div class="palette-swatch stagger-item" style="background:#7A2E2E"><div class="palette-swatch-name">Borgoña</div><div class="palette-swatch-hex">#7A2E2E</div><div class="palette-swatch-tag">Acento</div></div>
+          <div class="palette-swatch stagger-item" style="background:#C9A227"><div class="palette-swatch-name" style="color:rgba(0,0,0,.5)">Mostaza</div><div class="palette-swatch-hex" style="color:rgba(0,0,0,.4)">#C9A227</div><div class="palette-swatch-tag">Acento</div></div>
+          <div class="palette-swatch stagger-item" style="background:#6B7A3F"><div class="palette-swatch-name">Verde oliva</div><div class="palette-swatch-hex">#6B7A3F</div><div class="palette-swatch-tag">Base</div></div>
+          <div class="palette-swatch stagger-item" style="background:#4A2C1A"><div class="palette-swatch-name">Chocolate</div><div class="palette-swatch-hex">#4A2C1A</div><div class="palette-swatch-tag">Base</div></div>
+          <div class="palette-swatch stagger-item" style="background:#B87333"><div class="palette-swatch-name">Cobre</div><div class="palette-swatch-hex">#B87333</div><div class="palette-swatch-tag">Joyería</div></div>
+          <div class="palette-swatch stagger-item" style="background:#8B7D5B"><div class="palette-swatch-name" style="color:rgba(255,255,255,.7)">Caqui</div><div class="palette-swatch-hex">#8B7D5B</div><div class="palette-swatch-tag">Base</div></div>
+          <div class="palette-swatch stagger-item" style="background:#F0E4C9"><div class="palette-swatch-name" style="color:rgba(0,0,0,.4)">Marfil cálido</div><div class="palette-swatch-hex" style="color:rgba(0,0,0,.3)">#F0E4C9</div><div class="palette-swatch-tag">Claro</div></div>
+        </div>
+        <div class="report-section-label" style="margin-top:60px">Colores a evitar</div>
+        <div class="report-hero-photo">
+          <img src="./PRYSM_files/hair.jpg" alt="Tu cabello ideal">
+          <div class="report-hero-photo-label">Tu mejor versión · PRYSM</div>
+        </div>
+        <div class="editorial-list">
+          <div class="editorial-item"><div class="editorial-num">×</div><div><h4>Negro puro cerca del rostro</h4><p>El negro plano apaga tu calidez. Usa chocolate, borgoña profundo o gris cálido en su lugar.</p></div></div>
+          <div class="editorial-item"><div class="editorial-num">×</div><div><h4>Rosa pálido y lavanda</h4><p>Los tonos pastel fríos compiten con tu subtono. Opta por melocotón cálido, rosa polvorienta o terracota.</p></div></div>
+          <div class="editorial-item"><div class="editorial-num">×</div><div><h4>Plata y oro blanco</h4><p>Los metales fríos contrastan con tu calidez. El oro, cobre y bronce armonizan naturalmente.</p></div></div>
+        </div>
+      </div>
+
+      <!-- Style -->
+      <div id="r-style" style="display:none" class="report-section">
+        <div class="report-section-label">PRYSM · Estilo</div>
+        <div class="report-section-title">Tu<br><em>estilo.</em></div>
+        <div class="report-hero-photo">
+          <img src="./PRYSM_files/style.jpg" alt="Tu estilo">
+          <div class="report-hero-photo-label">Tu esencia · PRYSM</div>
+        </div>
+        <div style="font-family:var(--serif);font-size:clamp(20px,3vw,28px);font-style:italic;color:var(--grey-5);margin-bottom:48px;line-height:1.5">Dramático + Natural</div>
+        <div class="report-hero-photo">
+          <img src="./PRYSM_files/hair.jpg" alt="Tu cabello ideal">
+          <div class="report-hero-photo-label">Tu mejor versión · PRYSM</div>
+        </div>
+        <div class="editorial-list">
+          <div class="editorial-item"><div class="editorial-num">01</div><div><h4>Silueta</h4><p>Piezas estructuradas con caída natural. Blazers con hombro suave, abrigos con cuerpo, pantalones que caen. Evita el volumen excesivo o lo extremadamente ajustado.</p></div></div>
+          <div class="editorial-item"><div class="editorial-num">02</div><div><h4>Tela</h4><p>Cashmere, lana, cuero, lino pesado. Telas con peso e historia. Evita el brillo sintético y el jersey fino.</p></div></div>
+          <div class="editorial-item"><div class="editorial-num">03</div><div><h4>Tu fórmula</h4><p>Blazer borgoña + pantalones oliva + camisa marfil + botines chocolate. Tu combinación infalible.</p></div></div>
+        </div>
+      </div>
+
+      <!-- Hair -->
+      <div id="r-hair" style="display:none" class="report-section">
+        <div class="report-section-label">PRYSM · Cabello</div>
+        <div class="report-section-title">Tu cabello,<br><em>ideal.</em></div>
+        <div class="report-hero-photo">
+          <img src="./PRYSM_files/hair.jpg" alt="Tu cabello ideal">
+          <div class="report-hero-photo-label">Tu mejor versión · PRYSM</div>
+        </div>
+        <div class="editorial-list">
+          <div class="editorial-item"><div class="editorial-num">01</div><div><h4>Color ideal</h4><p>Castaño cálido con reflejos cobrizos. Añade luminosidad sin competir con tu profundidad.</p></div></div>
+          <div class="editorial-item"><div class="editorial-num">02</div><div><h4>Corte</h4><p>Capas largas con movimiento natural. Evita cortes ultra rectos — aplanan tus rasgos.</p></div></div>
+          <div class="editorial-item"><div class="editorial-num">03</div><div><h4>Qué evitar</h4><p>Platinum, castaño cenizo o negro frío. Estos silencian tu calidez y crean desarmonía.</p></div></div>
+        </div>
+      </div>
+
+      <!-- Outfits -->
+      <div id="r-outfits" style="display:none" class="report-section">
+        <div class="report-section-label">PRYSM · Outfits</div>
+        <div class="report-section-title">Tus<br><em>outfits.</em></div>
+        <div class="report-hero-photo">
+          <img src="./PRYSM_files/outfit.jpg" alt="Tus outfits">
+          <div class="report-hero-photo-label">Looks para ti · PRYSM</div>
+        </div>
+        <div class="outfit-grid">
+          <div class="outfit-card"><div class="outfit-occasion">Entrevista</div><div class="outfit-look">Blazer borgoña · Pantalones oliva · Camisa seda marfil · Mocasines cognac</div></div>
+          <div class="outfit-card"><div class="outfit-occasion">Citas</div><div class="outfit-look">Vestido midi borgoña · Pendientes oro · Pulsera cobre · Labial terracota</div></div>
+          <div class="outfit-card"><div class="outfit-occasion">Ejecutivo</div><div class="outfit-look">Abrigo estructurado chocolate · Cashmere camel · Denim oscuro · Botines chocolate</div></div>
+          <div class="outfit-card"><div class="outfit-occasion">Gala</div><div class="outfit-look">Vestido largo chocolate · Joyas doradas statement · Labial borgoña · Perlas como acento</div></div>
+          <div class="outfit-card"><div class="outfit-occasion">Fin de semana</div><div class="outfit-look">Pantalones anchos caqui · Camisa lino marfil · Cinturón cognac · Zapatillas blancas</div></div>
+          <div class="outfit-card"><div class="outfit-occasion">Contenido</div><div class="outfit-look">Top mostaza · Fondo neutro · Iluminación cálida · Rubor terracota</div></div>
+        </div>
+      </div>
+
+      <!-- Accessories -->
+      <div id="r-accessories" style="display:none" class="report-section">
+        <div class="report-section-label">PRYSM · Accesorios</div>
+        <div class="report-section-title">Tus<br><em>accesorios.</em></div>
+        <div style="margin-top:40px">
+          <div class="report-hero-photo" style="margin-bottom:40px">
+            <img src="./PRYSM_files/acc.jpg" alt="Tus accesorios">
+            <div class="report-hero-photo-label">El detalle perfecto · PRYSM</div>
+          </div>
+          <div class="report-section-label" style="margin-bottom:24px">Metales</div>
+          <div class="report-hero-photo">
+          <img src="./PRYSM_files/hair.jpg" alt="Tu cabello ideal">
+          <div class="report-hero-photo-label">Tu mejor versión · PRYSM</div>
+        </div>
+        <div class="editorial-list">
+            <div class="editorial-item"><div class="editorial-num">✓</div><div><h4>Usar</h4><p>Dorado amarillo, oro rosa, cobre y bronce quemado.</p></div></div>
+            <div class="editorial-item"><div class="editorial-num">×</div><div><h4>Evitar</h4><p>Plata, oro blanco, platino y cualquier metal frío cerca del rostro.</p></div></div>
+          </div>
+          <div class="report-section-label" style="margin-top:48px;margin-bottom:24px">Piedras</div>
+          <div class="report-hero-photo">
+          <img src="./PRYSM_files/hair.jpg" alt="Tu cabello ideal">
+          <div class="report-hero-photo-label">Tu mejor versión · PRYSM</div>
+        </div>
+        <div class="editorial-list">
+            <div class="editorial-item"><div class="editorial-num">✓</div><div><h4>Tus piedras</h4><p>Ámbar, granate, citrino, ojo de tigre, turquesa. Tonos tierra cálidos en joyería.</p></div></div>
+          </div>
+          <div class="report-section-label" style="margin-top:48px;margin-bottom:24px">Lentes</div>
+          <div class="report-hero-photo">
+          <img src="./PRYSM_files/hair.jpg" alt="Tu cabello ideal">
+          <div class="report-hero-photo-label">Tu mejor versión · PRYSM</div>
+        </div>
+        <div class="editorial-list">
+            <div class="editorial-item"><div class="editorial-num">01</div><div><h4>Forma de montura</h4><p>Cat-eye suave, browline o hexagonal. Tus rasgos llevan la estructura.</p></div></div>
+            <div class="editorial-item"><div class="editorial-num">02</div><div><h4>Color de montura</h4><p>Tortoise, tortoise profundo, cobre. Evita negro plano o plata fría.</p></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Plan -->
+      <div id="r-plan" style="display:none" class="report-section">
+        <div class="report-section-label">PRYSM · Plan de transformación</div>
+        <div class="report-section-title">30 días.<br><em>Claridad total.</em></div>
+        <div style="margin-top:48px">
+          <div class="report-section-label" style="margin-bottom:24px">Semana 1 — Auditoría</div>
+          <div class="report-hero-photo">
+          <img src="./PRYSM_files/hair.jpg" alt="Tu cabello ideal">
+          <div class="report-hero-photo-label">Tu mejor versión · PRYSM</div>
+        </div>
+        <div class="editorial-list">
+            <div class="editorial-item"><div class="editorial-num">01–07</div><div><h4>Auditoría del armario</h4><p>Vacía tu armario. Separa en tres montones: guardar, donar, dudar. Prueba las dudas con luz natural.</p></div></div>
+          </div>
+          <div class="report-section-label" style="margin-top:48px;margin-bottom:24px">Semana 2 — Construir</div>
+          <div class="report-hero-photo">
+          <img src="./PRYSM_files/hair.jpg" alt="Tu cabello ideal">
+          <div class="report-hero-photo-label">Tu mejor versión · PRYSM</div>
+        </div>
+        <div class="editorial-list">
+            <div class="editorial-item"><div class="editorial-num">08–14</div><div><h4>Adquirir piezas base</h4><p>Invierte en: blazer borgoña, pantalones oliva, camisa seda marfil, mocasines cognac, pendientes cobre. Calidad sobre cantidad.</p></div></div>
+          </div>
+          <div class="report-section-label" style="margin-top:48px;margin-bottom:24px">Semana 3 — Crear</div>
+          <div class="report-hero-photo">
+          <img src="./PRYSM_files/hair.jpg" alt="Tu cabello ideal">
+          <div class="report-hero-photo-label">Tu mejor versión · PRYSM</div>
+        </div>
+        <div class="editorial-list">
+            <div class="editorial-item"><div class="editorial-num">15–21</div><div><h4>Construir outfits</h4><p>Crea 5 outfits por ocasión usando tu nueva paleta. Fotografía cada uno. Evalúa con tus fotos, no con el espejo.</p></div></div>
+          </div>
+          <div class="report-section-label" style="margin-top:48px;margin-bottom:24px">Semana 4 — Perfeccionar</div>
+          <div class="report-hero-photo">
+          <img src="./PRYSM_files/hair.jpg" alt="Tu cabello ideal">
+          <div class="report-hero-photo-label">Tu mejor versión · PRYSM</div>
+        </div>
+        <div class="editorial-list">
+            <div class="editorial-item"><div class="editorial-num">22–30</div><div><h4>Perfeccionar y compartir</h4><p>Añade 2–3 piezas statement. Reserva una sesión fotográfica profesional. Comparte tu nueva imagen. Domínala.</p></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Download bar -->
+      <div style="height:80px"></div>
+      <div class="report-download">
+        <div>
+          <div class="report-dl-title">PRYSM Report · 60 páginas</div>
+          <div class="report-dl-sub">PDF Magazine · Acceso permanente</div>
+        </div>
+        <div class="report-dl-actions">
+          <button class="report-dl-btn" onclick="app.go(&#39;pdf-preview&#39;)">Vista previa</button>
+          <button class="report-dl-btn primary" onclick="alert(&#39;PDF descargándose…&#39;)">Descargar PDF</button>
+          <button class="report-dl-btn" onclick="app.go(&#39;share&#39;)">Compartir</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- PDF PREVIEW                           -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="screen" data-screen="pdf-preview">
+    <div class="pdf-screen">
+      <div style="position:fixed;top:20px;right:40px;z-index:100;display:flex;gap:12px">
+        <button class="report-dl-btn" onclick="app.go(&#39;report&#39;)" style="background:#000;color:#fff;border-color:#000">← Volver</button>
+        <button class="report-dl-btn primary" onclick="alert(&#39;PDF descargándose…&#39;)">Descargar PDF</button>
+      </div>
+      <div class="pdf-book">
+        <!-- Page 1: Cover -->
+        <div class="pdf-page" style="background:#000;color:#fff">
+          <div class="pdf-page-label">PRYSM Report · 2026</div>
+          <div>
+            <div class="pdf-brand">PRYSM</div>
+            <div class="pdf-station">Otoño<br><em>Cálido</em><br>Profundo.</div>
+            <img class="pdf-photo" src="./PRYSM_files/photo-1531746020798-e6953c6e8e04(1)" alt="Portrait">
+            <div class="pdf-score">9.4<small>PRYSM Score</small></div>
+            <div class="pdf-phrase">"Eres una persona que habla a través de la textura, la profundidad y la intención."</div>
+          </div>
+          <div style="font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:rgba(255,255,255,.2)">
+            PRYSM · Colorimetría · Estilo · Cabello · Accesorios · Outfits · 60 páginas
+          </div>
+        </div>
+        <!-- Page 2: Color -->
+        <div class="pdf-page">
+          <div class="pdf-page-label">Módulo 01 · Colorimetría</div>
+          <div>
+            <div class="pdf-section-title">Tu<br>paleta<br><em>personal.</em></div>
+            <div class="pdf-swatches">
+              <div class="pdf-swatch" style="background:#B5651D"><div class="pdf-swatch-name">Terracota</div></div>
+              <div class="pdf-swatch" style="background:#7A2E2E"><div class="pdf-swatch-name" style="color:rgba(255,255,255,.8)">Borgoña</div></div>
+              <div class="pdf-swatch" style="background:#C9A227"><div class="pdf-swatch-name" style="color:rgba(0,0,0,.5)">Mostaza</div></div>
+              <div class="pdf-swatch" style="background:#6B7A3F"><div class="pdf-swatch-name">Oliva</div></div>
+              <div class="pdf-swatch" style="background:#4A2C1A"><div class="pdf-swatch-name" style="color:rgba(255,255,255,.7)">Chocolate</div></div>
+              <div class="pdf-swatch" style="background:#B87333"><div class="pdf-swatch-name" style="color:rgba(255,255,255,.8)">Cobre</div></div>
+              <div class="pdf-swatch" style="background:#8B7D5B"><div class="pdf-swatch-name" style="color:rgba(255,255,255,.8)">Caqui</div></div>
+              <div class="pdf-swatch" style="background:#F0E4C9"><div class="pdf-swatch-name" style="color:rgba(0,0,0,.4)">Marfil</div></div>
+            </div>
+            <div class="pdf-divider"></div>
+            <div class="pdf-section-title" style="font-size:22px">Tus métricas</div>
+            <div class="pdf-metrics">
+              <div class="pdf-metric"><div class="pdf-metric-label">Subtono</div><div class="pdf-metric-value">Cálido</div></div>
+              <div class="pdf-metric"><div class="pdf-metric-label">Contraste</div><div class="pdf-metric-value">Alto</div></div>
+              <div class="pdf-metric"><div class="pdf-metric-label">Profundidad</div><div class="pdf-metric-value">Profunda</div></div>
+            </div>
+          </div>
+          <div class="pdf-cta-dark">
+            <h3>12 módulos · 60 páginas</h3>
+            <p>Accede al informe completo PRYSM para todas las recomendaciones.</p>
+            <button class="pdf-dl-btn">Descargar informe completo</button>
+          </div>
+        </div>
+        <!-- Page 3: Style -->
+        <div class="pdf-page" style="background:#f8f6f1">
+          <div class="pdf-page-label">Módulo 02 · Estilo</div>
+          <div>
+            <div class="pdf-section-title">Tu arquetipo:<br><em>Dramático + Natural.</em></div>
+            <div class="pdf-divider"></div>
+            <div style="font-size:13px;font-weight:300;line-height:1.8;color:var(--grey-5);max-width:380px">
+              Llevas la estructura con facilidad natural. Tu estilo habla a través de la profundidad, la textura y el contraste intencional — nunca a través del ruido.
+            </div>
+            <div style="margin-top:32px">
+              <div style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:var(--grey-4);margin-bottom:16px">Tu fórmula signature</div>
+              <div style="font-family:var(--serif);font-size:16px;font-style:italic;color:#000;line-height:1.8">
+                Blazer borgoña<br>
+                Pantalones oliva<br>
+                Camisa seda marfil<br>
+                Botines chocolate<br>
+                <em style="color:var(--grey-4)">= Infalible.</em>
+              </div>
+            </div>
+          </div>
+          <div style="font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--grey-4)">
+            PRYSM Report · Valentina · PX-VALE-NTA-2026
+          </div>
+        </div>
+        <!-- Page 4: Hair + Acc -->
+        <div class="pdf-page">
+          <div class="pdf-page-label">Módulos 03 y 05 · Cabello · Joyería</div>
+          <div>
+            <div class="pdf-section-title" style="margin-bottom:48px">Cabello &amp;<br><em>Joyería.</em></div>
+            <div style="margin-bottom:40px">
+              <div style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:var(--grey-4);margin-bottom:12px">Color de cabello</div>
+              <div style="font-family:var(--serif);font-size:22px;color:#000;margin-bottom:8px">Castaño cálido con reflejos cobrizos</div>
+              <div style="font-size:12px;font-weight:300;color:var(--grey-5);line-height:1.6">Añade luminosidad sin competir con tu profundidad. Nunca platino, cenizo o frío.</div>
+            </div>
+            <div style="margin-bottom:40px">
+              <div style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:var(--grey-4);margin-bottom:12px">Metales</div>
+              <div style="font-family:var(--serif);font-size:22px;color:#000">Dorado · Oro rosa · Cobre · Bronce</div>
+              <div style="font-size:12px;font-weight:300;color:var(--grey-5);margin-top:8px">Evitar: Plata, oro blanco, platino.</div>
+            </div>
+            <div>
+              <div style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:var(--grey-4);margin-bottom:12px">Piedras</div>
+              <div style="font-family:var(--serif);font-size:22px;color:#000">Ámbar · Granate · Citrino · Ojo de tigre</div>
+            </div>
+          </div>
+          <div style="font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--grey-4)">
+            PRYSM Report · Página 32–44
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- SHARE                                 -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="screen" data-screen="share">
+    <div class="share-screen">
+      <div class="share-inner">
+        <div class="share-eyebrow">Comparte tu resultado</div>
+        <div class="share-title">Tu<br><em>signatura.</em></div>
+        <div class="share-sub">Tu PRYSM Score y frase personalizada — listos para compartir.</div>
+        <div class="share-card" id="shareCard">
+          <div class="share-card-top">
+            <div class="share-card-brand">PRYSM</div>
+            <div class="share-card-module">Score</div>
+          </div>
+          <div class="share-card-score">9.4<small>PRYSM SCORE</small></div>
+          <div class="share-card-phrase">"Eres una persona que habla a través de la <em>textura</em>."</div>
+          <div class="share-card-bottom">
+            <span id="shareIdDisplay">PX-XXXX-XXXX</span>
+            <span>@prysm.valentina</span>
+          </div>
+        </div>
+        <div class="share-platforms">
+          <div class="share-platform" onclick="app.shareTo(&#39;instagram&#39;)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+            <span>Instagram</span>
+          </div>
+          <div class="share-platform" onclick="app.shareTo(&#39;tiktok&#39;)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
+            <span>TikTok</span>
+          </div>
+          <div class="share-platform" onclick="app.shareTo(&#39;whatsapp&#39;)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"></path></svg>
+            <span>WhatsApp</span>
+          </div>
+          <div class="share-platform" onclick="app.shareTo(&#39;x&#39;)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4l6.5 8L4 20h2l5.5-6.8L16 20h4l-6.8-8.5L20 4h-2l-5.3 6.5L10 4z"></path></svg>
+            <span>X</span>
+          </div>
+          <div class="share-platform" onclick="app.shareTo(&#39;facebook&#39;)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+            <span>Facebook</span>
+          </div>
+          <div class="share-platform" onclick="app.shareTo(&#39;linkedin&#39;)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+            <span>LinkedIn</span>
+          </div>
+        </div>
+        <div class="share-actions">
+          <button class="share-dl" onclick="alert(&#39;Tarjeta descargándose…&#39;)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Descargar imagen
+          </button>
+        </div>
+        <div style="margin-top:32px">
+          <span style="font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(255,255,255,.25);cursor:pointer" onclick="app.go(&#39;report&#39;)">← Volver al informe</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- PROFILE                               -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="screen" data-screen="profile">
+    <div class="profile-screen">
+      <div class="profile-inner">
+        <div class="profile-label">Tu identidad</div>
+        <div class="profile-name" id="profileName">Valentina</div>
+        <div class="profile-handle" id="profileHandle">@prysm.valentina</div>
+        <div class="profile-id">
+          <span style="color:rgba(255,255,255,.25)">PRYSM ID</span>
+          <span id="profileIdDisplay">PX-XXXX-XXXX</span>
+        </div>
+        <div class="profile-stats">
+          <div class="profile-stat"><span class="num">1</span><span class="lbl">Análisis</span></div>
+          <div class="profile-stat"><span class="num">9.4</span><span class="lbl">Score</span></div>
+          <div class="profile-stat"><span class="num">2026</span><span class="lbl">Miembro</span></div>
+        </div>
+        <div style="text-align:center;margin-top:48px">
+          <span style="font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(255,255,255,.25);cursor:pointer" onclick="app.go(&#39;report&#39;)">← Ver informe</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+    <!-- Payment Verification Modal -->
+    <div id="verifyModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;">
+      <div style="background:#fff;border-radius:16px;padding:40px;max-width:400px;width:90%;text-align:center;">
+        <div style="font-family:var(--serif);font-size:22px;margin-bottom:8px;">Verificar pago</div>
+        <div style="font-size:13px;color:#666;margin-bottom:24px;">Ingresa los datos de tu pago en MercadoPago</div>
+        <input id="verifyEmail" type="email" placeholder="Tu email de MercadoPago" style="width:100%;padding:14px 16px;border:1px solid #e0e0de;border-radius:8px;font-size:14px;margin-bottom:12px;font-family:var(--sans);box-sizing:border-box;">
+        <input id="verifyPaymentId" type="text" placeholder="ID de pago (del correo de MercadoPago)" style="width:100%;padding:14px 16px;border:1px solid #e0e0de;border-radius:8px;font-size:14px;margin-bottom:20px;font-family:var(--sans);box-sizing:border-box;">
+        <button onclick="app.confirmPayment()" style="width:100%;padding:16px;background:#000;color:#fff;border:0;border-radius:8px;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;font-family:var(--sans);margin-bottom:12px;">Verificar</button>
+        <button onclick="app.hideVerifyModal()" style="background:transparent;border:0;font-size:12px;color:#999;cursor:pointer;font-family:var(--sans);">Cancelar</button>
+      </div>
+    </div>
+
+</div><!-- #app -->
+
+<script>
+/* ============================================
+   PRYSM APP ENGINE
+   ============================================ */
+window.addEventListener('error', function(e) {
+  if (e.message && (e.message.includes('supabase') || e.message.includes('Failed to fetch'))) {
+    console.warn('Network error suppressed:', e.message);
+    e.preventDefault();
+    return;
+  }
+});
+
+const app = (() => {
+
+  /* State */
+  const state = {
+    current: null,
+    history: [],
+    answers: {},
+    user: {
+      name: '',
+      stage: 0,
+      photoIndex: 0,
+      photos: { front: null, left: null, right: null }
+    },
+    dbRecordId: null
+  };
+
+  /* ── SUPABASE ── */
+  let supabase = null;
+  try {
+    if (window.supabase) {
+      supabase = window.supabase.createClient(
+        'https://zizbijecjdqfnvqwassm.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppemJpamVjamRxZm52cXdhc3NtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2NTQ0OTEsImV4cCI6MjEwMjIzMDQ5MX0.3kpJ9D69BBOJjC-M5G4CJlzx-3qNUUx5IXei-8Gdag0'
+    );
+  } catch(e) { console.warn('Supabase init failed:', e); }
+
+  async function saveAnalysisToDb() {
+    if (!supabase || typeof supabase.from !== "function") return;
+    const a = state.answers;
+    const s = a.skinAnalysis || {};
+    try {
+      const { data } = await supabase.from('analyses').insert({
+        name: state.user.name || a.name || '',
+        email: a.email || '',
+        aspiration: a.aspiration || '',
+        skin_tone: a.skinTone || a.undertone || '',
+        body_type: a.body_type || '',
+        existing_colors: Array.isArray(a.existingColors) ? a.existingColors : [],
+        current_items: Array.isArray(a.closet) ? a.closet : [],
+        budget: a.budget || '',
+        metal: a.metal || '',
+        style: Array.isArray(a.style) ? a.style : [],
+        occasions: Array.isArray(a.occasions) ? a.occasions : [],
+        archetype: a.archetype || '',
+        season: s.season?.name || '',
+        undertone: s.undertone || '',
+        depth: s.depth || '',
+        skin_color: s.baseColor || '',
+        palette: s.palette || [],
+        created_at: new Date().toISOString()
+      });
+      if (data?.[0]?.id) state.dbRecordId = data[0].id;
+    } catch(e) { console.warn('Save failed:', e); }
+  }
+
+  async function verifyPaymentByEmail(email, paymentId) {
+    const token = 'APP_USR-6113525732865537-081319-f7ea0e657fea52bd6853d7b134f4e79e-3615190094';
+    const res = await fetch('https://api.mercadopago.com/v1/payments/' + paymentId, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (!res.ok) throw new Error('Pago no encontrado');
+    const data = await res.json();
+    if (data.status !== 'approved') throw new Error('Pago no aprobado');
+    return data;
+  }
+
+
+  /* Stage labels */
+  const STAGE_LABELS = {
+    stage1: 'Conociéndote...',
+    stage2: 'Descubriendo tu estilo...',
+    stage3: 'Preparando tu análisis...',
+    stage4: 'Perfilando tu imagen...',
+    analyzing: 'Analizando...'
+  };
+
+  /* Progress */
+  function updateProgress(pct) {
+    const fill = document.getElementById('progressFill');
+    if (fill) fill.style.transform = `scaleX(${pct})`;
+  }
+
+  /* Stage label */
+  function updateStageLabel(label) {
+    const el = document.getElementById('stageLabel');
+    if (el) el.textContent = label;
+  }
+
+  /* Navigation */
+  function go(screen, addHistory = true) {
+    // Ignore if already on this screen
+    if (state.current === screen) return;
+
+    const screens = document.querySelectorAll('.screen');
+    screens.forEach(s => {
+      if (s.dataset.screen === screen) {
+        s.classList.add('active');
+        setTimeout(() => s.classList.remove('exit'), 10);
+      } else {
+        s.classList.remove('active');
+      }
+    });
+
+    state.current = screen;
+    if (addHistory) state.history.push(screen);
+    window.scrollTo(0, 0);
+
+    // Back button
+    const back = document.getElementById('navBack');
+    if (back) back.style.display = screen === 'landing' ? 'none' : 'flex';
+
+    // Nav links
+    const resultsLink = document.getElementById('navResultsLink');
+    const profileLink = document.getElementById('navProfileLink');
+    if (resultsLink) {
+      resultsLink.style.opacity = (screen === 'report') ? '1' : '';
+      resultsLink.style.pointerEvents = (screen === 'report') ? 'auto' : '';
+    }
+    if (profileLink) {
+      profileLink.style.opacity = (screen === 'profile') ? '1' : '';
+      profileLink.style.pointerEvents = (screen === 'profile') ? 'auto' : '';
+    }
+
+    // Stage label
+    updateStageLabel(STAGE_LABELS[screen] || '');
+
+    // Auto-init stages
+    if (screen === 'stage1') setTimeout(() => loadStage1Card(0), 80);
+    if (screen === 'stage2') setTimeout(() => loadStage2Card(0), 80);
+    if (screen === 'stage3') setTimeout(() => loadStage3Card(0), 80);
+    if (screen === 'stage4') setTimeout(() => loadStage4Card(0), 80);
+
+    // Update report covers
+    if (screen === 'result-preview' || screen === 'report') {
+      setTimeout(updateReportCovers, 100);
+    }
+  }
+
+  function updateReportCovers() {
+    const hasPhoto = !!state.user.photos?.front;
+    const photoWrapper = document.getElementById('rpPhotoWrapper');
+    const fallback = document.getElementById('rpEditorialFallback');
+    const nameDisplay = document.getElementById('rpFallbackName');
+    if (photoWrapper && fallback) {
+      if (hasPhoto) {
+        photoWrapper.style.display = 'block';
+        fallback.style.display = 'none';
+        const rpImg = document.getElementById('rpPhoto');
+        if (rpImg) rpImg.src = state.user.photos.front;
+      } else {
+        photoWrapper.style.display = 'none';
+        fallback.style.display = 'flex';
+        if (nameDisplay) nameDisplay.textContent = state.user.name || 'Tu informe';
+      }
+    }
+    // Also update report hero
+    const rhWrapper = document.getElementById('rhPhotoWrapper');
+    const rhFallback = document.getElementById('rhEditorialFallback');
+    const rhFallbackName = document.getElementById('rhFallbackName');
+    if (rhWrapper && rhFallback) {
+      if (hasPhoto) {
+        rhWrapper.style.display = 'block';
+        rhFallback.style.display = 'none';
+        const rhImg = document.getElementById('reportHeroImg');
+        if (rhImg && state.user.photos.front) rhImg.src = state.user.photos.front;
+      } else {
+        rhWrapper.style.display = 'none';
+        rhFallback.style.display = 'flex';
+        if (rhFallbackName) rhFallbackName.textContent = state.user.name || 'Tu informe';
+      }
+    }
+  }
+
+  function back() {
+    if (state.history.length > 1) {
+      state.history.pop();
+      go(state.history[state.history.length - 1], false);
+    } else {
+      go('landing', false);
+    }
+  }
+
+  /* ── CONFETTI BURST ── */
+  function confettiBurst(x, y) {
+    const emojis = ['✨', '✦', '◈', '◇', '✧', '·'];
+    for (let i = 0; i < 8; i++) {
+      const p = document.createElement('div');
+      p.className = 'confetti-particle';
+      p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      p.style.left = (x + (Math.random() - 0.5) * 80) + 'px';
+      p.style.top = y + 'px';
+      p.style.animationDelay = (i * 60) + 'ms';
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), 1500);
+    }
+  }
+
+  /* ── CARD RENDERER ── */
+  function renderCard({ eyebrow, title, subtitle, type, options, key, required = true, _adaptiveBadge }, containerId, onAnswer) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    // Remove any previous delegated listener on this container
+    container.removeEventListener('click', cardClickHandler);
+
+    const adaptiveBadgeHtml = _adaptiveBadge
+      ? `<div class="adaptive-card-badge">${_adaptiveBadge}</div>`
+      : '';
+
+    let html = `
+      <div class="card-inner">
+        <div class="card-question">
+          <div class="card-eyebrow">${eyebrow}</div>
+          ${adaptiveBadgeHtml}
+          <div class="card-title">${title}</div>
+          ${subtitle ? `<div class="card-subtitle">${subtitle}</div>` : ''}
+        </div>`;
+
+    if (type === 'image') {
+      const gridClass = options.length === 5 ? 'image-grid image-grid-5'
+        : options.length === 6 ? 'image-grid image-grid-6'
+        : options.length === 8 ? 'image-grid image-grid-8'
+        : 'image-grid';
+      html += `<div class="${gridClass}">`;
+      options.forEach((opt, i) => {
+        html += `
+          <div class="image-choice" data-action="selectOption" data-value="${opt.value}">
+            <img src="${opt.image}" alt="${opt.label}" loading="lazy">
+            <div class="image-choice-label"><span>${opt.label}</span></div>
+            <div class="image-choice-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+          </div>`;
+      });
+      html += `</div>`;
+    } else if (type === 'color') {
+      html += `<div class="swatch-grid">`;
+      options.forEach(opt => {
+        html += `<div class="swatch-btn" data-action="selectSwatch" data-value="${opt.value}" style="background:${opt.color}"></div>`;
+      });
+      html += `</div>`;
+    } else if (type === 'color-swatch') {
+      html += `<div class="color-swatch-grid" id="swatchGrid">`;
+      options.forEach(opt => {
+        const isSpecial = opt.value === 'not_sure' || opt.value === 'all';
+        html += `
+          <div class="color-swatch-item ${isSpecial ? 'color-swatch-special' : ''}" data-action="selectColorSwatch" data-value="${opt.value}">
+            ${!isSpecial ? `<div class="color-swatch-circle" style="background:${opt.hex}${opt.gradient ? ';background:' + opt.gradient + ';' : ''}"></div>` : ''}
+            <div class="color-swatch-label">${opt.label}</div>
+          </div>`;
+      });
+      html += `</div>`;
+    } else if (type === 'chip') {
+      html += `<div class="chip-grid">`;
+      options.forEach(opt => {
+        html += `<div class="chip" data-action="selectChip" data-value="${opt.value}">${opt.label}</div>`;
+      });
+      html += `</div>`;
+    } else if (type === 'text') {
+      html += `
+        <div class="text-input-wrap">
+          <input type="text" class="text-input" id="textInput" placeholder="${options.placeholder || ''}" maxlength="40" autocomplete="off">
+          <div class="text-input-label">${options.label || ''}</div>
+        </div>`;
+    } else if (type === 'list') {
+      html += `<div class="choice-list">`;
+      options.forEach((opt, i) => {
+        html += `
+          <button class="choice-item" data-action="selectChoice" data-value="${opt.value}">
+            <span class="choice-key">${String.fromCharCode(65 + i)}</span>
+            <span class="choice-text">${opt.label}</span>
+            <div class="choice-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+          </button>`;
+      });
+      html += `</div>`;
+    } else if (type === 'multi-list') {
+      html += `<div class="choice-list">`;
+      options.forEach((opt, i) => {
+        html += `
+          <button class="choice-item" data-action="toggleMultiChoice" data-value="${opt.value}">
+            <span class="choice-key">${String.fromCharCode(65 + i)}</span>
+            <span class="choice-text">${opt.label}</span>
+            <div class="choice-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+          </button>`;
+      });
+      html += `</div>`;
+    }
+
+    html += `
+        <div class="continue-row">
+          <button class="continue-btn" id="cardContinue" type="button" onclick="confirmCard('${key}', ${required})">
+            Continuar
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>`;
+
+    container.innerHTML = html;
+    // Store card key in a global so delegated handlers can find it even after innerHTML replace
+    window._prysmCardKey = key;
+    window._prysmCardRequired = required;
+
+    // Delegated click handler for swatch/card interactions
+    container.addEventListener('click', cardClickHandler);
+
+    // Text input handler
+    const textInput = document.getElementById('textInput');
+    if (textInput) {
+      textInput.focus();
+      textInput.addEventListener('input', () => {
+        const btn = document.getElementById('cardContinue');
+        if (textInput.value.trim()) {
+          btn.classList.add('ready');
+          state.answers[key] = textInput.value.trim();
+        } else {
+          btn.classList.remove('ready');
+        }
+      });
+      if (key === 'name' && state.user.name) {
+        textInput.value = state.user.name;
+        state.answers[key] = state.user.name;
+        setTimeout(() => {
+          const btn = document.getElementById('cardContinue');
+          if (btn) btn.classList.add('ready');
+        }, 100);
+      }
+    }
+
+    // Always pre-enable for color-swatch (required: false)
+    if (type === 'color-swatch') {
+      const btn2 = document.getElementById('cardContinue');
+      if (btn2) btn2.classList.add('ready');
+    }
+  }
+
+  // Delegated click handler for all card interactions
+  function cardClickHandler(e) {
+    console.log('cardClick', e.target.tagName, e.target.className, e.target.dataset?.action);
+    const el = e.target.closest('[data-action]');
+    if (!el) return;
+    const action = el.dataset.action;
+    const value = el.dataset.value;
+    const key = window._prysmCardKey;
+    if (!key) return;
+
+    if (action === 'selectOption') selectOption(el, key, value);
+    else if (action === 'selectSwatch') selectSwatch(el, key, value);
+    else if (action === 'selectColorSwatch') selectColorSwatch(el, key, value);
+    else if (action === 'selectChip') selectChip(el, key, value);
+    else if (action === 'selectChoice') selectChoice(el, key, value);
+    else if (action === 'toggleMultiChoice') toggleMultiChoice(el, key, value);
+  }
+
+  /* Selection handlers */
+  function selectOption(el, key, value) {
+    const parent = el.parentElement;
+    parent.querySelectorAll('.image-choice').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state.answers[key] = value;
+    // Immediately enable the continue button — no delay
+    const btn = document.getElementById('cardContinue');
+    if (btn) {
+      btn.classList.add('ready');
+      btn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    // Confetti burst at center of selected image
+    const rect = el.getBoundingClientRect();
+    confettiBurst(rect.left + rect.width / 2, rect.top + rect.height / 2);
+  }
+
+  function selectSwatch(el, key, value) {
+    const wasSelected = el.classList.contains('selected');
+    document.querySelectorAll('.swatch-btn').forEach(s => s.classList.remove('selected'));
+    if (!wasSelected) {
+      el.classList.add('selected');
+      state.answers[key] = value;
+    } else {
+      delete state.answers[key];
+    }
+    const btn = document.getElementById('cardContinue');
+    if (btn) btn.classList.toggle('ready', !wasSelected);
+    if (!wasSelected) {
+      const rect = el.getBoundingClientRect();
+      confettiBurst(rect.left + 26, rect.top + 26);
+    }
+  }
+
+  function selectChip(el, key, value) {
+    el.classList.toggle('selected');
+    if (!state.answers[key]) state.answers[key] = [];
+    const arr = state.answers[key];
+    const idx = arr.indexOf(value);
+    if (idx > -1) arr.splice(idx, 1);
+    else arr.push(value);
+    const btn = document.getElementById('cardContinue');
+    if (btn) btn.classList.toggle('ready', arr.length > 0);
+    if (el.classList.contains('selected')) {
+      const rect = el.getBoundingClientRect();
+      confettiBurst(rect.left + rect.width / 2, rect.top);
+    }
+  }
+
+  function selectChoice(el, key, value) {
+    const parent = el.parentElement;
+    parent.querySelectorAll('.choice-item').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state.answers[key] = value;
+    const btn = document.getElementById('cardContinue');
+    if (btn) btn.classList.add('ready');
+    const rect = el.getBoundingClientRect();
+    confettiBurst(rect.left + rect.width / 2, rect.top + rect.height / 2);
+  }
+
+  function selectColorSwatch(el, key, value) {
+    console.log('selectColorSwatch', { el: el.className, key, value });
+    // el is the .color-swatch-item div
+    const grid = el.closest('.color-swatch-grid');
+    const isSpecial = value === 'not_sure' || value === 'all';
+    if (isSpecial) {
+      // Deselect all in THIS grid only
+      grid.querySelectorAll('.color-swatch-item').forEach(s => s.classList.remove('selected'));
+      el.classList.add('selected');
+      state.answers[key] = [value];
+    } else {
+      // Deselect special options in THIS grid only
+      grid.querySelectorAll('.color-swatch-special').forEach(s => s.classList.remove('selected'));
+      // Toggle this swatch
+      el.classList.toggle('selected');
+      if (!state.answers[key]) state.answers[key] = [];
+      const arr = state.answers[key].filter(v => v !== 'not_sure' && v !== 'all');
+      if (el.classList.contains('selected')) {
+        if (!arr.includes(value)) arr.push(value);
+      } else {
+        const idx = arr.indexOf(value);
+        if (idx > -1) arr.splice(idx, 1);
+      }
+      state.answers[key] = arr;
+    }
+    const btn = document.getElementById('cardContinue');
+    const hasSelection = state.answers[key] && state.answers[key].length > 0;
+    if (btn) {
+      btn.classList.toggle('ready', hasSelection);
+      requestAnimationFrame(() => btn.scrollIntoView({ behavior: 'instant', block: 'center' }));
+    }
+    if (el.classList.contains('selected')) {
+      const rect = el.getBoundingClientRect();
+      confettiBurst(rect.left + rect.width / 2, rect.top + rect.height / 2);
+    }
+  }
+
+  function toggleMultiChoice(el, key, value) {
+    el.classList.toggle('selected');
+    if (!state.answers[key]) state.answers[key] = [];
+    const arr = state.answers[key];
+    const idx = arr.indexOf(value);
+    if (idx > -1) arr.splice(idx, 1);
+    else arr.push(value);
+    const btn = document.getElementById('cardContinue');
+    if (btn) btn.classList.toggle('ready', arr.length > 0);
+    if (el.classList.contains('selected')) {
+      const rect = el.getBoundingClientRect();
+      confettiBurst(rect.left + 30, rect.top + rect.height / 2);
+    }
+  }
+
+  function confirmCard(key, required) {
+    console.log('confirmCard', { key, required, val: state.answers[key], current: state.current, s2i: stage2Index });
+    const val = state.answers[key];
+    if (required && (!val || (Array.isArray(val) && val.length === 0))) return;
+    advanceStage();
+  }
+
+  /* ── STAGE 1 CARDS ── */
+  const stage1Cards = [
+    {
+      eyebrow: 'Conociéndote...',
+      title: '¿Cómo quieres<br><em>verte?</em>',
+      subtitle: 'Selecciona la imagen que mejor representa tu objetivo.',
+      type: 'image',
+      key: 'aspiration',
+      options: [
+        // ELEGANT: evening gown, formal, Vogue-style, refined luxury
+        { value: 'elegant', label: 'Elegancia', image: 'https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=800&q=80&auto=format&fit=crop' },
+        // PROFESSIONAL: woman in corporate blazer, executive business attire
+        { value: 'professional', label: 'Profesional', image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=80&auto=format&fit=crop' },
+        // NATURAL: woman in linen, earth tones, organic relaxed outfit
+        { value: 'natural', label: 'Natural', image: 'https://images.unsplash.com/photo-1492106087820-71f1a00d2b11?w=800&q=80&auto=format&fit=crop' },
+        // IMPACTFUL: editorial, avant-garde, striking, fashion-forward
+        { value: 'impactful', label: 'Impacto', image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=800&q=80&auto=format&fit=crop' }
+      ]
+    },
+    {
+      eyebrow: 'Conociéndote...',
+      title: '¿Qué estilo <br><em>te inspira?</em>',
+      subtitle: 'Elige el que más te atrae.',
+      type: 'image',
+      key: 'style_inspiration',
+      options: [
+        { value: 'minimalist', label: 'Minimalista', image: 'img/style/minimalista.jpg' },
+        { value: 'classic', label: 'Clásico', image: 'img/style/clasico.jpg' },
+        { value: 'modern', label: 'Moderno', image: 'img/style/moderno.jpg' },
+        { value: 'casual', label: 'Casual', image: 'img/style/casual.jpg' },
+        { value: 'luxury', label: 'Luxury', image: 'img/style/luxury.jpg' },
+        { value: 'sophisticated', label: 'Sofisticado', image: 'img/style/sofisticado.jpg' },
+        { value: 'smartchic', label: 'Smart Chic', image: 'img/style/smartchic.jpg' },
+        { value: 'boho', label: 'Boho', image: 'img/style/boho.jpg' }
+      ]
+    },
+    {
+      eyebrow: 'Conociéndote...',
+      title: '¿Dónde quieres<br><em>destacar?</em>',
+      subtitle: 'Selecciona todos los que apliquen.',
+      type: 'chip',
+      key: 'occasions',
+      options: [
+        { value: 'work', label: 'Trabajo' },
+        { value: 'dates', label: 'Citas' },
+        { value: 'social', label: 'Redes sociales' },
+        { value: 'events', label: 'Eventos' },
+        { value: 'daily', label: 'Vida diaria' },
+        { value: 'content', label: 'Contenido' }
+      ]
+    },
+    {
+      eyebrow: 'Conociéndote...',
+      title: '¿Cómo te <br><em>llamas?</em>',
+      subtitle: 'Aparecerá en tu informe personalizado.',
+      type: 'text',
+      key: 'name',
+      options: { placeholder: 'Tu nombre', label: 'Como prefieras ser llamada' }
+    }
+  ];
+
+  let stage1Index = 0;
+  let stage2Index = 0;
+  let stage4Index = 0;
+
+  function loadStage1Card(idx) {
+    if (idx >= stage1Cards.length) { go('stage2'); return; }
+    stage1Index = idx;
+    renderCard(stage1Cards[idx], 'stage1Cards');
+    updateProgress(0.05 + (idx / stage1Cards.length) * 0.15);
+  }
+
+  function advanceStage() {
+    // Stage 1 → Stage 2 (fashion preference)
+    if (state.current === 'stage1') {
+      if (stage1Index === stage1Cards.length - 1) {
+        if (state.answers.name) {
+          state.user.name = state.answers.name;
+          updateNameDisplays(state.answers.name);
+        }
+        go('stage2');
+        setTimeout(() => loadStage2Card(0), 100);
+        return;
+      }
+      loadStage1Card(stage1Index + 1);
+    }
+    // Stage 2 → Stage 3 (fashion pref → style)
+    else if (state.current === 'stage2') {
+      if (stage2Index >= stage2Cards.length) {
+        go('stage3');
+        setTimeout(() => loadStage3Card(0), 100);
+        return;
+      }
+      loadStage2Card(stage2Index + 1);
+    }
+    // Stage 4: adaptive cards
+    else if (state.current === 'stage4') {
+      if (stage4Index >= adaptiveStage4Cards.length - 1) {
+        startAnalysis();
+        return;
+      }
+      loadStage4Card(stage4Index + 1);
+    }
+  }
+
+  /* ── STAGE 2 CARDS ── */
+  const stage2Cards = [
+    {
+      eyebrow: 'Conociéndote...',
+      title: '¿Cómo es<br><em>tu silueta?</em>',
+      subtitle: 'Nos ayuda a dar recomendaciones precisas de cuts y proporciones.',
+      type: 'chip',
+      key: 'body_type',
+      options: [
+        { value: 'delgada', label: 'Delgada / Esbelta' },
+        { value: 'curvy', label: 'Curvy / Rellena' },
+        { value: 'atletica', label: 'Atlética' },
+        { value: 'petite', label: 'Petite' }
+      ]
+    },
+    {
+      eyebrow: 'Descubriendo tu estilo...',
+      title: '¿Qué colores<br><em>usas más?</em>',
+      subtitle: 'Selecciona todos los que aparezcan en tu armario.',
+      type: 'color-swatch',
+      key: 'current_colors',
+      required: false,
+      options: [
+        { value: 'negro',      label: 'Negro',      hex: '#1a1a1a' },
+        { value: 'blanco',     label: 'Blanco',     hex: '#f5f5f5' },
+        { value: 'gris',       label: 'Gris',       hex: '#9e9e9e' },
+        { value: 'beige',      label: 'Beige',      hex: '#c9b99a' },
+        { value: 'cafe',       label: 'Café',       hex: '#6f4e37' },
+        { value: 'azul',       label: 'Azul',       hex: '#2c4a7c' },
+        { value: 'verde',      label: 'Verde',      hex: '#4a6741' },
+        { value: 'rojo',       label: 'Rojo',       hex: '#b83a3a' },
+        { value: 'rosa',       label: 'Rosa',       hex: '#c77d8e' },
+        { value: 'morado',     label: 'Morado',     hex: '#5c4a72' },
+        { value: 'amarillo',   label: 'Amarillo',   hex: '#d4a017' },
+        { value: 'naranja',    label: 'Naranja',    hex: '#c9622f' },
+        { value: 'not_sure',   label: 'No estoy segura', hex: '' },
+        { value: 'all',        label: 'Uso de todo',  hex: '' }
+      ]
+    },
+    {
+      eyebrow: 'Descubriendo tu estilo...',
+      title: '¿Qué tipo de<br><em>prendas</em> llevas?',
+      subtitle: 'Las que más repites.',
+      type: 'chip',
+      key: 'current_items',
+      options: [
+        { value: 'blazer',   label: 'Blazers' },
+        { value: 'denim',    label: 'Denim' },
+        { value: 'dresses',  label: 'Vestidos' },
+        { value: 'knits',    label: 'Punto' },
+        { value: 'tailoring',label: 'Sastrería' },
+        { value: 'lounge',   label: 'Casual' },
+        { value: 'athletic', label: 'Deportivo' },
+        { value: 'silk',     label: 'Seda' }
+      ]
+    },
+    {
+      eyebrow: 'Descubriendo tu estilo...',
+      title: '¿Qué accessories<br><em>usas?</em>',
+      subtitle: null,
+      type: 'chip',
+      key: 'accessories',
+      options: [
+        { value: 'watch',      label: 'Reloj' },
+        { value: 'jewelry',    label: 'Joyería' },
+        { value: 'bag',        label: 'Bolsos' },
+        { value: 'scarf',      label: 'Bufandas' },
+        { value: 'sunglasses', label: 'Gafas' },
+        { value: 'belt',       label: 'Cinturones' },
+        { value: 'hat',        label: 'Sombreros' },
+        { value: 'none',       label: 'Ninguno' }
+      ]
+    },
+    {
+      eyebrow: 'Descubriendo tu estilo...',
+      title: '¿Cuál es tu<br><em>presupuesto</em> mensual?',
+      subtitle: 'Nos ayuda a calibrar las recomendaciones.',
+      type: 'list',
+      key: 'budget',
+      options: [
+        { value: 'under2000', label: 'Menos de $2,000 MXN' },
+        { value: '2000-5000', label: '$2,000 – $5,000 MXN' },
+        { value: '5000-12000', label: '$5,000 – $12,000 MXN' },
+        { value: 'over12000', label: 'Más de $12,000 MXN' }
+      ]
+    }
+  ]
+
+  function loadStage2Card(idx) {
+    // Fashion preference card removed (women-only app)
+    // Card index 0 in stage2Cards maps to style question 1, etc.
+    if (idx >= stage2Cards.length) {
+      go('stage3');
+      setTimeout(() => loadStage3Card(0), 100);
+      return;
+    }
+    stage2Index = idx;
+    renderCard(stage2Cards[idx], 'stage2Cards');
+    updateProgress(0.2 + (idx / stage2Cards.length) * 0.2);
+  }
+
+  /* ── STAGE 3: PHOTOS ── */
+  const PHOTO_STEPS = [
+    { key: 'front', label: '01 / 03', title: 'Tu foto<br><em>frontal.</em>', sub: 'Expresión neutral. Luz natural. Cabello visible.' },
+    { key: 'left',  label: '02 / 03', title: 'Tu foto<br><em>perfil izquierdo.</em>', sub: 'Gira 90° a la izquierda. Muestra tu perfil completo.' },
+    { key: 'right', label: '03 / 03', title: 'Tu foto<br><em>perfil derecho.</em>', sub: 'Gira 90° a la derecha. Completa tu sesión.' }
+  ];
+  let stage3Index = 0;
+
+  function loadStage3Card(idx) {
+    // idx 0 = photo guide intro
+    if (idx === 0) {
+      stage3Index = 0;
+      document.getElementById('stage3Question').innerHTML = `
+        <div class="card-eyebrow">${STAGE_LABELS.stage3}</div>
+        <div class="card-title">Tus<br><em>fotografías.</em></div>
+        <div class="card-subtitle">Tres fotos. Pocos segundos.<br>La precisión del análisis depende de esto.</div>`;
+      const content = document.getElementById('stage3Content');
+      content.innerHTML = `
+        <div class="photo-guide-preview">
+          <div class="photo-guide-mini-grid">
+            <div class="photo-guide-mini-card">
+              <div class="photo-guide-mini-icon">☀</div>
+              <div class="photo-guide-mini-title">Luz natural frontal</div>
+              <div class="photo-guide-mini-desc">Ventana o exterior en día nublado. Sin contraluz.</div>
+            </div>
+            <div class="photo-guide-mini-card">
+              <div class="photo-guide-mini-icon">◉</div>
+              <div class="photo-guide-mini-title">Rostro centrado</div>
+              <div class="photo-guide-mini-desc">Ocupa el 60–80% del encadre. Expresión neutral.</div>
+            </div>
+            <div class="photo-guide-mini-card">
+              <div class="photo-guide-mini-icon">⊘</div>
+              <div class="photo-guide-mini-title">Sin filtros</div>
+              <div class="photo-guide-mini-desc">Cámara sin Beauty Mode. Tu color real de piel.</div>
+            </div>
+          </div>
+          <div class="photo-guide-open" onclick="app.showPhotoGuide()">
+            <span>Ver guía completa</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </div>
+        </div>
+        <div class="continue-row" style="margin-top:32px">
+          <button class="continue-btn ready" onclick="window.app.advanceStage3()">
+            Comenzar
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </button>
+        </div>`;
+      updateProgress(0.4);
+      return;
+    }
+
+    const photoIdx = idx - 1; // offset by 1 for guide
+    if (photoIdx >= PHOTO_STEPS.length) { go('stage4'); setTimeout(() => loadStage4Card(0), 100); return; }
+    stage3Index = idx;
+    const photo = PHOTO_STEPS[photoIdx];
+    document.getElementById('stage3Question').innerHTML = `
+      <div class="card-eyebrow">${photo.label} · ${STAGE_LABELS.stage3}</div>
+      <div class="card-title">${photo.title}</div>
+      <div class="card-subtitle">${photo.sub}</div>
+      <div class="photo-tip-badge">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        Usa la guía si no estás segura
+      </div>`;
+
+    const content = document.getElementById('stage3Content');
+    content.innerHTML = `
+      <label class="photo-drop" id="photoDrop${photoIdx}">
+        <input type="file" accept="image/*" onchange="app.handlePhoto(event, '${photo.key}')">
+        <div class="photo-drop-icon">↑</div>
+        <div class="photo-drop-title">Sube tu foto</div>
+        <div class="photo-drop-sub">o toca para seleccionar</div>
+      </label>
+      <div class="photo-preview" id="photoPreview${photoIdx}">
+        <img id="photoImg${photo.key}" src="" alt="Photo">
+        <div class="photo-validated">Validada</div>
+        <div class="photo-remove" onclick="app.removePhoto('${photo.key}', ${photoIdx})">Eliminar</div>
+      </div>
+      <div class="photo-guide-link" onclick="app.showPhotoGuide()" style="margin-top:16px">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        Guía para tomar buenas fotos
+      </div>`;
+
+    document.getElementById('stage3Continue').classList.remove('ready');
+    updateProgress(0.4 + (photoIdx / PHOTO_STEPS.length) * 0.15);
+  }
+
+  function advanceStage3() {
+    loadStage3Card(stage3Index + 1);
+  }
+
+  /* ── PHOTO VALIDATION (AI simulation) ── */
+  function validatePhoto(base64) {
+    // Simulate AI photo analysis checks
+    const checks = [
+      { id: 'face',    label: 'Rostro detectado',          pass: true },
+      { id: 'light',  label: 'Iluminación adecuada',      pass: Math.random() > 0.05 },
+      { id: 'blur',   label: 'Nitidez correcta',          pass: Math.random() > 0.03 },
+      { id: 'filter', label: 'Sin filtros detectados',   pass: Math.random() > 0.08 },
+      { id: 'glasses',label: 'Rostro despejado',          pass: Math.random() > 0.06 },
+      { id: 'frame',  label: 'Encuadre correcto',         pass: Math.random() > 0.04 },
+      { id: 'hair',   label: 'Cabello visible',           pass: Math.random() > 0.1  }
+    ];
+    const failed = checks.filter(c => !c.pass);
+    if (failed.length === 0) {
+      return { valid: true, message: 'Tu rostro ha sido detectado correctamente.', sub: 'Listo para el análisis de colorimetría.' };
+    }
+    const errorMap = {
+      light:   { msg: 'La iluminación es insuficiente.', sub: 'Busca luz natural frente a una ventana o al aire libre. Evita contraluz y sombras duras sobre el rostro.' },
+      blur:    { msg: 'La imagen parece estar desenfocada.', sub: 'Mantén el teléfono estable y asegúrate de que tu rostro sea la zona más nítida de la foto.' },
+      filter:  { msg: 'Parece que la foto tiene un filtro.', sub: 'Usa la cámara sin retoques. Los filtros interfieren con el análisis de color real de tu piel.' },
+      glasses: { msg: 'Tu rostro está parcialmente cubierto.', sub: 'Retira lentes de sol o gafas de sol. Necesitamos ver tus ojos y el contorno de tu cara.' },
+      frame:   { msg: 'Tu rostro está demasiado lejos.', sub: 'Acércate a la cámara hasta que tu rostro ocupe el 60–80% del encuadre.' },
+      face:    { msg: 'No pudimos detectar tu rostro.', sub: 'Asegúrate de que tu cara esté completamente visible y mirando directamente a la cámara.' },
+      hair:    { msg: 'Tu cabello cubre parte del rostro.', sub: 'Recoge o aparta el cabello para que cuello, mandíbula y cejas sean claramente visibles.' }
+    };
+    const err = errorMap[failed[0].id] || { msg: 'No pudimos analizar correctamente tu rostro.', sub: 'Intenta de nuevo con mejor iluminación y encuadre.' };
+    return { valid: false, message: err.msg, sub: err.sub, failedCount: failed.length };
+  }
+
+  function showValidationOverlay(base64, photoKey, callback) {
+    // Remove any existing overlay
+    const existing = document.getElementById('photoValidationOverlay');
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'photoValidationOverlay';
+    overlay.className = 'photo-validation-overlay';
+    overlay.innerHTML = `
+      <div class="photo-validation-icon">
+        <div class="photo-validation-spinner"></div>
+      </div>
+      <div class="photo-validation-text">Analizando tu fotografía...</div>`;
+    document.body.appendChild(overlay);
+
+    // Simulate AI processing time (1.5–3s)
+    const delay = 1500 + Math.random() * 1500;
+    setTimeout(() => {
+      const result = validatePhoto(base64);
+      overlay.innerHTML = '';
+      overlay.className = `photo-validation-overlay photo-validation-result ${result.valid ? 'success' : 'error'}`;
+      if (result.valid) {
+        overlay.innerHTML = `
+          <div class="photo-validation-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#5cc87a" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="photo-validation-msg">${result.message}</div>
+          <div class="photo-validation-sub">${result.sub}</div>
+          <button class="photo-validation-ok" onclick="document.getElementById('photoValidationOverlay').remove();(${callback})(true)">Continuar</button>`;
+      } else {
+        overlay.innerHTML = `
+          <div class="photo-validation-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#e07060" stroke-width="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </div>
+          <div class="photo-validation-msg">${result.message}</div>
+          <div class="photo-validation-sub">${result.sub}</div>
+          <button class="photo-validation-retry" onclick="document.getElementById('photoValidationOverlay').remove()">Intentar de nuevo</button>`;
+      }
+    }, delay);
+  }
+
+  /* ── PHOTO GUIDE ── */
+  function showPhotoGuide() {
+    const overlay = document.createElement('div');
+    overlay.id = 'photoGuideOverlay';
+    overlay.className = 'photo-guide-overlay';
+    overlay.innerHTML = `
+      <div class="photo-guide-close" onclick="document.getElementById('photoGuideOverlay').remove()">Cerrar</div>
+      <div class="photo-guide-title">Cómo tomar<br><em>tus fotografías</em></div>
+      <div class="photo-guide-sub">Tres fotos. Pocos segundos. La precisión del análisis depende de esto.</div>
+
+      <div class="photo-guide-grid">
+        <div class="photo-guide-card good">
+          <div class="photo-guide-icon">☀</div>
+          <div class="photo-guide-card-label">✓ Iluminación correcta</div>
+          <div class="photo-guide-card-title">Luz natural, frontal</div>
+          <div class="photo-guide-card-tip">Párate frente a una ventana o al aire libre en un día nublado. La luz debe iluminar tu rostro de frente, no desde atrás.</div>
+        </div>
+        <div class="photo-guide-card bad">
+          <div class="photo-guide-icon">☒</div>
+          <div class="photo-guide-card-label">✗ Evitar</div>
+          <div class="photo-guide-card-title">Contraluz y sombras</div>
+          <div class="photo-guide-card-tip">Si tu rostro aparece oscuro con fondo brillante, o con sombras duras sobre los ojos, la foto no servirá.</div>
+        </div>
+        <div class="photo-guide-card good">
+          <div class="photo-guide-icon">◉</div>
+          <div class="photo-guide-card-label">✓ Encuadre correcto</div>
+          <div class="photo-guide-card-title">Rostro al centro</div>
+          <div class="photo-guide-card-tip">Tu cara debe ocupar el 60–80% de la imagen. Ni muy lejos, ni muy cerca. Expresión neutral, ojos abiertos.</div>
+        </div>
+        <div class="photo-guide-card bad">
+          <div class="photo-guide-icon">⊘</div>
+          <div class="photo-guide-card-label">✗ Evitar</div>
+          <div class="photo-guide-card-title">Filtros y edición</div>
+          <div class="photo-guide-card-tip">Usa la cámara sin Beauty Mode, sin filtros de Instagram, sin retoques. Tu color de piel real es lo que necesitamos analizar.</div>
+        </div>
+      </div>
+
+      <div class="photo-guide-examples">
+        <div class="photo-guide-example-title">Ejemplos visuales</div>
+        <div class="photo-guide-example-row">
+          <div class="photo-guide-example-item good">
+            <img class="photo-guide-example-img" src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=240&q=80&auto=format&fit=crop&crop=face" alt="good">
+            <div class="photo-guide-example-label">✓ Rostro centrado<br>Luz frontal uniforme</div>
+          </div>
+          <div class="photo-guide-example-item good">
+            <img class="photo-guide-example-img" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=240&q=80&auto=format&fit=crop&crop=face" alt="good">
+            <div class="photo-guide-example-label">✓ Expresión neutral<br>Cabello recogido</div>
+          </div>
+          <div class="photo-guide-example-item good">
+            <img class="photo-guide-example-img" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=240&q=80&auto=format&fit=crop&crop=face" alt="good">
+            <div class="photo-guide-example-label">✓ Sin maquillaje<br>Sin filtro</div>
+          </div>
+          <div class="photo-guide-example-item bad">
+            <img class="photo-guide-example-img" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=240&q=80&auto=format&fit=crop" alt="bad" style="filter:brightness(0.55)">
+            <div class="photo-guide-example-label">✗ Demasiado oscuro<br>No analizable</div>
+          </div>
+          <div class="photo-guide-example-item bad">
+            <img class="photo-guide-example-img" src="https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?w=240&q=80&auto=format&fit=crop" alt="bad" style="filter:sepia(0.6)contrast(1.3)">
+            <div class="photo-guide-example-label">✗ Filtro aplicado<br>Tono alterado</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="photo-guide-cta" onclick="document.getElementById('photoGuideOverlay').remove()">
+        Entendido
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>`;
+    document.body.appendChild(overlay);
+  }
+
+  function handlePhoto(e, key) {
+    const f = e.target.files[0];
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const base64 = ev.target.result;
+      showValidationOverlay(base64, key, (approved) => {
+        if (!approved) return;
+        state.user.photos[key] = base64;
+        const idx = PHOTO_STEPS.findIndex(p => p.key === key);
+        const drop = document.getElementById(`photoDrop${idx}`);
+        const preview = document.getElementById(`photoPreview${idx}`);
+        const img = document.getElementById(`photoImg${key}`);
+        if (img) img.src = base64;
+        if (preview) preview.classList.add('active');
+        if (drop) drop.style.display = 'none';
+        document.getElementById('stage3Continue').classList.add('ready');
+        if (key === 'front') {
+          const rpImg = document.getElementById('rpPhoto');
+          const rhImg = document.getElementById('reportHeroImg');
+          if (rpImg) rpImg.src = base64;
+          if (rhImg) rhImg.src = base64;
+        }
+        const rect = (preview || drop).getBoundingClientRect();
+        confettiBurst(rect.left + rect.width / 2, rect.top);
+      });
+    };
+    reader.readAsDataURL(f);
+  }
+
+  function removePhoto(key, idx) {
+    state.user.photos[key] = null;
+    const drop = document.getElementById(`photoDrop${idx}`);
+    const preview = document.getElementById(`photoPreview${idx}`);
+    if (preview) preview.classList.remove('active');
+    if (drop) drop.style.display = '';
+    document.getElementById('stage3Continue').classList.remove('ready');
+  }
+
+  function nextPhoto() {
+    const photoIdx = stage3Index - 1; // account for guide card at index 0
+    if (photoIdx < 0) { loadStage3Card(stage3Index + 1); return; }
+    if (photoIdx >= PHOTO_STEPS.length) { go('stage4'); setTimeout(() => loadStage4Card(0), 100); return; }
+    // Always advance — photo upload is optional
+    if (stage3Index - 1 >= PHOTO_STEPS.length - 1) {
+      go('stage4');
+      setTimeout(() => loadStage4Card(0), 100);
+      return;
+    }
+    loadStage3Card(stage3Index + 1);
+  }
+
+  /* ── STAGE 4: ADAPTIVE ── */
+  const STAGE4_TEMPLATES = {
+    work_env: {
+      eyebrow: 'Perfilando tu imagen...',
+      badge: 'Trabajo',
+      title: '¿Trabajas<br><em>en oficina?</em>',
+      type: 'list',
+      key: 'work_env',
+      options: [
+        { value: 'office', label: 'Sí, 5 días en oficina' },
+        { value: 'hybrid', label: 'Híbrido, 2–3 días' },
+        { value: 'remote', label: 'Remoto, desde casa' },
+        { value: 'travel', label: 'Mucho viaje' }
+      ]
+    },
+    work_suit: {
+      eyebrow: 'Perfilando tu imagen...',
+      badge: 'Trabajo',
+      title: '¿Utilizas<br><em>traje?</em>',
+      type: 'list',
+      key: 'work_suit',
+      options: [
+        { value: 'daily', label: 'A diario' },
+        { value: 'sometimes', label: 'Ocasionalmente' },
+        { value: 'rarely', label: 'Rara vez' },
+        { value: 'never', label: 'Nunca' }
+      ]
+    },
+    work_meetings: {
+      eyebrow: 'Perfilando tu imagen...',
+      badge: 'Trabajo',
+      title: '¿Tienes reuniones<br><em>importantes?</em>',
+      type: 'list',
+      key: 'work_meetings',
+      options: [
+        { value: 'frequent', label: 'Frecuentemente' },
+        { value: 'sometimes', label: 'De vez en cuando' },
+        { value: 'rarely', label: 'Rara vez' },
+        { value: 'no', label: 'No aplica' }
+      ]
+    },
+    events: {
+      eyebrow: 'Perfilando tu imagen...',
+      badge: 'Eventos',
+      title: '¿Asistes a<br><em>eventos?</em>',
+      subtitle: 'Galas, bodas, cocktail.',
+      type: 'list',
+      key: 'events',
+      options: [
+        { value: 'monthly', label: 'Mensualmente o más' },
+        { value: 'quarterly', label: 'Cada pocos meses' },
+        { value: 'yearly', label: 'Alguna vez al año' },
+        { value: 'never', label: 'Nunca' }
+      ]
+    },
+    events_wedding: {
+      eyebrow: 'Perfilando tu imagen...',
+      badge: 'Eventos',
+      title: '¿Participas en<br><em>bodas?</em>',
+      type: 'list',
+      key: 'events_wedding',
+      options: [
+        { value: 'yes_as_guest', label: 'Sí, como invitada' },
+        { value: 'yes_family', label: 'Bodas familiares' },
+        { value: 'no', label: 'No, nunca' }
+      ]
+    },
+    events_gala: {
+      eyebrow: 'Perfilando tu imagen...',
+      badge: 'Eventos',
+      title: '¿Eventos<br><em>de gala?</em>',
+      type: 'list',
+      key: 'events_gala',
+      options: [
+        { value: 'yes', label: 'Sí, asisto a galas' },
+        { value: 'sometimes', label: 'Alguna vez' },
+        { value: 'no', label: 'No, nunca' }
+      ]
+    },
+    dating: {
+      eyebrow: 'Perfilando tu imagen...',
+      badge: 'Citas',
+      title: '¿Quieres mejorar tu imagen<br><em>para citas?</em>',
+      type: 'list',
+      key: 'dating',
+      options: [
+        { value: 'yes_active', label: 'Sí, soy muy activa' },
+        { value: 'sometimes', label: 'De vez en cuando' },
+        { value: 'rarely', label: 'Rara vez' },
+        { value: 'na', label: 'No aplica ahora' }
+      ]
+    },
+    content_daily: {
+      eyebrow: 'Perfilando tu imagen...',
+      badge: 'Contenido',
+      title: '¿Grabas<br><em>videos?</em>',
+      type: 'list',
+      key: 'content_video',
+      options: [
+        { value: 'daily', label: 'A diario' },
+        { value: 'weekly', label: 'Semanalmente' },
+        { value: 'occasionally', label: 'Ocasionalmente' },
+        { value: 'no', label: 'No, nunca' }
+      ]
+    },
+    content_type: {
+      eyebrow: 'Perfilando tu imagen...',
+      badge: 'Contenido',
+      title: '¿Qué tipo de<br><em>contenido</em> creas?',
+      type: 'list',
+      key: 'content_type',
+      options: [
+        { value: 'lifestyle', label: 'Lifestyle personal' },
+        { value: 'professional', label: 'Marca profesional' },
+        { value: 'fashion', label: 'Moda y estilo' },
+        { value: 'all', label: 'De todo un poco' }
+      ]
+    },
+    social_platforms: {
+      eyebrow: 'Perfilando tu imagen...',
+      badge: 'Contenido',
+      title: '¿Qué plataforma<br><em>usas más?</em>',
+      type: 'list',
+      key: 'social_platform',
+      options: [
+        { value: 'instagram', label: 'Instagram' },
+        { value: 'tiktok', label: 'TikTok' },
+        { value: 'linkedin', label: 'LinkedIn' },
+        { value: 'all', label: 'Varias' }
+      ]
+    },
+    metal: {
+      eyebrow: 'Perfilando tu imagen...',
+      badge: 'Joyería',
+      title: 'A tu parecer, ¿qué metal<br><em>ilumina mejor tu piel?</em>',
+      subtitle: 'El que brilla junto a tu piel.',
+      type: 'list',
+      key: 'metal',
+      options: [
+        { value: 'gold', label: 'Dorado' },
+        { value: 'rose_gold', label: 'Oro rosa' },
+        { value: 'silver', label: 'Plata' },
+        { value: 'bronze', label: 'Bronce / Cobre' },
+        { value: 'white_gold', label: 'Oro blanco' }
+      ]
+    },
+    skin_tone: {
+      eyebrow: 'Perfilando tu imagen...',
+      badge: 'Tu piel',
+      title: '¿Cómo describirías<br><em>tu piel?</em>',
+      type: 'list',
+      key: 'skin_tone',
+      options: [
+        { value: 'fair', label: 'Clara' },
+        { value: 'medium_warm', label: 'Mediterránea / Cálida' },
+        { value: 'medium_olive', label: 'Oliva' },
+        { value: 'deep', label: 'Oscura / Profunda' }
+      ]
+    },
+    style_reference: {
+      eyebrow: 'Perfilando tu imagen...',
+      badge: 'Referencia',
+      title: '¿Tienes alguna<br><em>referencia</em> de estilo?',
+      subtitle: 'Una persona, marca o celebrity que admiras.',
+      type: 'text',
+      key: 'style_reference',
+      required: false,
+      options: { placeholder: 'Nombre o descripción...', label: 'Opcional — esto ayuda a calibrar las recomendaciones' }
+    }
+  };
+
+  let adaptiveStage4Cards = [];
+
+  function buildAdaptiveStage4Cards() {
+    const occasions = state.answers.occasions || [];
+    const cards = [];
+
+    // Universal cards (always shown)
+    cards.push(STAGE4_TEMPLATES.metal);
+    cards.push(STAGE4_TEMPLATES.skin_tone);
+
+    // Work branch
+    if (occasions.includes('work')) {
+      cards.push(STAGE4_TEMPLATES.work_env);
+      cards.push(STAGE4_TEMPLATES.work_suit);
+      cards.push(STAGE4_TEMPLATES.work_meetings);
+    }
+
+    // Events branch
+    if (occasions.includes('events')) {
+      cards.push(STAGE4_TEMPLATES.events);
+      cards.push(STAGE4_TEMPLATES.events_wedding);
+      cards.push(STAGE4_TEMPLATES.events_gala);
+    }
+
+    // Dating branch
+    if (occasions.includes('dates')) {
+      cards.push(STAGE4_TEMPLATES.dating);
+    }
+
+    // Content creation branch
+    if (occasions.includes('social') || occasions.includes('content')) {
+      cards.push(STAGE4_TEMPLATES.content_daily);
+      cards.push(STAGE4_TEMPLATES.content_type);
+      cards.push(STAGE4_TEMPLATES.social_platforms);
+    }
+
+    // Always end with style reference
+    cards.push(STAGE4_TEMPLATES.style_reference);
+
+    return cards;
+  }
+
+  function loadStage4Card(idx) {
+    if (adaptiveStage4Cards.length === 0) {
+      adaptiveStage4Cards = buildAdaptiveStage4Cards();
+    }
+    if (idx >= adaptiveStage4Cards.length) { startAnalysis(); return; }
+    stage4Index = idx;
+    const card = adaptiveStage4Cards[idx];
+    // Add adaptive badge if exists
+    if (card.badge) {
+      card._adaptiveBadge = card.badge;
+    }
+    renderCard(card, 'stage4Cards');
+    updateProgress(0.55 + (idx / adaptiveStage4Cards.length) * 0.35);
+  }
+
+  
+  /* ══════════════════════════════════════════
+     SKIN COLOR ANALYSIS ENGINE
+     Extracts real skin tone from uploaded photo
+     ══════════════════════════════════════════ */
+
+  // RGB to HSL conversion
+  function rgbToHsl(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+    if (max === min) { h = s = 0; }
+    else {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+        case g: h = ((b - r) / d + 2) / 6; break;
+        case b: h = ((r - g) / d + 4) / 6; break;
+      }
+    }
+    return [h * 360, s, l];
+  }
+
+  // HSL to RGB
+  function hslToRgb(h, s, l) {
+    h /= 360;
+    let r, g, b;
+    if (s === 0) { r = g = b = l; }
+    else {
+      const hue2rgb = (p, q, t) => {
+        if (t < 0) t += 1;
+        if (t > 1) t -= 1;
+        if (t < 1/6) return p + (q - p) * 6 * t;
+        if (t < 1/2) return q;
+        if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+        return p;
+      };
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      const p = 2 * l - q;
+      r = hue2rgb(p, q, h + 1/3);
+      g = hue2rgb(p, q, h);
+      b = hue2rgb(p, q, h - 1/3);
+    }
+    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+  }
+
+  // Lighten/darken a color
+  function adjustLightness(hex, amount) {
+    const r = parseInt(hex.slice(1,3),16);
+    const g = parseInt(hex.slice(3,5),16);
+    const b = parseInt(hex.slice(5,7),16);
+    const [h, s, l] = rgbToHsl(r, g, b);
+    const newL = Math.max(0, Math.min(1, l + amount));
+    const [nr, ng, nb] = hslToRgb(h, s, newL);
+    return '#' + [nr, ng, nb].map(v => v.toString(16).padStart(2,'0')).join('');
+  }
+
+  // Adjust hue slightly
+  function adjustHue(hex, deg) {
+    const r = parseInt(hex.slice(1,3),16);
+    const g = parseInt(hex.slice(3,5),16);
+    const b = parseInt(hex.slice(5,7),16);
+    const [h, s, l] = rgbToHsl(r, g, b);
+    const newH = (h + deg + 360) % 360;
+    const [nr, ng, nb] = hslToRgb(newH, s, l);
+    return '#' + [nr, ng, nb].map(v => v.toString(16).padStart(2,'0')).join('');
+  }
+
+  // Desaturate a color
+  function desaturate(hex, amount) {
+    const r = parseInt(hex.slice(1,3),16);
+    const g = parseInt(hex.slice(3,5),16);
+    const b = parseInt(hex.slice(5,7),16);
+    const [h, s, l] = rgbToHsl(r, g, b);
+    const newS = Math.max(0, s - amount);
+    const [nr, ng, nb] = hslToRgb(h, newS, l);
+    return '#' + [nr, ng, nb].map(v => v.toString(16).padStart(2,'0')).join('');
+  }
+
+  // Extract dominant skin color from photo
+  function extractSkinColor(imageData, width, height) {
+    const data = imageData.data;
+    const samples = [];
+
+    // Sample from face area: center region (forehead + cheeks)
+    const centerX = Math.floor(width * 0.5);
+    const centerY = Math.floor(height * 0.35);
+    const sampleSize = Math.floor(Math.min(width, height) * 0.25);
+
+    for (let dy = -sampleSize; dy < sampleSize; dy += 4) {
+      for (let dx = -sampleSize; dx < sampleSize; dx += 4) {
+        const x = centerX + dx;
+        const y = centerY + dy;
+        if (x < 0 || x >= width || y < 0 || y >= height) continue;
+        const i = (y * width + x) * 4;
+        const r = data[i], g = data[i+1], b = data[i+2];
+        const [h, s, l] = rgbToHsl(r, g, b);
+
+        // Skin detection: typical skin HSL range
+        // Warm skin: H=0-50, S=0.1-0.7, L=0.15-0.85
+        // Cool skin: H=200-360, S=0.1-0.7, L=0.15-0.85
+        const isWarmSkin = h >= 0 && h <= 50 && s >= 0.08 && s <= 0.75 && l >= 0.15 && l <= 0.88;
+        const isCoolSkin = h >= 200 && h <= 360 && s >= 0.08 && s <= 0.75 && l >= 0.15 && l <= 0.88;
+        const isNeutralSkin = l >= 0.20 && l <= 0.85 && s >= 0.03 && s <= 0.60;
+
+        if (isWarmSkin || isCoolSkin || isNeutralSkin) {
+          samples.push({r, g, b, h, s, l});
+        }
+      }
+    }
+
+    if (samples.length < 20) return null;
+
+    // Calculate averages
+    const avg = samples.reduce((acc, s) => ({
+      r: acc.r + s.r / samples.length,
+      g: acc.g + s.g / samples.length,
+      b: acc.b + s.b / samples.length,
+      h: acc.h + s.h / samples.length,
+      s: acc.s + s.s / samples.length,
+      l: acc.l + s.l / samples.length,
+    }), {r:0, g:0, b:0, h:0, s:0, l:0});
+
+    return avg;
+  }
+
+  // Determine undertone from skin color
+  function getUndertone(skin) {
+    if (!skin) return 'neutral';
+    // Compare warm (R) vs cool (B) channels
+    // Also check yellow vs pink ratio
+    const warmth = (skin.r - skin.b) + (skin.r - skin.g) * 0.5;
+    if (warmth > 15) return 'warm';
+    if (warmth < -15) return 'cool';
+    return 'neutral';
+  }
+
+  // Determine depth (light/medium/deep)
+  function getDepth(skin) {
+    if (!skin) return 'medium';
+    if (skin.l > 0.60) return 'light';
+    if (skin.l < 0.38) return 'deep';
+    return 'medium';
+  }
+
+  // Map to color season
+  function getSeason(undertone, depth) {
+    const seasons = {
+      warm_light:  { name: 'Primavera', sub: 'Cálida', detail: 'Luminosa.', season: 'spring' },
+      warm_medium: { name: 'Otoño', sub: 'Cálida', detail: 'Profunda.', season: 'autumn' },
+      warm_deep:   { name: 'Otoño', sub: 'Cálida', detail: 'Intensa.', season: 'autumn' },
+      cool_light:  { name: 'Verano', sub: 'Fría', detail: 'Delicada.', season: 'summer' },
+      cool_medium: { name: 'Verano', sub: 'Fría', detail: 'Suave.', season: 'summer' },
+      cool_deep:   { name: 'Invierno', sub: 'Fría', detail: 'Intensa.', season: 'winter' },
+      neutral_light:{ name: 'Primavera', sub: 'Neutra', detail: 'Luminosa.', season: 'spring' },
+      neutral_medium:{ name: 'Otoño', sub: 'Neutra', detail: 'Equilibrada.', season: 'autumn' },
+      neutral_deep: { name: 'Invierno', sub: 'Neutra', detail: 'Sofisticada.', season: 'winter' },
+    };
+    return seasons[`${undertone}_${depth}`] || seasons.neutral_medium;
+  }
+
+  // Generate personalized palette based on skin color
+  function generatePalette(skin, undertone, season) {
+    if (!skin) return null;
+    const base = '#' + [
+      Math.round(skin.r), Math.round(skin.g), Math.round(skin.b)
+    ].map(v => Math.max(0, Math.min(255, v)).toString(16).padStart(2,'0')).join('');
+
+    const s = skin.s;
+    const l = skin.l;
+
+    // Primary: slightly adjusted skin tone
+    const primary = adjustLightness(adjustHue(base, undertone === 'warm' ? 10 : undertone === 'cool' ? -10 : 0), 0.05);
+
+    // Secondary: complementary warm or cool
+    const secondary = undertone === 'warm'
+      ? adjustHue(base, 30)
+      : adjustHue(base, -30);
+
+    // Accent: deepened version
+    const accent = adjustLightness(base, -0.15);
+
+    // Neutral: desaturated version
+    const neutral = desaturate(adjustLightness(base, 0.1), 0.3);
+
+    // Deep: darker version
+    const deep = adjustLightness(base, -0.25);
+
+    // Light: lighter version
+    const light = adjustLightness(base, 0.3);
+
+    // Earth: warm muted tone
+    const earth = desaturate(adjustLightness(adjustHue(base, 20), -0.05), 0.4);
+
+    // Classic: sophisticated muted
+    const classic = desaturate(adjustLightness(base, 0), 0.5);
+
+    return [
+      { hex: primary, name: undertone === 'warm' ? 'Melocotón' : undertone === 'cool' ? 'Rosa claro' : 'Nude', tag: 'Primario' },
+      { hex: secondary, name: undertone === 'warm' ? 'Terracota' : 'Lavanda', tag: 'Complemento' },
+      { hex: accent, name: undertone === 'warm' ? 'Cobre' : 'Bordeaux', tag: 'Acento' },
+      { hex: neutral, name: undertone === 'warm' ? 'Crudo' : 'Gris perla', tag: 'Neutro' },
+      { hex: deep, name: undertone === 'warm' ? 'Chocolate' : 'Ciruela', tag: 'Profundo' },
+      { hex: light, name: 'Crema', tag: 'Claro' },
+      { hex: earth, name: undertone === 'warm' ? 'Ocre' : 'Sage', tag: 'Tierra' },
+      { hex: classic, name: undertone === 'warm' ? 'Arena' : 'Lavanda suave', tag: 'Clásico' },
+    ];
+  }
+
+  // Main analysis: run skin color extraction
+  function runSkinAnalysis() {
+    return new Promise((resolve) => {
+      const photoData = state.user.photos && state.user.photos.front;
+      if (!photoData) {
+        console.log('No photo to analyze');
+        resolve(null);
+        return;
+      }
+
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          const size = 400; // analysis at fixed small size for speed
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, size, size);
+          const imageData = ctx.getImageData(0, 0, size, size);
+          const skin = extractSkinColor(imageData, size, size);
+
+          if (!skin) {
+            console.log('Could not extract skin color, using defaults');
+            resolve(null);
+            return;
+          }
+
+          const undertone = getUndertone(skin);
+          const depth = getDepth(skin);
+          const season = getSeason(undertone, depth);
+          const palette = generatePalette(skin, undertone, season);
+
+          state.answers.skinAnalysis = {
+            skin,
+            undertone,
+            depth,
+            season,
+            palette,
+            baseColor: '#' + [
+              Math.round(skin.r), Math.round(skin.g), Math.round(skin.b)
+            ].map(v => v.toString(16).padStart(2,'0')).join(''),
+          };
+
+          console.log('Skin analysis complete:', state.answers.skinAnalysis);
+          resolve(state.answers.skinAnalysis);
+        } catch (e) {
+          console.error('Skin analysis error:', e);
+          resolve(null);
+        }
+      };
+      img.onerror = () => resolve(null);
+      img.src = photoData;
+    });
+  }
+
+  // Update the report with real analyzed colors
+  function updateReportWithRealAnalysis() {
+    const analysis = state.answers.skinAnalysis;
+    if (!analysis) return;
+
+    const { season, palette, undertone, depth } = analysis;
+
+    // Update the season display in hero
+    const seasonEl = document.querySelector('.report-season');
+    if (seasonEl) {
+      seasonEl.innerHTML = `${season.name}<br><em>${season.sub}</em><br>${season.detail}`;
+    }
+
+    // Update palette swatches in color section
+    if (palette && palette.length >= 8) {
+      const swatches = document.querySelectorAll('.palette-swatch');
+      swatches.forEach((sw, i) => {
+        if (palette[i]) {
+          sw.style.background = palette[i].hex;
+          const nameEl = sw.querySelector('.palette-swatch-name');
+          const hexEl = sw.querySelector('.palette-swatch-hex');
+          const tagEl = sw.querySelector('.palette-swatch-tag');
+          if (nameEl) nameEl.textContent = palette[i].name;
+          if (hexEl) hexEl.textContent = palette[i].hex;
+          if (tagEl) tagEl.textContent = palette[i].tag;
+        }
+      });
+    }
+
+    // Update the season badge in hero
+    const seasonBadge = document.querySelector('.report-season-badge');
+    if (seasonBadge) {
+      seasonBadge.textContent = `${season.name} · ${season.sub}`;
+    }
+
+    // Add "IA real" indicator to color section
+    const colorSection = document.getElementById('r-color');
+    if (colorSection) {
+      const aiNote = colorSection.querySelector('p');
+      if (aiNote) {
+        aiNote.textContent = `Colores extraídos de tu piel real · Tono ${undertone} · Profundidad ${depth} · ${season.name} ${season.sub}`;
+      }
+    }
+
+    console.log('Report updated with real skin analysis for season:', season.name);
+  }
+
+
+  /* ── ANALYSIS — SEQUENTIAL STEPS ── */
+  const ANALYSIS_STEPS = ['color', 'style', 'face', 'palette', 'report'];
+  const STEP_DURATIONS = [2200, 2000, 1800, 2000, 1600]; // ms per step
+
+  function startAnalysis() {
+    go('analyzing');
+    updateProgress(0.9);
+    updateStageLabel('');
+
+    // Reset all steps
+    ANALYSIS_STEPS.forEach(key => {
+      const stepEl = document.querySelector(`[data-step="${key}"]`);
+      if (stepEl) {
+        stepEl.classList.remove('active', 'done');
+      }
+    });
+
+    let currentStep = 0;
+    let elapsed = 0;
+    const startTime = Date.now();
+
+    function animateStep() {
+      const now = Date.now();
+      elapsed = now - startTime;
+
+      // Find current step based on elapsed time
+      let accumulated = 0;
+      let newStep = 0;
+      for (let i = 0; i < STEP_DURATIONS.length; i++) {
+        if (elapsed < accumulated + STEP_DURATIONS[i]) {
+          newStep = i;
+          break;
+        }
+        accumulated += STEP_DURATIONS[i];
+        newStep = i + 1;
+      }
+
+      if (newStep !== currentStep && newStep < ANALYSIS_STEPS.length) {
+        // Mark previous as done
+        if (currentStep < ANALYSIS_STEPS.length) {
+          const prevKey = ANALYSIS_STEPS[currentStep];
+          const prevEl = document.querySelector(`[data-step="${prevKey}"]`);
+          if (prevEl) prevEl.classList.remove('active');
+        }
+
+        // Mark new as active
+        const key = ANALYSIS_STEPS[newStep];
+        const stepEl = document.querySelector(`[data-step="${key}"]`);
+        if (stepEl) {
+          stepEl.classList.add('active');
+          // Scroll into view if needed
+          stepEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        currentStep = newStep;
+      }
+
+      // Update progress bar
+      const totalDuration = STEP_DURATIONS.reduce((a, b) => a + b, 0);
+      const progress = Math.min(100, Math.round((elapsed / totalDuration) * 100));
+      const fillEl = document.getElementById('analyzingProgressFill');
+      const pctEl = document.getElementById('analyzingPct');
+      if (fillEl) fillEl.style.width = progress + '%';
+      if (pctEl) pctEl.textContent = progress + '%';
+
+      if (elapsed >= totalDuration) {
+        // Final step done
+        const lastKey = ANALYSIS_STEPS[ANALYSIS_STEPS.length - 1];
+        const lastEl = document.querySelector(`[data-step="${lastKey}"]`);
+        if (lastEl) {
+          lastEl.classList.remove('active');
+          lastEl.classList.add('done');
+          const iconEl = lastEl.querySelector('.analyzing-step-icon');
+          if (iconEl) {
+            iconEl.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg>';
+          }
+        }
+        if (fillEl) fillEl.style.width = '100%';
+        if (pctEl) pctEl.textContent = '100%';
+
+        setTimeout(async () => {
+          // Run real skin analysis before showing results
+          await runSkinAnalysis();
+          updateReportWithRealAnalysis();
+          saveAnalysisToDb();
+          updateProgress(1);
+          go('result-preview');
+        }, 1200);
+        return;
+      }
+
+      requestAnimationFrame(animateStep);
+    }
+
+    // Activate first step immediately
+    const firstKey = ANALYSIS_STEPS[0];
+    const firstEl = document.querySelector(`[data-step="${firstKey}"]`);
+    if (firstEl) firstEl.classList.add('active');
+    requestAnimationFrame(animateStep);
+  }
+
+  /* ── UNLOCK ── */
+  function unlock() {
+    // Opens MercadoPago payment link
+    window.open('https://link.mercadopago.com.mx/prysm', '_blank');
+  }
+
+  /* ── NAME DISPLAYS ── */
+  function updateNameDisplays(name) {
+    const els = ['reportNameDisplay', 'profileName', 'profileHandle'];
+    const nameEl = document.getElementById('reportNameDisplay');
+    const handleEl = document.getElementById('profileName');
+    const handle2El = document.getElementById('profileHandle');
+    if (nameEl) nameEl.textContent = name;
+    if (handleEl) handleEl.textContent = name;
+    if (handle2El) handle2El.textContent = '@prysm.' + name.toLowerCase().replace(/\s/g, '');
+    generateId();
+  }
+
+  function generateId() {
+    const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let id = 'PX-';
+    for (let i = 0; i < 4; i++) id += c[Math.floor(Math.random() * c.length)];
+    id += '-';
+    for (let i = 0; i < 4; i++) id += c[Math.floor(Math.random() * c.length)];
+    state.user.id = id;
+    const ids = ['reportIdDisplay', 'profileIdDisplay', 'shareIdDisplay'];
+    ids.forEach(eid => {
+      const el = document.getElementById(eid);
+      if (el) el.textContent = id;
+    });
+  }
+
+  /* ── REPORT TABS ── */
+  function showReportTab(tab) {
+    document.querySelectorAll('.report-nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('[id^="r-"]').forEach(p => p.style.display = 'none');
+    const btn = document.querySelector(`.report-nav-btn[data-tab="${tab}"]`);
+    if (btn) btn.classList.add('active');
+    const panel = document.getElementById('r-' + tab);
+    if (panel) {
+      panel.style.display = '';
+      // Trigger stagger animations
+      panel.querySelectorAll('.stagger-item').forEach((el, i) => {
+        el.style.animationDelay = (i * 0.07) + 's';
+      });
+    }
+  }
+
+  /* ── SHARE ── */
+  function shareTo(platform) {
+    const text = `Mi PRYSM Score es 9.4. Descubre el tuyo en PRYSM.`;
+    const urls = {
+      whatsapp: 'https://wa.me/?text=' + encodeURIComponent(text),
+      x: 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text),
+      facebook: 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent('prysm.app')
+    };
+    if (urls[platform]) window.open(urls[platform]);
+  }
+
+  /* ── INIT ── */
+  document.addEventListener('DOMContentLoaded', () => {
+    generateId();
+    go('landing');
+    // Auto-reveal hero image
+    setTimeout(() => {
+      const img = document.querySelector('.landing-img');
+      if (img) img.classList.add('loaded');
+    }, 200);
+  });
+
+  /* ── KEYBOARD NAVIGATION ── */
+  document.addEventListener('keydown', (e) => {
+    if (state.current === 'stage1' || state.current === 'stage2' || state.current === 'stage4') {
+      if (e.key === 'Enter') {
+        const btn = document.getElementById('cardContinue');
+        if (btn && btn.classList.contains('ready')) btn.click();
+      }
+      if (e.key.length === 1 && e.key.match(/[a-z]/i)) {
+        const opts = document.querySelectorAll('.choice-item');
+        const idx = e.key.toUpperCase().charCodeAt(0) - 65;
+        if (opts[idx]) opts[idx].click();
+      }
+      if (e.key === 'Backspace' && !document.activeElement.matches('input')) {
+        e.preventDefault();
+        back();
+      }
+    }
+    if (e.key === 'Escape') {
+      if (state.current !== 'landing') back();
+    }
+  });
+
+  // Expose confirmCard globally so inline onclick works
+  window.confirmCard = confirmCard;
+
+  /* ── PDF GENERATION ── */
+  function generatePdf() {
+    const a = state.answers;
+    const s = a.skinAnalysis || {};
+    const season = s.season || {};
+    const palette = s.palette || [];
+    const name = state.user.name || a.name || 'Tu Informe';
+    const uid = (state.dbRecordId || Math.random().toString(36).substr(2,8)).slice(0,8).toUpperCase();
+    const seasonName = season.name || 'Primavera';
+    const seasonSub = season.sub || '';
+    const seasonDetail = season.detail || '';
+    const printHtml = '<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>PRYSM - '+name.replace(/</g,'&lt;')+'</title><link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@200;300;400;500&display=swap" rel="stylesheet"><style>@page{size:A4 portrait;margin:0}*{box-sizing:border-box;margin:0;padding:0}body{font-family:Outfit,sans-serif;font-weight:300;color:#000;background:#fff;font-size:12px;line-height:1.6}.page{width:100%;min-height:297mm;padding:52px;position:relative;page-break-after:always}.page:last-child{page-break-after:auto}.cover{background:linear-gradient(160deg,#1a1410,#2a1e14 50%,#1a1410);color:#fff;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}.cover-eyebrow{font-size:8pt;letter-spacing:.4em;text-transform:uppercase;color:rgba(212,164,115,.6)}.cover-season{font-family:Instrument Serif,serif;font-size:clamp(72px,14vw,130px);line-height:.88;margin:24px 0}.cover-sub{font-family:Instrument Serif,serif;font-size:clamp(36px,7vw,64px);line-height:.88}.cover-detail{font-size:11pt;font-weight:300;color:rgba(255,255,255,.4);letter-spacing:.05em;margin-top:20px}.cover-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:20px;display:flex;justify-content:space-between;width:100%;max-width:500px;margin-top:60px}.cover-brand{font-family:Instrument Serif,serif;font-size:28pt;color:rgba(255,255,255,.15)}.cover-meta{text-align:right;font-size:8pt;color:rgba(255,255,255,.25);line-height:1.8}.section{padding:48px 0}.section-title{font-family:Instrument Serif,serif;font-size:28px;text-align:center;margin-bottom:32px}.section-title em{font-style:italic}.palette-grid{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}.palette-item{text-align:center}.palette-swatch{width:70px;height:70px;border:1px solid rgba(0,0,0,.06);margin-bottom:8px}.palette-hex{font-size:8pt;color:#999;font-family:monospace}.desc{text-align:center;max-width:420px;margin:0 auto 40px;color:#666;font-size:11pt;line-height:1.8}.rec-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.rec-card{border:1px solid #eee;padding:20px}.rec-title{font-weight:500;font-size:11pt;margin-bottom:8px}.rec-desc{font-size:10pt;color:#666}.outfit-card{border:1px solid #eee;padding:20px;margin-bottom:12px}.outfit-title{font-weight:500;margin-bottom:8px}.outfit-items{font-size:10pt;color:#666}.footer-page{text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center}.footer-brand{font-family:Instrument Serif,serif;font-size:36pt;color:rgba(0,0,0,.08);margin-bottom:24px}.footer-quote{font-family:Instrument Serif,serif;font-style:italic;font-size:18px;color:#333;margin-bottom:16px}.footer-note{font-size:9pt;color:#bbb}h2{font-family:Instrument Serif,serif;font-size:20px;margin:32px 0 16px}</style></head><body>' +
+      '<div class="page cover"><div class="cover-eyebrow">Analisis de imagen personal</div><div class="cover-season">'+seasonName.replace(/</g,'&lt;')+'</div><div class="cover-sub"><em>'+seasonSub.replace(/</g,'&lt;')+'</em></div><div class="cover-detail">'+seasonDetail.replace(/</g,'&lt;')+'</div><div class="cover-bottom"><div class="cover-brand">PRYSM</div><div class="cover-meta">'+name.replace(/</g,'&lt;')+'<br>ID: '+uid+'<br>2026</div></div></div>' +
+      '<div class="page"><div class="section"><div class="section-title">Tu <em>Paleta</em> de Color</div><p class="desc">'+s.season?.description?.replace(/</g,'&lt;')+'</p><div class="palette-grid">'+
+      (palette.slice(0,8).map(function(c){return'<div class="palette-item"><div class="palette-swatch" style="background:'+c.hex+';"></div><div class="palette-hex">'+c.hex+'</div></div>';}).join(''))+'</div></div></div>' +
+      '<div class="page"><div class="section"><div class="section-title">Tu <em>Estilo</em></div><div class="rec-grid">'+
+      ((a.styleRecs||[]).slice(0,4).map(function(r){return'<div class="rec-card"><div class="rec-title">'+(r.title||'')+'</div><div class="rec-desc">'+(r.desc||'')+'</div></div>';}).join(''))+'</div></div></div>' +
+      '<div class="page"><div class="section"><div class="section-title">Tu <em>Cabello</em></div><div class="rec-grid">'+
+      ((a.hairRecs||[]).slice(0,3).map(function(r){return'<div class="rec-card"><div class="palette-swatch" style="background:'+(r.hex||'#ccc')+';width:100%;height:50px;margin-bottom:12px;"></div><div class="rec-title">'+(r.color||'')+'</div><div class="rec-desc">'+(r.desc||'')+'</div></div>';}).join(''))+'</div><h2>Recomendaciones</h2><p class="desc">Las tecnicas de color que imitan la luz natural del sol son las mas favorecedoras.</p></div></div>' +
+      '<div class="page"><div class="section"><div class="section-title">Outfits por <em>Ocasion</em></div>'+
+      ((a.outfits||[]).slice(0,4).map(function(o){return'<div class="outfit-card"><div class="outfit-title">'+(o.title||'')+'</div><div class="outfit-items">'+((o.items||[]).map(function(i){return'<div> '+i.replace(/</g,'&lt;')+'</div>';}).join(''))+'</div></div>';}).join(''))+'</div></div>' +
+      '<div class="page footer-page"><div class="footer-brand">PRYSM</div><div class="footer-quote">Tu imagen es tu mensaje al mundo.</div><div class="footer-note">Generado para '+name.replace(/</g,'&lt;')+' · '+seasonName.replace(/</g,'&lt;')+' · 2026</div></div>' +
+      '<scr'+'ipt>window.onload=function(){window.print();}<\/scr'+'ipt><script>window.addEventListener('load', function() {
+  var ball = document.getElementById('minimax-floating-ball');
+  if (ball) { ball.remove(); }
+  // Also try to remove any injected overlay
+  setTimeout(function() {
+    var all = document.querySelectorAll('[class*="minimax"], [id*="minimax"]');
+    all.forEach(function(el) { el.remove(); });
+  }, 100);
+});</script>
+';
+    const printWin = window.open('', '_blank');
+    if (!printWin) { alert('Permite ventanas emergentes para el PDF.'); return; }
+    printWin.document.write(printHtml);
+    printWin.document.close();
+  }
+
+  /* Public API */
+  return {
+    go, back,
+    selectOption, selectSwatch, selectChip, selectChoice, toggleMultiChoice, selectColorSwatch, confirmCard,
+    handlePhoto, removePhoto, nextPhoto, advanceStage3, showPhotoGuide,
+    unlock, showReportTab, shareTo,
+    buildAdaptiveStage4Cards,
+    // Stage loaders (called from onclick)
+    _loadStage1: (idx) =&gt; loadStage1Card(idx),
+    _loadStage2: (idx) =&gt; loadStage2Card(idx),
+    _loadStage4: (idx) =&gt; loadStage4Card(idx),
+    _runSkinAnalysis: runSkinAnalysis,
+    _updateReportWithRealAnalysis: updateReportWithRealAnalysis,
+    _state: state,
+    generatePdf: generatePdf,
+    showVerifyModal: function() { document.getElementById('verifyModal').style.display='flex'; },
+    hideVerifyModal: function() { document.getElementById('verifyModal').style.display='none'; },
+    confirmPayment: async function() {
+      const email = document.getElementById('verifyEmail').value.trim();
+      const id = document.getElementById('verifyPaymentId').value.trim();
+      if(!email||!id){alert('Completa todos los campos');return;}
+      try{
+        confirm('Estamos verificando tu pago...');
+        await verifyPaymentByEmail(email,id);
+        state.paid=true;
+        localStorage.setItem('prysm_paid','true');
+        hideVerifyModal();
+        go('report');
+      }catch(e){alert('No pudimos verificar tu pago. Revisa el ID e email e intenta de nuevo.');}
+    }
+  };
+})();
+
+// Expose app globally so all onclick attributes work
+window.app = app;
+window.confirmCard = app.confirmCard;
+window.nextPhoto = app.nextPhoto;
+window.advanceStage3 = app.advanceStage3;
+
+<style>
+
+
+
+</body>
+</html>
+</style></body></html>
