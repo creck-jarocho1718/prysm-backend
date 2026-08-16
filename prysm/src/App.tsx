@@ -14,12 +14,19 @@ export interface QuizAnswer {
   value: string | string[];
 }
 
+export interface UserData {
+  name: string;
+  email: string;
+  photos: string[];
+}
+
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('landing');
   const [answers, setAnswers] = useState<QuizAnswer[]>([]);
   const [userName, setUserName] = useState('');
+  const [userEmail, setUserEmail] = useState('');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [uploadedPhoto, setUploadedPhoto] = useState<string | null>(null);
+  const [uploadedPhotos, setUploadedPhotos] = useState<string[]>([]);
 
   const handleStartQuiz = useCallback(() => {
     setCurrentScreen('quiz');
@@ -46,8 +53,8 @@ function App() {
     setCurrentQuestionIndex(prev => Math.max(0, prev - 1));
   }, []);
 
-  const handlePhotoUpload = useCallback((photoData: string) => {
-    setUploadedPhoto(photoData);
+  const handlePhotoUpload = useCallback((photos: string[]) => {
+    setUploadedPhotos(photos);
   }, []);
 
   const handleStartAnalysis = useCallback(() => {
@@ -70,8 +77,9 @@ function App() {
     setCurrentScreen('share');
   }, []);
 
-  const handleNameSubmit = useCallback((name: string) => {
+  const handleNameSubmit = useCallback((name: string, email: string) => {
     setUserName(name);
+    setUserEmail(email);
     setCurrentQuestionIndex(prev => prev + 1);
   }, []);
 
@@ -79,8 +87,9 @@ function App() {
     setCurrentScreen('landing');
     setAnswers([]);
     setUserName('');
+    setUserEmail('');
     setCurrentQuestionIndex(0);
-    setUploadedPhoto(null);
+    setUploadedPhotos([]);
   }, []);
 
   useEffect(() => {
@@ -104,7 +113,7 @@ function App() {
           questionIndex={currentQuestionIndex}
           answers={answers}
           userName={userName}
-          uploadedPhoto={uploadedPhoto}
+          uploadedPhoto={uploadedPhotos}
           onAnswer={handleAnswer}
           onNext={handleNextQuestion}
           onPrev={handlePrevQuestion}
