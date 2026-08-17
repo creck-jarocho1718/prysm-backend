@@ -1,0 +1,678 @@
+[
+  {
+    "query": "Photo of a woman with medium olive/tan skin tone, close up portrait showing skin color",
+    "image_info": {
+      "url": "https://cdn.leonardo.ai/users/3c6b439a-3803-4f72-b851-9e5da5aad3a9/generations/1f17403b-9b2c-6220-a20a-d75d7089d9cd/lucid-origin_mia_castillo_close-up_portrait_Latina_woman_olive_skin_long_dark_hair_age_24_war-0.jpg",
+      "img_format": "JPEG",
+      "mode": "RGB",
+      "file_size": 242304,
+      "width": 1024,
+      "height": 1024,
+      "total_pixels": 1048576,
+      "basic_score": 0.9394639513052707,
+      "file_name": "latina-woman-olive-skin-portrait.jpg"
+    },
+    "llm_score": {
+      "success": true,
+      "relevance_score": 100.0,
+      "clarity_score": 100.0,
+      "watermark_score": 100.0,
+      "overall_score": 98.0,
+      "explanation": "The image perfectly matches the search query and prompt. It is a high-resolution, clear, and professional close-up portrait of a woman with medium olive/tan skin tone, showing excellent skin texture and detail without any watermarks.",
+      "file_name": "latina-woman-olive-skin-portrait.jpg",
+      "caption": "A high-quality close-up portrait of a smiling Latina woman with medium olive skin tone and long dark hair, set against a neutral gray background.",
+      "recommend": true,
+      "error": ""
+    }
+  },
+  {
+    "query": "Photo of a woman with medium olive/tan skin tone, close up portrait showing skin color",
+    "image_info": {
+      "url": "https://cdn.leonardo.ai/users/b28ee3a2-0044-4788-b061-8c6400efe327/generations/40030fe3-e8d0-42b0-b5f4-1d8edc936e4c/segments/3:4:1/Lucid_Origin_A_vibrant_portrait_of_a_young_beautiful_Latina_wo_2.jpg",
+      "img_format": "JPEG",
+      "mode": "RGB",
+      "file_size": 603310,
+      "width": 1200,
+      "height": 1200,
+      "total_pixels": 1440000,
+      "basic_score": 0.9104194406941942,
+      "file_name": "latina-woman-medium-olive-skin-portrait.jpg"
+    },
+    "llm_score": {
+      "success": true,
+      "relevance_score": 100.0,
+      "clarity_score": 98.0,
+      "watermark_score": 100.0,
+      "overall_score": 98.0,
+      "explanation": "The image is a perfect match for the search query and prompt, featuring a woman with the specified medium olive/tan skin tone in a professional portrait style. The clarity is exceptional, capturing fine details of the skin and hair, and there are no watermarks.",
+      "file_name": "latina-woman-medium-olive-skin-portrait.jpg",
+      "caption": "A professional close-up portrait of a Latina woman with medium olive skin, long dark wavy hair, and a gentle smile, set against a neutral tan background.",
+      "recommend": true,
+      "error": ""
+    }
+  },
+  {
+    "query": "Photo of a woman with medium olive/tan skin tone, close up portrait showing skin color",
+    "image_info": {
+      "url": "https://cdn.leonardo.ai/users/b28ee3a2-0044-4788-b061-8c6400efe327/generations/40030fe3-e8d0-42b0-b5f4-1d8edc936e4c/segments/2:4:1/Lucid_Origin_A_vibrant_portrait_of_a_young_beautiful_Latina_wo_1.jpg",
+      "img_format": "JPEG",
+      "mode": "RGB",
+      "file_size": 644605,
+      "width": 1200,
+      "height": 1200,
+      "total_pixels": 1440000,
+      "basic_score": 0.9114633836812346,
+      "file_name": "latina-woman-medium-olive-skin-portrait.jpg_92"
+    },
+    "llm_score": {
+      "success": true,
+      "relevance_score": 98.0,
+      "clarity_score": 95.0,
+      "watermark_score": 100.0,
+      "overall_score": 96.0,
+      "explanation": "The image perfectly matches the search query and prompt, showcasing a high-quality, clear portrait of a Latina woman with a medium olive skin tone. The lighting and composition are professional, and there are no watermarks.",
+      "file_name": "latina-woman-medium-olive-skin-portrait.jpg",
+      "caption": "A close-up portrait of a smiling Latina woman with medium olive skin tone, dark hair, and brown eyes, set against a warm tan background.",
+      "recommend": true,
+      "error": ""
+    }
+  },
+  {
+    "query": "Photo of a woman with medium olive/tan skin tone, close up portrait showing skin color",
+    "image_info": {
+      "url": "https://img.magnific.com/free-photo/medium-shot-woman-wearing-vacation-outfit_23-2150668958.jpg?semt=ais_hybrid&w=740&q=80",
+      "img_format": "JPEG",
+      "mode": "RGB",
+      "file_size": 70511,
+      "width": 740,
+      "height": 493,
+      "total_pixels": 364820,
+      "basic_score": 0.8128267700880139,
+      "file_name": "latina-woman-olive-skin-portrait.jpg_af"
+    },
+    "llm_score": {
+      "success": true,
+      "relevance_score": 95.0,
+      "clarity_score": 90.0,
+      "watermark_score": 100.0,
+      "overall_score": 92.0,
+      "explanation": "The image is an excellent match for the search query and prompt. It features a woman with the requested medium olive skin tone in a well-composed portrait. The clarity is high, with sharp focus on the subject and no watermarks.",
+      "file_name": "latina-woman-olive-skin-portrait.jpg",
+      "caption": "A portrait of a smiling Latina woman with medium olive skin tone and wavy brown hair, holding a straw hat while leaning against a textured stone wall.",
+      "recommend": true,
+      "error": ""
+    }
+  },
+  {
+    "query": "Photo of a woman with medium olive/tan skin tone, close up portrait showing skin color",
+    "image_info": {
+      "url": "https://media.craiyon.com/2025-10-16/HHnguEnvRyGX5J-mIkxixA.webp",
+      "img_format": "WEBP",
+      "mode": "RGB",
+      "file_size": 97434,
+      "width": 896,
+      "height": 1280,
+      "total_pixels": 1146880,
+      "basic_score": 0.9098921963331614,
+      "file_name": "latina-woman-olive-skin-curly-hair-illustration.jpg"
+    },
+    "llm_score": {
+      "success": true,
+      "relevance_score": 75.0,
+      "clarity_score": 95.0,
+      "watermark_score": 85.0,
+      "overall_score": 80.0,
+      "explanation": "The image perfectly matches the subject description of a Latina woman with medium olive skin and dark curly hair. However, the prompt specifically requested a 'photo', and this is a digital illustration. There is also a small crayon-shaped logo in the bottom right corner.",
+      "file_name": "latina-woman-olive-skin-curly-hair-illustration.jpg",
+      "caption": "A high-quality digital illustration of a smiling Latina woman with medium olive skin, dark curly hair, and hazel eyes in a close-up portrait.",
+      "recommend": true,
+      "error": ""
+    }
+  },
+  {
+    "query": "Photo of a woman with very fair/light skin tone, close up portrait showing skin color, Mexican or Latina",
+    "image_info": {
+      "url": "https://img.magnific.com/free-photo/portrait-woman-seaside_23-2148523912.jpg?semt=ais_hybrid&w=740&q=80",
+      "img_format": "JPEG",
+      "mode": "RGB",
+      "file_size": 61159,
+      "width": 740,
+      "height": 740,
+      "total_pixels": 547600,
+      "basic_score": 0.8642178607569193,
+      "file_name": "fair-skinned-latina-woman-close-up-portrait.jpg"
+    },
+    "llm_score": {
+      "success": true,
+      "relevance_score": 98.0,
+      "clarity_score": 96.0,
+      "watermark_score": 100.0,
+      "overall_score": 97.0,
+      "explanation": "The image perfectly matches the search query and prompt. It is a high-resolution, professional close-up portrait of a woman with fair skin and Latina features. There are no watermarks, and the clarity is exceptional, showing fine skin texture and detail.",
+      "file_name": "fair-skinned-latina-woman-close-up-portrait.jpg",
+      "caption": "A high-detail close-up portrait of a woman with fair skin and dark, wavy hair, featuring Latina/Mexican characteristics. She is looking directly at the camera with a soft expression, her hair slightly windswept, wearing a light-colored turtleneck.",
+      "recommend": true,
+      "error": ""
+    }
+  },
+  {
+    "query": "Photo of a woman with very fair/light skin tone, close up portrait showing skin color, Mexican or Latina",
+    "image_info": {
+      "url": "https://thumbs.dreamstime.com/b/portrait-beautiful-latina-hispanic-woman-18430774.jpg",
+      "img_format": "JPEG",
+      "mode": "RGB",
+      "file_size": 43121,
+      "width": 600,
+      "height": 900,
+      "total_pixels": 540000,
+      "basic_score": 0.8532370828346768,
+      "file_name": "fair-skinned-latina-woman-close-up-portrait.jpg_08"
+    },
+    "llm_score": {
+      "success": true,
+      "relevance_score": 95.0,
+      "clarity_score": 92.0,
+      "watermark_score": 40.0,
+      "overall_score": 75.0,
+      "explanation": "The image is a perfect match for the search query and prompt, featuring a fair-skinned Latina woman in a high-quality, close-up portrait. The focus and lighting are excellent. However, there is a visible 'dreamstime' watermark across the center of the face, which significantly impacts its professional usability.",
+      "file_name": "fair-skinned-latina-woman-close-up-portrait.jpg",
+      "caption": "A detailed close-up portrait of a Latina woman with fair skin, dark hair, and a soft smile, framing her face with her hands.",
+      "recommend": true,
+      "error": ""
+    }
+  },
+  {
+    "query": "Photo of a woman with dark brown skin tone, close up portrait showing skin color",
+    "image_info": {
+      "url": "https://cdn.leonardo.ai/users/c7fd5c10-ce89-4680-b44e-08410f53daa4/generations/a684314c-83be-4d14-ae97-87a119f605c6/Leonardo_Kino_XL_Portrait_of_a_24_year_old_latina_woman_Colomb_1.jpg",
+      "img_format": "JPEG",
+      "mode": "RGB",
+      "file_size": 525847,
+      "width": 784,
+      "height": 1176,
+      "total_pixels": 921984,
+      "basic_score": 0.9368885686656626,
+      "file_name": "latina-woman-brown-skin-natural-portrait.jpg"
+    },
+    "llm_score": {
+      "success": true,
+      "relevance_score": 92.0,
+      "clarity_score": 98.0,
+      "watermark_score": 100.0,
+      "overall_score": 95.0,
+      "explanation": "The image is a high-quality, professional portrait that perfectly matches the search query and prompt. The skin tone is clearly depicted as a rich brown, the lighting is natural, and the subject has a Latina appearance. The clarity is exceptional, showcasing fine skin texture and sharp details in the eyes and hair.",
+      "file_name": "latina-woman-brown-skin-natural-portrait.jpg",
+      "caption": "A high-resolution close-up portrait of a Latina woman with a medium-to-dark brown skin tone and wavy dark brown hair, captured in soft, natural lighting.",
+      "recommend": true,
+      "error": ""
+    }
+  },
+  {
+    "query": "Photo of a woman with deep dark skin tone, close up portrait showing skin color",
+    "image_info": {
+      "url": "https://media.easy-peasy.ai/b2005f17-0d5b-4a71-8cb7-cb8b9ec1a218/e8f57152-18bd-4349-b3b2-d6a95e5dfddf_medium.webp",
+      "img_format": "WEBP",
+      "mode": "RGB",
+      "file_size": 87406,
+      "width": 800,
+      "height": 800,
+      "total_pixels": 640000,
+      "basic_score": 0.8976980434193645,
+      "file_name": "mexican-woman-traditional-embroidered-blouse-portrait.jpg"
+    },
+    "llm_score": {
+      "success": true,
+      "relevance_score": 85.0,
+      "clarity_score": 95.0,
+      "watermark_score": 100.0,
+      "overall_score": 92.0,
+      "explanation": "The image is a high-quality, professional portrait of a Mexican woman in a traditional setting. It matches the 'natural' and 'portrait' aspects of the query perfectly. While her skin tone is a rich tan/medium-dark, it might not be considered 'deep dark' by some standards, which slightly affects the relevance score for that specific keyword. However, the cultural representation and composition are excellent.",
+      "file_name": "mexican-woman-traditional-embroidered-blouse-portrait.jpg",
+      "caption": "A close-up portrait of a smiling Mexican woman with curly dark hair and tan skin, wearing a vibrant, floral-embroidered traditional blouse, standing in a sunlit courtyard with lush greenery and clay pots in the background.",
+      "recommend": true,
+      "error": ""
+    }
+  },
+  {
+    "query": "Photo of a woman with light/medium brown skin tone, close up portrait showing skin color",
+    "image_info": {
+      "url": "https://cdn.leonardo.ai/users/c7fd5c10-ce89-4680-b44e-08410f53daa4/generations/a684314c-83be-4d14-ae97-87a119f605c6/Leonardo_Kino_XL_Portrait_of_a_24_year_old_latina_woman_Colomb_3.jpg",
+      "img_format": "JPEG",
+      "mode": "RGB",
+      "file_size": 529623,
+      "width": 784,
+      "height": 1176,
+      "total_pixels": 921984,
+      "basic_score": 0.9370600452728753,
+      "file_name": "latina-woman-light-brown-skin-natural-portrait.jpg"
+    },
+    "llm_score": {
+      "success": true,
+      "relevance_score": 100.0,
+      "clarity_score": 98.0,
+      "watermark_score": 100.0,
+      "overall_score": 98.0,
+      "explanation": "The image perfectly aligns with the search query and prompt. It is a high-quality, professional-grade portrait of a woman with light/medium brown skin tone. The skin texture is visible and natural, and the lighting is soft and flattering. There are no watermarks present.",
+      "file_name": "latina-woman-light-brown-skin-natural-portrait.jpg",
+      "caption": "A high-resolution close-up portrait of a woman with light brown skin, featuring natural-looking skin texture, short wavy brown hair, and soft ambient lighting.",
+      "recommend": true,
+      "error": ""
+    }
+  },
+  {
+    "query": "Photo of a woman with light/medium brown skin tone, close up portrait showing skin color",
+    "image_info": {
+      "url": "https://media.istockphoto.com/id/1496615229/photo/beautiful-natural-woman-with-monstera-leaves.jpg?s=612x612&w=0&k=20&c=Z6qThwhGXH1YCo1_XkrAIrscq5tSBPO5SNHycWCSESU=",
+      "img_format": "JPEG",
+      "mode": "RGB",
+      "file_size": 29848,
+      "width": 612,
+      "height": 408,
+      "total_pixels": 249696,
+      "basic_score": 0.7666627131008505,
+      "file_name": "natural-latina-woman-portrait-brown-skin.jpg"
+    },
+    "llm_score": {
+      "success": true,
+      "relevance_score": 98.0,
+      "clarity_score": 95.0,
+      "watermark_score": 85.0,
+      "overall_score": 92.0,
+      "explanation": "The image perfectly matches the search query and prompt, featuring a woman with a light brown skin tone in a natural, close-up portrait. The lighting and composition are professional. There is a small, faint watermark in the bottom right corner.",
+      "file_name": "natural-latina-woman-portrait-brown-skin.jpg",
+      "caption": "A close-up portrait of a smiling woman with light-to-medium brown skin, surrounded by green tropical monstera leaves, highlighting her natural skin texture and radiant smile.",
+      "recommend": true,
+      "error": ""
+    }
+  },
+  {
+    "query": "Photo of a woman with light/medium brown skin tone, close up portrait showing skin color",
+    "image_info": {
+      "url": "https://c8.alamy.com/zooms/9/02e57e503fe940b7a0faa382607b8d77/b2mbr0.jpg",
+      "img_format": "JPEG",
+      "mode": "RGB",
+      "file_size": 69358,
+      "width": 402,
+      "height": 540,
+      "total_pixels": 217080,
+      "basic_score": 0.7622867171360316,
+      "file_name": "latina-woman-light-brown-skin-natural-portrait.jpg_07"
+    },
+    "llm_score": {
+      "success": true,
+      "relevance_score": 95.0,
+      "clarity_score": 90.0,
+      "watermark_score": 50.0,
+      "overall_score": 80.0,
+      "explanation": "The image is a perfect match for the search query and prompt, featuring a high-quality close-up portrait of a woman with light/medium brown skin and natural curly hair. The clarity and focus are excellent. However, there is a visible stock photo watermark at the bottom, which reduces its score for professional use.",
+      "file_name": "latina-woman-light-brown-skin-natural-portrait.jpg",
+      "caption": "A close-up portrait of a woman with light brown skin, featuring natural curly hair and expressive brown eyes while wearing beaded earrings.",
+      "recommend": true,
+      "error": ""
+    }
+  },
+  {
+    "query": "Photo of a woman with tan/brown skin tone, close up portrait showing skin color",
+    "image_info": {
+      "url": "https://cdn.leonardo.ai/users/c7fd5c10-ce89-4680-b44e-08410f53daa4/generations/a684314c-83be-4d14-ae97-87a119f605c6/Leonardo_Kino_XL_Portrait_of_a_24_year_old_latina_woman_Colomb_1.jpg",
+      "img_format": "JPEG",
+      "mode": "RGB",
+      "file_size": 525847,
+      "width": 784,
+      "height": 1176,
+      "total_pixels": 921984,
+      "basic_score": 0.9368885686656626,
+      "file_name": "latina-woman-tan-skin-natural-portrait.jpg"
+    },
+    "llm_score": {
+      "success": true,
+      "relevance_score": 100.0,
+      "clarity_score": 98.0,
+      "watermark_score": 100.0,
+      "overall_score": 98.0,
+      "explanation": "The image perfectly aligns with the search query and prompt, featuring a high-quality, close-up portrait of a woman with the specified skin tone and natural appearance. The clarity is exceptional, and there are no watermarks.",
+      "file_name": "latina-woman-tan-skin-natural-portrait.jpg",
+      "caption": "A stunning close-up portrait of a woman with tan brown skin, dark wavy hair, and brown eyes, captured with soft natural lighting.",
+      "recommend": true,
+      "error": ""
+    }
+  },
+  {
+    "query": "Photo of a woman with tan/brown skin tone, close up portrait showing skin color",
+    "image_info": {
+      "url": "https://i.pinimg.com/736x/17/8f/8f/178f8f3cd824c40cb2bbc3d84fed35c9.jpg",
+      "img_format": "JPEG",
+      "mode": "RGB",
+      "file_size": 59114,
+      "width": 736,
+      "height": 815,
+      "total_pixels": 599840,
+      "basic_score": 0.8720903481248576,
+      "file_name": "latina-woman-tan-skin-portrait.jpg"
+    },
+    "llm_score": {
+      "success": true,
+      "relevance_score": 90.0,
+      "clarity_score": 95.0,
+      "watermark_score": 100.0,
+      "overall_score": 92.0,
+      "explanation": "The image perfectly matches the request for a tan/brown skin tone portrait. While the makeup is more 'glam' than 'natural', it clearly displays the requested skin color and features in a high-quality close-up. There are no watermarks.",
+      "file_name": "latina-woman-tan-skin-portrait.jpg",
+      "caption": "A close-up portrait of a woman with a warm tan skin tone, featuring dark hair, defined eyebrows, and neutral-toned makeup, wearing a gold evil eye necklace and a white lace top.",
+      "recommend": true,
+      "error": ""
+    }
+  },
+  {
+    "query": "Photo of a woman with tan/brown skin tone, close up portrait showing skin color",
+    "image_info": {
+      "url": "https://media.istockphoto.com/id/598565670/photo/portrait-of-young-beautiful-latina-woman-looking-at-camera.jpg?s=612x612&w=0&k=20&c=T1uVZLciy8PMmD0LdeGCaU4QFh_KrcBF8bv7XhPUQNk=",
+      "img_format": "JPEG",
+      "mode": "RGB",
+      "file_size": 42606,
+      "width": 612,
+      "height": 459,
+      "total_pixels": 280908,
+      "basic_score": 0.7804707149606042,
+      "file_name": "latina-woman-tan-skin-natural-portrait.jpg_0f"
+    },
+    "llm_score": {
+      "success": true,
+      "relevance_score": 95.0,
+      "clarity_score": 90.0,
+      "watermark_score": 100.0,
+      "overall_score": 92.0,
+      "explanation": "The image perfectly matches the search query and prompt. It is a high-quality, close-up portrait of a woman with tan/brown skin, captured in natural golden hour light. The clarity is excellent, and there are no watermarks.",
+      "file_name": "latina-woman-tan-skin-natural-portrait.jpg",
+      "caption": "A close-up portrait of a beautiful Latina woman with long, curly brown hair and tan skin, illuminated by warm, natural sunlight.",
+      "recommend": true,
+      "error": ""
+    }
+  },
+  {
+    "query": "Photo of a woman with tan/brown skin tone, close up portrait showing skin color",
+    "image_info": {
+      "url": "https://i.pinimg.com/736x/57/65/bf/5765bfcab129603a924b63ab2d14b373.jpg",
+      "img_format": "JPEG",
+      "mode": "RGB",
+      "file_size": 70932,
+      "width": 736,
+      "height": 1178,
+      "total_pixels": 867008,
+      "basic_score": 0.8954539348651886,
+      "file_name": "latina_woman_tan_skin_portrait.jpg"
+    },
+    "llm_score": {
+      "success": true,
+      "relevance_score": 95.0,
+      "clarity_score": 80.0,
+      "watermark_score": 100.0,
+      "overall_score": 88.0,
+      "explanation": "The image is a near-perfect match for the search query, showcasing a woman with a tan skin tone in a close-up portrait. The lighting is soft and flattering, though the image appears slightly filtered, which affects the absolute clarity.",
+      "file_name": "latina_woman_tan_skin_portrait.jpg",
+      "caption": "A close-up portrait of a woman with tan brown skin, dark wavy hair, and natural-looking makeup, posing for a portrait.",
+      "recommend": true,
+      "error": ""
+    }
+  },
+  {
+    "query": "Photo showing both gold and silver jewelry together",
+    "image_info": {
+      "url": "https://cdn.shopify.com/s/files/1/0727/3745/6428/files/EVG_Blog_Article_Images_DESKTOP_MIX_SILVER_GOLD_2.jpg?v=1754514202",
+      "img_format": "JPEG",
+      "mode": "RGB",
+      "file_size": 191324,
+      "width": 1120,
+      "height": 896,
+      "total_pixels": 1003520,
+      "basic_score": 0.9395200964264524,
+      "file_name": "mixed-gold-silver-jewelry-bracelets.jpg"
+    },
+    "llm_score": {
+      "success": true,
+      "relevance_score": 100.0,
+      "clarity_score": 98.0,
+      "watermark_score": 100.0,
+      "overall_score": 98.0,
+      "explanation": "The image perfectly matches the search query and prompt, showcasing a professional arrangement of silver, gold, and mixed-metal bracelets. The clarity is exceptional, capturing fine details of the metalwork and gemstones without any watermarks.",
+      "file_name": "mixed-gold-silver-jewelry-bracelets.jpg",
+      "caption": "A high-quality product photograph displaying three luxury bracelets: a diamond-paved silver cuff, a woven gold bracelet with a diamond-studded clasp, and a two-tone silver and gold woven chain bracelet on a clean white background.",
+      "recommend": true,
+      "error": ""
+    }
+  },
+  {
+    "query": "Photo showing both gold and silver jewelry together",
+    "image_info": {
+      "url": "http://medleyjewellery.com.au/cdn/shop/articles/1024_x_1024_Medley_Jewellery_How_To_Mix_Metal_Unisex_Gender_Neutreul_1.jpg?v=1695000547",
+      "img_format": "JPEG",
+      "mode": "RGB",
+      "file_size": 135822,
+      "width": 1024,
+      "height": 1024,
+      "total_pixels": 1048576,
+      "basic_score": 0.9300410682670606,
+      "file_name": "mixed-gold-and-silver-jewelry-fashion-style.jpg"
+    },
+    "llm_score": {
+      "success": true,
+      "relevance_score": 100.0,
+      "clarity_score": 95.0,
+      "watermark_score": 100.0,
+      "overall_score": 96.0,
+      "explanation": "The image perfectly matches the search query and prompt, showcasing a professional-quality lifestyle shot of a woman wearing a variety of mixed gold and silver jewelry. The lighting and focus are excellent, highlighting the details of the rings, bracelets, and earrings.",
+      "file_name": "mixed-gold-and-silver-jewelry-fashion-style.jpg",
+      "caption": "A high-quality lifestyle photograph featuring a woman wearing a curated mix of gold and silver jewelry, including stacked rings, layered necklaces, and multiple bangles, set against a soft outdoor background.",
+      "recommend": true,
+      "error": ""
+    }
+  },
+  {
+    "query": "Photo showing both gold and silver jewelry together",
+    "image_info": {
+      "url": "http://robinsonsjewelers.com/cdn/shop/articles/how-to-wear-gold-silver-together-without-clashing_20251217010800_20251217-ai.jpg?v=1780867093&width=1024",
+      "img_format": "JPEG",
+      "mode": "RGB",
+      "file_size": 173544,
+      "width": 1024,
+      "height": 1024,
+      "total_pixels": 1048576,
+      "basic_score": 0.9335173035831369,
+      "file_name": "mixed-gold-silver-jewelry-layered-style.jpg"
+    },
+    "llm_score": {
+      "success": true,
+      "relevance_score": 100.0,
+      "clarity_score": 95.0,
+      "watermark_score": 85.0,
+      "overall_score": 92.0,
+      "explanation": "The image perfectly matches the search query, showcasing a balanced mix of gold and silver jewelry including layered necklaces, bracelets, and rings. The clarity is excellent and the composition is professional. There is a small 'AI-generated image' tag in the bottom right corner, but it is unobtrusive.",
+      "file_name": "mixed-gold-silver-jewelry-layered-style.jpg",
+      "caption": "A professional photograph of a smiling woman wearing a stylish combination of gold and silver jewelry, featuring layered necklaces with pendants, stacked bracelets, and multiple rings.",
+      "recommend": true,
+      "error": ""
+    }
+  },
+  {
+    "query": "Photo showing both gold and silver jewelry together",
+    "image_info": {
+      "url": "https://jolynneshane.com/wp-content/uploads/2019/05/victoria-emerson-accessories-1-2-720x1080.jpg",
+      "img_format": "JPEG",
+      "mode": "RGB",
+      "file_size": 133087,
+      "width": 720,
+      "height": 1080,
+      "total_pixels": 777600,
+      "basic_score": 0.8997947287465017,
+      "file_name": "mixed-gold-silver-beaded-wrap-bracelet.jpg"
+    },
+    "llm_score": {
+      "success": true,
+      "relevance_score": 90.0,
+      "clarity_score": 95.0,
+      "watermark_score": 100.0,
+      "overall_score": 92.0,
+      "explanation": "The image perfectly illustrates the concept of mixed jewelry, featuring a wrap bracelet with distinct gold, silver, and neutral tones. The focus is sharp on the jewelry, and the lifestyle composition is professional and clean.",
+      "file_name": "mixed-gold-silver-beaded-wrap-bracelet.jpg",
+      "caption": "A detailed close-up of a multi-strand wrap bracelet featuring a mix of gold and silver metallic beads, worn on a wrist against a casual grey and black outfit.",
+      "recommend": true,
+      "error": ""
+    }
+  },
+  {
+    "query": "Real silver jewelry photo, necklaces and earrings on white background",
+    "image_info": {
+      "url": "https://img.nihaojewelry.com/fit-in/800x800/product/2024/10/28/1850747180395139072/Sterling-Silver-925-Silver-Jewelry-Set-Pink-Star-Jewelry-Necklace-Ear-Stud-Ring-0.jpg",
+      "img_format": "WEBP",
+      "mode": "RGB",
+      "file_size": 50220,
+      "width": 800,
+      "height": 800,
+      "total_pixels": 640000,
+      "basic_score": 0.8935992543995736,
+      "file_name": "silver-jewelry-set-necklace-earrings-ring.jpg"
+    },
+    "llm_score": {
+      "success": true,
+      "relevance_score": 90.0,
+      "clarity_score": 95.0,
+      "watermark_score": 100.0,
+      "overall_score": 92.0,
+      "explanation": "The image is a high-quality professional photograph that perfectly matches the search query for silver jewelry, including a necklace, earrings, and a ring (along with a bracelet). The clarity is exceptional, and there are no watermarks. While the background is a light grey/silver rather than a pure white, it provides a clean and elegant presentation for the products.",
+      "file_name": "silver-jewelry-set-necklace-earrings-ring.jpg",
+      "caption": "A professional product photograph of a silver jewelry set including a square-cut gemstone necklace, matching stud earrings, a chain ring, and an adjustable tennis bracelet, displayed on a light grey textured background.",
+      "recommend": true,
+      "error": ""
+    }
+  },
+  {
+    "query": "Real silver jewelry photo, necklaces and earrings on white background",
+    "image_info": {
+      "url": "https://m.media-amazon.com/images/I/51swKi1N+xL._AC_UY1000_.jpg",
+      "img_format": "JPEG",
+      "mode": "RGB",
+      "file_size": 56429,
+      "width": 1149,
+      "height": 1000,
+      "total_pixels": 1149000,
+      "basic_score": 0.9166364462619224,
+      "file_name": "silver-necklace-earrings-crystal-jewelry-set.jpg"
+    },
+    "llm_score": {
+      "success": true,
+      "relevance_score": 90.0,
+      "clarity_score": 75.0,
+      "watermark_score": 100.0,
+      "overall_score": 80.0,
+      "explanation": "The image accurately depicts a silver-tone jewelry set consisting of a necklace and earrings on a clean white background, perfectly matching the prompt. While it does not include finger rings, the pendants are ring-shaped. The image quality is good for e-commerce, though it lacks the extreme sharpness found in high-end luxury photography.",
+      "file_name": "silver-necklace-earrings-crystal-jewelry-set.jpg",
+      "caption": "A silver-tone jewelry set featuring a rope chain necklace with three crystal-studded ring pendants and a pair of matching crystal-encrusted hoop earrings, shown on a white background.",
+      "recommend": true,
+      "error": ""
+    }
+  },
+  {
+    "query": "Real silver jewelry photo, necklaces and earrings on white background",
+    "image_info": {
+      "url": "https://m.media-amazon.com/images/I/61Rv23scgoL._AC_UY1000_AIweblab1381794,T1_.jpg",
+      "img_format": "JPEG",
+      "mode": "RGB",
+      "file_size": 88338,
+      "width": 1003,
+      "height": 1000,
+      "total_pixels": 1003000,
+      "basic_score": 0.9259567457351716,
+      "file_name": "silver-necklace-earring-jewelry-set-model.jpg"
+    },
+    "llm_score": {
+      "success": true,
+      "relevance_score": 70.0,
+      "clarity_score": 90.0,
+      "watermark_score": 100.0,
+      "overall_score": 75.0,
+      "explanation": "The image features a silver-toned necklace and matching earrings as requested, but it does not include any rings. The background is neutral rather than a pure studio white, and the subject is a model rather than a flat lay. The image is clear and sharp, though the decorative border might require cropping for professional use.",
+      "file_name": "silver-necklace-earring-jewelry-set-model.jpg",
+      "caption": "A detailed photograph of a woman wearing a silver-toned jewelry set, including a multi-strand necklace with a double circle pendant and matching triple circle drop earrings.",
+      "recommend": true,
+      "error": ""
+    }
+  },
+  {
+    "query": "Real gold jewelry photo, necklaces and earrings on white background",
+    "image_info": {
+      "url": "https://m.media-amazon.com/images/I/91O5GL-eZlL._AC_UY1000_.jpg",
+      "img_format": "JPEG",
+      "mode": "RGB",
+      "file_size": 245252,
+      "width": 1000,
+      "height": 1000,
+      "total_pixels": 1000000,
+      "basic_score": 0.9401903200973805,
+      "file_name": "gold-fashion-jewelry-collection-necklaces-rings-earrings.jpg"
+    },
+    "llm_score": {
+      "success": true,
+      "relevance_score": 75.0,
+      "clarity_score": 95.0,
+      "watermark_score": 100.0,
+      "overall_score": 85.0,
+      "explanation": "The image is a high-quality, well-composed photograph featuring all the requested items: gold-colored necklaces, earrings, and rings on a light background. However, the jewelry is explicitly labeled as 'Fashion Jewelry' on the display cards, which contradicts the 'real gold' requirement in the search query and prompt. Despite this, the visual quality is excellent for commercial use.",
+      "file_name": "gold-fashion-jewelry-collection-necklaces-rings-earrings.jpg",
+      "caption": "A high-angle flat lay photograph of a large collection of gold-toned fashion jewelry, including layered necklaces with charms and pearls, various styles of hoop earrings on display cards, and an assortment of rings and bracelets arranged on white and wooden surfaces.",
+      "recommend": true,
+      "error": ""
+    }
+  },
+  {
+    "query": "Real gold jewelry photo, necklaces and earrings on white background",
+    "image_info": {
+      "url": "https://m.media-amazon.com/images/I/71VLIBA++qL._AC_UY1000_.jpg",
+      "img_format": "JPEG",
+      "mode": "RGB",
+      "file_size": 131329,
+      "width": 1005,
+      "height": 1000,
+      "total_pixels": 1005000,
+      "basic_score": 0.9302102202490385,
+      "file_name": "gold-fashion-jewelry-set-necklaces-earrings-rings.jpg"
+    },
+    "llm_score": {
+      "success": true,
+      "relevance_score": 75.0,
+      "clarity_score": 95.0,
+      "watermark_score": 100.0,
+      "overall_score": 85.0,
+      "explanation": "The image perfectly matches the visual request for gold necklaces, earrings, and rings on a white background. However, the 'Fashion Jewelry' tag suggests these are costume pieces rather than 'real' solid gold as specified in the search query.",
+      "file_name": "gold-fashion-jewelry-set-necklaces-earrings-rings.jpg",
+      "caption": "A comprehensive collection of gold-toned fashion jewelry including layered necklaces with pendants, chunky chain bracelets, a variety of hoop and drop earrings, and multiple decorative rings, all arranged on a clean white background.",
+      "recommend": true,
+      "error": ""
+    }
+  },
+  {
+    "query": "Real gold jewelry photo, necklaces and earrings on white background",
+    "image_info": {
+      "url": "https://i.etsystatic.com/20394215/r/il/0c4991/6287371726/il_570xN.6287371726_1pia.jpg",
+      "img_format": "JPEG",
+      "mode": "RGB",
+      "file_size": 51094,
+      "width": 570,
+      "height": 855,
+      "total_pixels": 487350,
+      "basic_score": 0.8423476137271692,
+      "file_name": "gold-jewelry-set-necklace-earrings-ring.jpg"
+    },
+    "llm_score": {
+      "success": true,
+      "relevance_score": 95.0,
+      "clarity_score": 75.0,
+      "watermark_score": 100.0,
+      "overall_score": 82.0,
+      "explanation": "The image perfectly matches the search query, showcasing a gold jewelry set that includes a necklace, earrings, and a ring. It adheres to the prompt by featuring the items against a white background, though the necklace is held in a hand rather than lying flat. The clarity is acceptable for general use, but lacks the extreme sharpness of professional studio photography.",
+      "file_name": "gold-jewelry-set-necklace-earrings-ring.jpg",
+      "caption": "A matching yellow gold jewelry set featuring a teardrop-shaped pendant necklace, halo earrings, and a central ring, all embellished with brilliant clear stones against a white background.",
+      "recommend": true,
+      "error": ""
+    }
+  }
+]
