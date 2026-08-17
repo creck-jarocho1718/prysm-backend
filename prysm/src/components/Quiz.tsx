@@ -51,12 +51,12 @@ const questions: Question[] = [
     title: '¿Cuál es tu tono de piel?',
     subtitle: 'Selecciona la opción que más se parezca a tu piel',
     options: [
-      { id: 'muy-clara', label: 'Muy Clara', image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&q=80' },
-      { id: 'clara', label: 'Clara', image: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80' },
-      { id: 'media', label: 'Media', image: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&q=80' },
-      { id: 'morena-clara', label: 'Morena Clara', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80' },
-      { id: 'morena', label: 'Morena', image: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80' },
-      { id: 'morena-oscura', label: 'Morena Oscura', image: 'https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?w=400&q=80' }
+      { id: 'muy-clara', label: 'Muy Clara', image: '/assets/skin-muy-clara.svg' },
+      { id: 'clara', label: 'Clara', image: '/assets/skin-clara.svg' },
+      { id: 'media', label: 'Media', image: '/assets/skin-media.svg' },
+      { id: 'morena-clara', label: 'Morena Clara', image: '/assets/skin-morena-clara.svg' },
+      { id: 'morena', label: 'Morena', image: '/assets/skin-morena.svg' },
+      { id: 'morena-oscura', label: 'Morena Oscura', image: '/assets/skin-morena-oscura.svg' }
     ]
   },
   {
@@ -66,12 +66,12 @@ const questions: Question[] = [
     title: '¿Cuál es tu tipo de silueta?',
     subtitle: 'Selecciona la que mejor describa tu figura',
     options: [
-      { id: 'reloj-arena', label: 'Reloj de Arena', image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&q=80' },
-      { id: 'triangulo', label: 'Triángulo', image: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=400&q=80' },
-      { id: 'triangulo-inv', label: 'Triángulo Invertido', image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=400&q=80' },
-      { id: 'rectangulo', label: 'Rectángulo', image: 'https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?w=400&q=80' },
-      { id: 'ovalada', label: 'Ovalada', image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&q=80' },
-      { id: 'diamante', label: 'Diamante', image: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=400&q=80' }
+      { id: 'reloj-arena', label: 'Reloj de Arena', image: '/assets/silhouette-reloj-arena.svg' },
+      { id: 'triangulo', label: 'Triángulo', image: '/assets/silhouette-triangulo.svg' },
+      { id: 'triangulo-inv', label: 'Triángulo Invertido', image: '/assets/silhouette-triangulo-inv.svg' },
+      { id: 'rectangulo', label: 'Rectángulo', image: '/assets/silhouette-rectangulo.svg' },
+      { id: 'ovalada', label: 'Ovalada', image: '/assets/silhouette-ovalada.svg' },
+      { id: 'diamante', label: 'Diamante', image: '/assets/silhouette-diamante.svg' }
     ]
   },
   {
@@ -137,9 +137,9 @@ const questions: Question[] = [
     title: '¿Dorado o plateado?',
     subtitle: '¿Qué joyería te queda mejor?',
     options: [
-      { id: 'dorado', label: 'Dorado', image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&q=80' },
-      { id: 'plateado', label: 'Plateado', image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&q=80' },
-      { id: 'ambos', label: 'Ambos', image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80' }
+      { id: 'dorado', label: 'Dorado', image: '/assets/jewelry-dorado.svg' },
+      { id: 'plateado', label: 'Plateado', image: '/assets/jewelry-plateado.svg' },
+      { id: 'ambos', label: 'Ambos', image: '/assets/jewelry-ambos.svg' }
     ]
   },
   {
@@ -189,12 +189,12 @@ const questions: Question[] = [
     title: '¿Cuál es tu look de referencia?',
     subtitle: 'Elige el arquetipo que más te inspire',
     options: [
-      { id: 'natural', label: 'Natural', image: 'https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?w=400&q=80' },
-      { id: 'dramatica', label: 'Dramática', image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=400&q=80' },
-      { id: 'romantica', label: 'Romántica', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80' },
-      { id: 'ingenua', label: 'Ingenua', image: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&q=80' },
-      { id: 'arquitectonica', label: 'Arquitectónica', image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&q=80' },
-      { id: 'glamourosa', label: 'Glamourosa', image: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&q=80' }
+      { id: 'natural', label: 'Natural', image: '/assets/archetype-natural.svg' },
+      { id: 'dramatica', label: 'Dramática', image: '/assets/archetype-dramatica.svg' },
+      { id: 'romantica', label: 'Romántica', image: '/assets/archetype-romantica.svg' },
+      { id: 'ingenua', label: 'Ingenua', image: '/assets/archetype-ingenua.svg' },
+      { id: 'arquitectonica', label: 'Arquitectónica', image: '/assets/archetype-arquitectonica.svg' },
+      { id: 'glamourosa', label: 'Glamourosa', image: '/assets/archetype-glamourosa.svg' }
     ]
   },
   {
