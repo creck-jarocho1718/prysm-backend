@@ -6,34 +6,55 @@ interface ResultPreviewProps {
   onPaywall: () => void;
 }
 
-const includes = [
+// Global app reference for verify modal
+declare global {
+  interface Window {
+    app?: any;
+  }
+}
+
+const testimonials = [
   {
-    title: 'Tu temporada de color personalizada',
-    desc: 'Otoño, Primavera, Verano o Invierno con tu subtipo exacto'
+    score: '9.1',
+    text: 'Nunca supe que el color burdeos me sentaba así de bien. En dos semanas me hicieron 4 cumplidos en el trabajo. El informe cambió cómo me visto para siempre.',
+    name: 'Camila R.',
+    location: 'Ciudad de México',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&q=80&auto=format&fit=crop'
   },
   {
-    title: '8 colores que te favorecen',
-    desc: 'Con hex codes exactos para comprar online o en tienda'
+    score: '9.4',
+    text: 'Pensé que era un test más, pero la guía de compras me ahorró $400 USD en ropa que habría comprado y nunca usado.',
+    name: 'Valentina T.',
+    location: 'Guadalajara',
+    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&q=80&auto=format&fit=crop'
   },
   {
-    title: 'Guía de estilo según tu silueta',
-    desc: 'Qué cortar, qué evitar, qué telas y proporciones favorecen'
+    score: '9.7',
+    text: 'La sección de cabello fue un cambio de vida. Mi estilista no podía creer lo preciso que era. Ahora voy a mis citas con una seguridad que nunca tuve.',
+    name: 'Andrea M.',
+    location: 'Monterrey',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&q=80&auto=format&fit=crop'
   },
   {
-    title: '3 colores de cabello recomendados',
-    desc: 'Con códigos de color y técnica de aplicación'
+    score: '8.9',
+    text: 'Tengo 52 años y pensé que ya no había nada que hacer. El informe me demostró que estaba equivocada. Mis amigas me preguntan qué me hice.',
+    name: 'Lucía H.',
+    location: 'Puebla',
+    avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&q=80&auto=format&fit=crop'
   },
   {
-    title: '4 outfits por ocasión',
-    desc: 'Día a día, oficina, citas y viajes — listos para copiar'
+    score: '9.2',
+    text: 'Trabajo en televisión y el informe me dio exactamente los colores que debo usar frente a cámara.',
+    name: 'Daniela S.',
+    location: 'Ciudad de México',
+    avatar: 'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=80&q=80&auto=format&fit=crop'
   },
   {
-    title: 'Joyería, bolsos y zapatos ideales',
-    desc: 'Metal correcto, estilos y marcas accesibles'
-  },
-  {
-    title: 'PDF premium para descargar',
-    desc: '7 páginas editable para guardar o imprimir'
+    score: '9.5',
+    text: 'Me compré un vestido azul que nunca me había puesto. El informe dijo que era mi color y tenía razón. Ahora todo lo que compro me queda bien.',
+    name: 'Sofía G.',
+    location: 'Tijuana',
+    avatar: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=80&q=80&auto=format&fit=crop'
   }
 ];
 
@@ -45,98 +66,348 @@ export default function ResultPreview({ userName, onViewReport, onPaywall }: Res
     return () => clearTimeout(timer);
   }, []);
 
+  const handleVerifyClick = () => {
+    if (window.app?.showVerifyModal) {
+      window.app.showVerifyModal();
+    }
+  };
+
   return (
     <div className="screen result-preview-screen">
-      <div className="rp-cover">
-        <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=1920&q=80" alt="Cover" />
-        <div className="rp-cover-content">
-          <p className="rp-eyebrow">Tu análisis está listo</p>
-          <h1 className="rp-title">
-            Desbloquea tu<br /><em>informe completo.</em>
+      {/* Ambient orbs */}
+      <div className="orb orb-1" />
+      <div className="orb orb-2" />
+      <div className="orb orb-3" />
+
+      {/* HERO CON FOTO EDITORIAL */}
+      <div className="rp-hero" id="rpCoverEl">
+        <div className="rp-hero-bg">
+          <img
+            id="rpHeroImg"
+            src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1400&q=85&auto=format&fit=crop&crop=top"
+            alt="Fashion editorial"
+          />
+        </div>
+        <div className="rp-hero-overlay" />
+        <div className="rp-hero-content">
+          <div className="rp-badge">
+            <div className="rp-badge-dot" />
+            Análisis completado
+          </div>
+          <h1 className="rp-hero-title">
+            Tu informe<br /><em>está listo.</em>
           </h1>
-          <p className="rp-sub">Accede a todo — temporada, paleta, outfits y PDF.</p>
+          <div className="rp-hero-name" id="rpNameTag">
+            {userName || 'Valentina'} · PRYSM-2026 · Otoño Profundo
+          </div>
+          <a
+            className="rp-scroll-hint"
+            href="#rp-includes"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById('rp-includes')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+          >
+            <span>Descubre más</span>
+            <div className="rp-scroll-line" />
+          </a>
         </div>
       </div>
 
-      <div className="rp-includes-section">
-        <div className="rp-includes">
-          {includes.map((item, idx) => (
-            <div
-              key={idx}
-              className="rp-include-item"
-              style={{
-                opacity: animated ? 1 : 0,
-                transform: animated ? 'translateY(0)' : 'translateY(20px)',
-                transition: `all 0.5s cubic-bezier(0.16,1,0.3,1) ${idx * 0.08}s`
-              }}
-            >
-              <div className="rp-include-icon">✓</div>
-              <div className="rp-include-text">
-                <div className="rp-include-title">{item.title}</div>
-                <div className="rp-include-desc">{item.desc}</div>
+      {/* EDITORIAL CREDIBILITY */}
+      <div className="rp-editorial">
+        <div className="rp-editorial-label">Tendencia editorial · Respaldado por la industria de moda</div>
+        <div className="rp-editorial-logos">
+          <div className="rp-editorial-logo">Vogue <span>Style Lab</span></div>
+          <div className="rp-editorial-dot" />
+          <div className="rp-editorial-logo">Elle <span>Beauty</span></div>
+          <div className="rp-editorial-dot" />
+          <div className="rp-editorial-logo">Harper's <span>Bazaar</span></div>
+          <div className="rp-editorial-dot" />
+          <div className="rp-editorial-logo">Forbes <span>Style</span></div>
+        </div>
+        <div className="rp-editorial-badge">
+          <div className="rp-editorial-badge-icon">✦</div>
+          <div className="rp-editorial-badge-text">Metodología respaldada por estilistas profesionales</div>
+        </div>
+      </div>
+
+      {/* STATS */}
+      <div className="rp-stats">
+        <div>
+          <div className="rp-stat-num" id="rpScoreDisplay">9.4</div>
+          <div className="rp-stat-label">PRYSM Score</div>
+        </div>
+        <div>
+          <div className="rp-stat-num">6</div>
+          <div className="rp-stat-label">Categorías</div>
+        </div>
+        <div>
+          <div className="rp-stat-num">$299</div>
+          <div className="rp-stat-label">MXN · Pago único</div>
+        </div>
+      </div>
+
+      {/* INCLUDES */}
+      <div className="rp-includes-section" id="rp-includes">
+        <div className="rp-includes-header">
+          <div className="rp-includes-label">Tu informe incluye</div>
+          <h2 className="rp-includes-title">Todo lo que necesitas para verte <em>increíble</em></h2>
+          <div className="rp-includes-sub">Cada sección personalizada con tus datos reales de análisis</div>
+        </div>
+
+        <div className="rp-includes-body">
+          <div className="rp-includes-intro">
+            <h3 className="rp-includes-intro-title">Tu guía <em>editorial</em> de estilo personal</h3>
+            <p className="rp-includes-intro-text">
+              No es un test genérico. Es un documento de 7 páginas diseñado exclusivamente para ti,
+              con los colores, siluetas y recomendaciones que mejor funcionan con tu biotipo único.
+            </p>
+            <div className="rp-includes-intro-cta">↓ Tus resultados personalizados</div>
+          </div>
+
+          <div className="rp-color-grid">
+            {/* Card 1 */}
+            <div className="rp-color-card" style={{ animationDelay: '0.1s' }}>
+              <div className="rp-color-strip">
+                <div className="rp-color-strip-top">
+                  <div className="rp-color-dot" style={{ background: '#B5691B' }} />
+                  <div className="rp-color-dot" style={{ background: '#6E2C00' }} />
+                  <div className="rp-color-dot" style={{ background: '#E07B39' }} />
+                  <div className="rp-color-dot" style={{ background: '#2F4F1E' }} />
+                  <div className="rp-color-dot" style={{ background: '#A0522D' }} />
+                  <div className="rp-color-dot" style={{ background: '#8B4513' }} />
+                </div>
+                <div className="rp-color-strip-bottom">
+                  <div className="rp-strip-segment" style={{ background: '#B5691B' }} />
+                  <div className="rp-strip-segment" style={{ background: '#6E2C00' }} />
+                  <div className="rp-strip-segment" style={{ background: '#E07B39' }} />
+                  <div className="rp-strip-segment" style={{ background: '#2F4F1E' }} />
+                  <div className="rp-strip-segment" style={{ background: '#A0522D' }} />
+                  <div className="rp-strip-segment" style={{ background: '#8B4513' }} />
+                </div>
+              </div>
+              <div className="rp-color-content">
+                <div className="rp-color-number">01</div>
+                <div className="rp-color-title">Temporada de color</div>
+                <div className="rp-color-desc">Tu subtipo exacto y por qué estos colores funcionan con tu tono de piel, ojos y cabello.</div>
+                <div className="rp-color-hex-row">
+                  <div className="rp-color-hex-chip">#B5691B</div>
+                  <div className="rp-color-hex-chip">#6E2C00</div>
+                  <div className="rp-color-hex-chip">#E07B39</div>
+                </div>
               </div>
             </div>
-          ))}
-        </div>
 
-        <div className="rp-price-box">
-          <div className="rp-price-tag">Pago único · Acceso permanente</div>
-          <div className="rp-price">$299 <small>MXN</small></div>
-          <div className="rp-price-note">IVA incluido · Sin suscripciones</div>
-        </div>
+            {/* Card 2 */}
+            <div className="rp-color-card" style={{ animationDelay: '0.2s' }}>
+              <div className="rp-color-strip">
+                <div className="rp-color-strip-top">
+                  <div className="rp-color-dot" style={{ background: '#3D2314' }} />
+                  <div className="rp-color-dot" style={{ background: '#C68642' }} />
+                  <div className="rp-color-dot" style={{ background: '#567568' }} />
+                  <div className="rp-color-dot" style={{ background: '#C0392B' }} />
+                </div>
+                <div className="rp-color-strip-bottom">
+                  <div className="rp-strip-segment" style={{ background: '#3D2314' }} />
+                  <div className="rp-strip-segment" style={{ background: '#C68642' }} />
+                  <div className="rp-strip-segment" style={{ background: '#567568' }} />
+                  <div className="rp-strip-segment" style={{ background: '#C0392B' }} />
+                </div>
+              </div>
+              <div className="rp-color-content">
+                <div className="rp-color-number">02</div>
+                <div className="rp-color-title">8 colores que te favorecen</div>
+                <div className="rp-color-desc">Tus colores protagonistas, los de acento y los que debes evitar. Con hex codes para comprar online.</div>
+                <div className="rp-color-hex-row">
+                  <div className="rp-color-hex-chip">#C68642</div>
+                  <div className="rp-color-hex-chip">#567568</div>
+                  <div className="rp-color-hex-chip">#C0392B</div>
+                </div>
+              </div>
+            </div>
 
-        <a
-          className="rp-cta"
-          href="https://link.mercadopago.com.mx/prysm"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <rect x="3" y="11" width="18" height="11" rx="2"/>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-          </svg>
-          Pagar con MercadoPago
-        </a>
+            {/* Card 3 */}
+            <div className="rp-color-card" style={{ animationDelay: '0.3s' }}>
+              <div className="rp-color-strip">
+                <div className="rp-color-strip-top" style={{ background: 'linear-gradient(135deg,rgba(212,164,115,.1),rgba(32,94,83,.08))', flexDirection: 'column', gap: '4px' }}>
+                  <div style={{ display: 'flex', gap: '4px', width: '100%', justifyContent: 'center' }}>
+                    <div style={{ width: '20px', height: '28px', background: 'rgba(255,255,255,.06)', borderRadius: '3px 3px 0 0' }} />
+                    <div style={{ width: '30px', height: '36px', background: 'rgba(212,164,115,.15)', borderRadius: '3px 3px 0 0', border: '1px solid rgba(212,164,115,.2)' }} />
+                    <div style={{ width: '20px', height: '30px', background: 'rgba(255,255,255,.06)', borderRadius: '3px 3px 0 0' }} />
+                  </div>
+                  <div style={{ fontSize: '8px', letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.2)' }}>Silueta</div>
+                </div>
+                <div className="rp-color-strip-bottom">
+                  <div className="rp-strip-segment" style={{ background: 'linear-gradient(90deg,#d4a473,#205E53)' }} />
+                </div>
+              </div>
+              <div className="rp-color-content">
+                <div className="rp-color-number">03</div>
+                <div className="rp-color-title">Guía de estilo y silueta</div>
+                <div className="rp-color-desc">Qué siluetas, telas y proporciones realzan tu figura. Qué cortar, qué evitar y cómo dressing tu cuerpo.</div>
+                <div className="rp-color-hex-row">
+                  <div className="rp-color-hex-chip">Reloj de arena</div>
+                  <div className="rp-color-hex-chip">Algodón · Seda</div>
+                </div>
+              </div>
+            </div>
 
-        <div className="rp-trust">
-          <span>Pago seguro · Procesado por MercadoPago</span>
-        </div>
+            {/* Card 4 */}
+            <div className="rp-color-card" style={{ animationDelay: '0.4s' }}>
+              <div className="rp-color-strip">
+                <div className="rp-color-strip-top">
+                  <div className="rp-color-dot" style={{ background: '#4A2810' }} />
+                  <div className="rp-color-dot" style={{ background: '#7B3F00' }} />
+                  <div className="rp-color-dot" style={{ background: '#C68642' }} />
+                </div>
+                <div className="rp-color-strip-bottom">
+                  <div className="rp-strip-segment" style={{ background: '#4A2810' }} />
+                  <div className="rp-strip-segment" style={{ background: '#7B3F00' }} />
+                  <div className="rp-strip-segment" style={{ background: '#C68642' }} />
+                </div>
+              </div>
+              <div className="rp-color-content">
+                <div className="rp-color-number">04</div>
+                <div className="rp-color-title">Color y corte de cabello</div>
+                <div className="rp-color-desc">Tonos que iluminan tu rostro y el corte que mejor se adapta a tu forma de cara y textura de pelo.</div>
+                <div className="rp-color-hex-row">
+                  <div className="rp-color-hex-chip">Castaño cálido</div>
+                  <div className="rp-color-hex-chip">Corte en V</div>
+                </div>
+              </div>
+            </div>
 
-        <div className="rp-verify-link" onClick={() => {}}>
-          <span>¿Ya pagaste? Verificar mi pago</span>
+            {/* Card 5 */}
+            <div className="rp-color-card" style={{ animationDelay: '0.5s' }}>
+              <div className="rp-color-strip">
+                <div className="rp-color-strip-top" style={{ background: 'linear-gradient(135deg,rgba(255,255,255,.04),rgba(255,255,255,.02))', flexDirection: 'column', gap: '4px', justifyContent: 'center' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px', width: '100%', maxWidth: '80px' }}>
+                    <div style={{ height: '24px', background: 'rgba(212,164,115,.1)', borderRadius: '4px', border: '1px solid rgba(212,164,115,.1)' }} />
+                    <div style={{ height: '24px', background: 'rgba(32,94,83,.15)', borderRadius: '4px', border: '1px solid rgba(32,94,83,.15)' }} />
+                    <div style={{ height: '24px', background: 'rgba(181,105,27,.15)', borderRadius: '4px', border: '1px solid rgba(181,105,27,.1)' }} />
+                    <div style={{ height: '24px', background: 'rgba(255,255,255,.04)', borderRadius: '4px', border: '1px solid rgba(255,255,255,.04)' }} />
+                  </div>
+                </div>
+                <div className="rp-color-strip-bottom">
+                  <div className="rp-strip-segment" style={{ background: '#d4a473' }} />
+                  <div className="rp-strip-segment" style={{ background: '#205E53' }} />
+                  <div className="rp-strip-segment" style={{ background: '#B5691B' }} />
+                  <div className="rp-strip-segment" style={{ background: '#1a1a1a' }} />
+                </div>
+              </div>
+              <div className="rp-color-content">
+                <div className="rp-color-number">05</div>
+                <div className="rp-color-title">4 outfits por ocasión</div>
+                <div className="rp-color-desc">Día a día, oficina, citas y viajes. Cada uno adaptado a tu presupuesto real y fácil de replicar.</div>
+                <div className="rp-color-hex-row">
+                  <div className="rp-color-hex-chip">4 looks completos</div>
+                  <div className="rp-color-hex-chip">Adaptados</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 6 */}
+            <div className="rp-color-card" style={{ animationDelay: '0.6s' }}>
+              <div className="rp-color-strip">
+                <div className="rp-color-strip-top" style={{ background: 'linear-gradient(135deg,rgba(212,164,115,.12),rgba(32,94,83,.08))', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                  <div style={{ width: '50px', height: '64px', background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.08)', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ fontFamily: 'var(--serif)', fontSize: '10px', color: 'rgba(212,164,115,.5)' }}>P</div>
+                  </div>
+                  <div style={{ fontSize: '8px', letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.2)' }}>7 páginas</div>
+                </div>
+                <div className="rp-color-strip-bottom">
+                  <div className="rp-strip-segment" style={{ background: 'linear-gradient(90deg,#d4a473,#205E53)' }} />
+                </div>
+              </div>
+              <div className="rp-color-content">
+                <div className="rp-color-number">06</div>
+                <div className="rp-color-title">PDF premium editorial</div>
+                <div className="rp-color-desc">7 páginas diseñadas tipo revista. Guarda, imprime o muestraselo a tu estilista. Acceso permanente.</div>
+                <div className="rp-color-hex-row">
+                  <div className="rp-color-hex-chip">Descargar</div>
+                  <div className="rp-color-hex-chip">Imprimir</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="rp-validation">
-        <p className="rp-validation-label">Validado por expertos en estilo</p>
-        <div className="rp-validation-logos">
-          <span className="rp-validation-logo">Vogue<span>Editorial</span></span>
-          <div className="rp-validation-dot" />
-          <span className="rp-validation-logo">Elle<span>Style</span></span>
-          <div className="rp-validation-dot" />
-          <span className="rp-validation-logo">GQ<span>Fashion</span></span>
+      {/* DIVIDER */}
+      <div className="rp-divider" />
+
+      {/* PRICE CTA */}
+      <div className="rp-price-section">
+        <div className="rp-price-card">
+          <div className="rp-price-tag">Acceso completo · Pago único</div>
+          <div className="rp-price-amount">$299 <small>MXN</small></div>
+          <div className="rp-price-note">Sin suscripción · Acceso de por vida</div>
+          <a
+            className="rp-buy-btn"
+            href="https://link.mercadopago.com.mx/prysm"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="3" y="11" width="18" height="11" rx="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            Obtener mi informe ahora
+          </a>
+          <div className="rp-guarantee">✓ Acceso inmediato · ✓ PDF premium · ✓ Sin límite de tiempo</div>
+          <div className="rp-verify" onClick={handleVerifyClick}>¿Ya pagaste? Verificar mi pago</div>
+        </div>
+        <div className="rp-trust-row">
+          <div className="rp-trust-item">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            Pago seguro
+          </div>
+          <div className="rp-trust-item">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="3" y="11" width="18" height="11" rx="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            MercadoPago
+          </div>
+          <div className="rp-trust-item">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Sin suscripción
+          </div>
         </div>
       </div>
 
-      <div style={{ padding: '60px 48px', textAlign: 'center', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
-        <button
-          onClick={onPaywall}
-          style={{
-            fontFamily: 'var(--sans)',
-            fontSize: '11px',
-            fontWeight: 400,
-            letterSpacing: '0.4em',
-            textTransform: 'uppercase',
-            color: '#fff',
-            background: '#111',
-            padding: '24px 56px',
-            border: 'none',
-            cursor: 'pointer',
-            transition: 'all 0.5s cubic-bezier(0.16,1,0.3,1)'
-          }}
-        >
-          Desbloquear Informe Completo
-        </button>
+      {/* CAROUSEL */}
+      <div className="rp-carousel-section">
+        <div className="rp-carousel-header">
+          <div className="rp-carousel-label">Resultados reales</div>
+          <h3 className="rp-carousel-title">Lo que dicen <em>nuestras clientas</em></h3>
+          <div className="rp-carousel-sub">Valoración promedio 4.9/5 · Más de 2,400 mujeres en México</div>
+        </div>
+        <div className="rp-carousel-track-wrap">
+          <div className="rp-carousel-track">
+            {[...testimonials, ...testimonials].map((t, i) => (
+              <div key={i} className="rp-testimonial-card">
+                <div className="rp-carousel-stars-badge">
+                  <div className="rp-tc-score-badge">{t.score}</div>
+                </div>
+                <div className="rp-tc-stars">★★★★★</div>
+                <div className="rp-tc-text">"{t.text}"</div>
+                <div className="rp-tc-author">
+                  <img className="rp-tc-avatar" src={t.avatar} alt={t.name} />
+                  <div>
+                    <div className="rp-tc-name">{t.name}</div>
+                    <div className="rp-tc-meta">{t.location}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
