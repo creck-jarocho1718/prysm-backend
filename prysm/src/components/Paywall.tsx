@@ -4,19 +4,39 @@ interface PaywallProps {
   onBack: () => void;
 }
 
-export default function Paywall({ onBack }: PaywallProps) {
-  const [formData, setFormData] = useState({
-    email: '',
-    card: '',
-    expiry: '',
-    cvc: ''
-  });
-  const [submitted, setSubmitted] = useState(false);
+const includes = [
+  {
+    title: 'Tu temporada de color personalizada',
+    desc: 'Otoño, Primavera, Verano o Invierno con tu subtipo exacto'
+  },
+  {
+    title: '8 colores que te favorecen',
+    desc: 'Con hex codes exactos para comprar online o en tienda'
+  },
+  {
+    title: 'Guía de estilo según tu silueta',
+    desc: 'Qué cortar, qué evitar, qué telas y proporciones favorecen'
+  },
+  {
+    title: '3 colores de cabello recomendados',
+    desc: 'Con códigos de color y técnica de aplicación'
+  },
+  {
+    title: '4 outfits por ocasión',
+    desc: 'Día a día, oficina, citas y viajes — listos para copiar'
+  },
+  {
+    title: 'Joyería, bolsos y zapatos ideales',
+    desc: 'Metal correcto, estilos y marcas accesibles'
+  },
+  {
+    title: 'PDF premium para descargar',
+    desc: '7 páginas editable para guardar o imprimir'
+  }
+];
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(true);
-  };
+export default function Paywall({ onBack }: PaywallProps) {
+  const [submitted, setSubmitted] = useState(false);
 
   if (submitted) {
     return (
@@ -77,89 +97,50 @@ export default function Paywall({ onBack }: PaywallProps) {
       </nav>
 
       <div className="pay-inner">
-        <span className="pay-tag">Oferta Especial</span>
-
+        <p className="pay-eyebrow">Tu análisis está listo</p>
         <h1 className="pay-title">
-          Desbloquea tu<br /><em>Informe Completo</em>
+          Desbloquea tu<br /><em>informe completo.</em>
         </h1>
+        <p className="pay-sub">Accede a todo — temporada, paleta, outfits y PDF.</p>
 
-        <p className="pay-sub">
-          Accede a todas las recomendaciones personalizadas,
-          tu paleta de colores completa y consejos de expertos.
-        </p>
-
-        <div className="pay-card">
-          <div className="pay-row">
-            <div>
-              <p className="pay-product">Informe Premium</p>
-              <p className="pay-desc">Acceso de por vida</p>
+        <div className="pay-includes">
+          {includes.map((item, idx) => (
+            <div key={idx} className="pay-include-item">
+              <div className="pay-include-icon">✓</div>
+              <div className="pay-include-text">
+                <div className="pay-include-title">{item.title}</div>
+                <div className="pay-include-desc">{item.desc}</div>
+              </div>
             </div>
-            <div style={{ textAlign: 'right' }}>
-              <p className="pay-price">$19.99</p>
-              <p className="pay-old">$49.99</p>
-            </div>
-          </div>
-
-          <p className="pay-savings">Ahorra 60% — Oferta por tiempo limitado</p>
-
-          <form onSubmit={handleSubmit}>
-            <div className="pay-field">
-              <label>Email</label>
-              <input
-                type="email"
-                className="pay-input"
-                placeholder="tu@email.com"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                required
-              />
-            </div>
-
-            <div className="pay-field">
-              <label>Datos de Pago</label>
-              <input
-                type="text"
-                className="pay-input"
-                placeholder="Número de tarjeta"
-                value={formData.card}
-                onChange={(e) => setFormData({ ...formData, card: e.target.value })}
-                required
-              />
-            </div>
-
-            <div className="pay-grid">
-              <input
-                type="text"
-                className="pay-input"
-                placeholder="MM/AA"
-                value={formData.expiry}
-                onChange={(e) => setFormData({ ...formData, expiry: e.target.value })}
-                required
-              />
-              <input
-                type="text"
-                className="pay-input"
-                placeholder="CVC"
-                value={formData.cvc}
-                onChange={(e) => setFormData({ ...formData, cvc: e.target.value })}
-                required
-              />
-            </div>
-
-            <button type="submit" className="pay-submit">
-              Completar Compra
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M5 12h14M12 5l7 7-7 7"/>
-              </svg>
-            </button>
-          </form>
-
-          <p className="pay-tax-note">Impuestos incluidos. Cancelación en cualquier momento.</p>
+          ))}
         </div>
 
-        <p className="pay-trust">
-          🔒 Pago seguro · SSL encriptado · Procesado por Stripe
-        </p>
+        <div className="pay-price-box">
+          <div className="pay-price-tag">Pago único · Acceso permanente</div>
+          <div className="pay-price">$346.84 <small>MXN</small></div>
+          <div className="pay-price-note">IVA incluido · Sin suscripciones</div>
+        </div>
+
+        <a
+          className="pay-cta"
+          href="https://link.mercadopago.com.mx/prysm"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <rect x="3" y="11" width="18" height="11" rx="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          Pagar con MercadoPago
+        </a>
+
+        <div className="pay-trust">
+          <span>Pago seguro · Procesado por MercadoPago</span>
+        </div>
+
+        <div className="pay-verify-link">
+          <span>¿Ya pagaste? Verificar mi pago</span>
+        </div>
       </div>
     </div>
   );

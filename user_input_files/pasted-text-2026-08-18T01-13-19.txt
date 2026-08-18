@@ -1,0 +1,261 @@
+Prompt:
+
+text
+
+
+Tengo una app de análisis de imagen personal llamada PRYSM en un solo archivo HTML. 
+Necesito actualizar DOS cosas específicas:
+---
+## 1. PANTALLA "Tu Informe Incluye" (antes de pagar)
+Busca la pantalla con data-screen="result-preview" y reemplaza su contenido con ESTO EXACTO:
+HTML para result-preview:
+```html
+<div class="result-preview-screen">
+  <div class="rp-inner">
+    <div class="rp-eyebrow">Tu análisis está listo</div>
+    <h2 class="rp-title">Desbloquea tu<br><em>informe completo.</em></h2>
+    <p class="rp-sub">Accede a todo — temporada, paleta, outfits y PDF.</p>
+    <div class="rp-includes">
+      <div class="rp-include-item">
+        <div class="rp-include-icon">✓</div>
+        <div class="rp-include-text">
+          <div class="rp-include-title">Tu temporada de color personalizada</div>
+          <div class="rp-include-desc">Otoño, Primavera, Verano o Invierno con tu subtipo exacto</div>
+        </div>
+      </div>
+      <div class="rp-include-item">
+        <div class="rp-include-icon">✓</div>
+        <div class="rp-include-text">
+          <div class="rp-include-title">8 colores que te favorecen</div>
+          <div class="rp-include-desc">Con hex codes exactos para comprar online o en tienda</div>
+        </div>
+      </div>
+      <div class="rp-include-item">
+        <div class="rp-include-icon">✓</div>
+        <div class="rp-include-text">
+          <div class="rp-include-title">Guía de estilo según tu silueta</div>
+          <div class="rp-include-desc">Qué cortar, qué evitar, qué telas y proporciones favorecen</div>
+        </div>
+      </div>
+      <div class="rp-include-item">
+        <div class="rp-include-icon">✓</div>
+        <div class="rp-include-text">
+          <div class="rp-include-title">3 colores de cabello recomendados</div>
+          <div class="rp-include-desc">Con códigos de color y técnica de aplicación</div>
+        </div>
+      </div>
+      <div class="rp-include-item">
+        <div class="rp-include-icon">✓</div>
+        <div class="rp-include-text">
+          <div class="rp-include-title">4 outfits por ocasión</div>
+          <div class="rp-include-desc">Día a día, oficina, citas y viajes — listos para copiar</div>
+        </div>
+      </div>
+      <div class="rp-include-item">
+        <div class="rp-include-icon">✓</div>
+        <div class="rp-include-text">
+          <div class="rp-include-title">Joyería, bolsos y zapatos ideales</div>
+          <div class="rp-include-desc">Metal correcto, estilos y marcas accesibles</div>
+        </div>
+      </div>
+      <div class="rp-include-item">
+        <div class="rp-include-icon">✓</div>
+        <div class="rp-include-text">
+          <div class="rp-include-title">PDF premium para descargar</div>
+          <div class="rp-include-desc">7 páginas editable para guardar o imprimir</div>
+        </div>
+      </div>
+    </div>
+    <div class="rp-price-box">
+      <div class="rp-price-tag">Pago único · Acceso permanente</div>
+      <div class="rp-price">$346.84 <small>MXN</small></div>
+      <div class="rp-price-note">IVA incluido · Sin suscripciones</div>
+    </div>
+    <a class="rp-cta" href="https://link.mercadopago.com.mx/prysm" target="_blank">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Pagar con MercadoPago
+    </a>
+    <div class="rp-trust">
+      <span>Pago seguro · Procesado por MercadoPago</span>
+    </div>
+    <div class="rp-verify-link">
+      <span onclick="app.showVerifyModal()">¿Ya pagaste? Verificar mi pago</span>
+    </div>
+  </div>
+</div>
+2. CSS para esas pantallas
+Agrega este CSS ANTES de (reemplaza las clases antiguas si ya existen):
+
+css
+
+
+/* Result Preview Screen */
+.result-preview-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  background: #fff;
+}
+.rp-inner {
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+}
+.rp-eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: #b0b0ae;
+  margin-bottom: 16px;
+}
+.rp-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(32px, 6vw, 48px);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  margin-bottom: 12px;
+  color: #000;
+}
+.rp-title em { font-style: italic; }
+.rp-sub {
+  font-size: 14px;
+  color: #6a6a68;
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+.rp-includes {
+  text-align: left;
+  border: 1px solid #eeeeec;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+.rp-include-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #eeeeec;
+  transition: background 0.2s ease;
+}
+.rp-include-item:last-child { border-bottom: none; }
+.rp-include-item:hover { background: #fafafa; }
+.rp-include-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #f0ede8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #8a7355;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.rp-include-text { flex: 1; }
+.rp-include-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #000;
+  margin-bottom: 2px;
+}
+.rp-include-desc {
+  font-size: 11px;
+  color: #6a6a68;
+  line-height: 1.5;
+}
+.rp-price-box {
+  background: #fafafa;
+  border: 1px solid #eeeeec;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.rp-price-tag {
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #b0b0ae;
+  margin-bottom: 8px;
+}
+.rp-price {
+  font-family: 'Instrument Serif', serif;
+  font-size: 40px;
+  color: #000;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.rp-price small {
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  color: #6a6a68;
+  font-weight: 300;
+}
+.rp-price-note {
+  font-size: 10px;
+  color: #b0b0ae;
+  letter-spacing: 0.1em;
+}
+.rp-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 18px;
+  background: #000;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 12px;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  margin-bottom: 16px;
+}
+.rp-cta:hover {
+  background: #1a1a1a;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+.rp-trust {
+  font-size: 10px;
+  color: #b0b0ae;
+  letter-spacing: 0.1em;
+  margin-bottom: 20px;
+}
+.rp-verify-link {
+  font-size: 11px;
+  color: #b0b0ae;
+  text-decoration: underline;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+.rp-verify-link:hover { color: #6a6a68; }
+3. PANTALLA PAYWALL (la misma estructura)
+Busca data-screen="paywall" y actualiza su contenido para que tenga la MISMA estructura que result-preview pero con:
+
+El mismo .rp-includes con los 7 puntos
+El mismo .rp-price-box con $346.84 MXN
+El CTA de MercadoPago igual
+El link "Ya pagaste? Verificar" igual
+El paywall es la segunda pantalla de pago (aparece después del result-preview si la usuaria ya vio el resumen pero no pagó).
+
+REGLAS IMPORTANTES:
+1.
+NO cambies nada más en el archivo — solo estas pantallas y su CSS
+2.
+Mantén las funciones JavaScript existentes intactas (go(), showVerifyModal(), verifyPayment, etc.)
+3.
+Mantén todas las demás pantallas (landing, stages, analysis, report) exactamente como están
+4.
+Si ya existe alguna de estas clases CSS, REEMPLAZA solo esas clases, no borres las demás
+5.
+Preserva el diseño editorial — tipografía Instrument Serif, colores blancos/negros/ grises suaves
+6.
+Los textos en español con acentos y eñes correctos
