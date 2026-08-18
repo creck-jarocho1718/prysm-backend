@@ -117,7 +117,7 @@ export default function Paywall({ onBack }: PaywallProps) {
 
         <div className="pay-price-box">
           <div className="pay-price-tag">Pago único · Acceso permanente</div>
-          <div className="pay-price">$346.84 <small>MXN</small></div>
+          <div className="pay-price">$299 <small>MXN</small></div>
           <div className="pay-price-note">IVA incluido · Sin suscripciones</div>
         </div>
 

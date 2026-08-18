@@ -81,7 +81,7 @@ export default function ResultPreview({ userName, onViewReport, onPaywall }: Res
 
         <div className="rp-price-box">
           <div className="rp-price-tag">Pago único · Acceso permanente</div>
-          <div className="rp-price">$346.84 <small>MXN</small></div>
+          <div className="rp-price">$299 <small>MXN</small></div>
           <div className="rp-price-note">IVA incluido · Sin suscripciones</div>
         </div>
 
