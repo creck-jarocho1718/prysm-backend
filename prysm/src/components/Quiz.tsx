@@ -51,12 +51,12 @@ const questions: Question[] = [
     title: '¿Cuál es tu tono de piel?',
     subtitle: 'Selecciona la opción que más se parezca a tu piel',
     options: [
-      { id: 'muy-clara', label: 'Muy Clara', image: '/assets/skin-muy-clara.svg' },
-      { id: 'clara', label: 'Clara', image: '/assets/skin-clara.svg' },
-      { id: 'media', label: 'Media', image: '/assets/skin-media.svg' },
-      { id: 'morena-clara', label: 'Morena Clara', image: '/assets/skin-morena-clara.svg' },
-      { id: 'morena', label: 'Morena', image: '/assets/skin-morena.svg' },
-      { id: 'morena-oscura', label: 'Morena Oscura', image: '/assets/skin-morena-oscura.svg' }
+      { id: 'muy-clara', label: 'Muy Clara', image: '/assets/skin-muy-clara.jpg' },
+      { id: 'clara', label: 'Clara', image: '/assets/skin-clara.jpg' },
+      { id: 'media', label: 'Media', image: '/assets/skin-media.jpg' },
+      { id: 'morena-clara', label: 'Morena Clara', image: '/assets/skin-morena-clara.jpg' },
+      { id: 'morena', label: 'Morena', image: '/assets/skin-morena.jpg' },
+      { id: 'morena-oscura', label: 'Morena Oscura', image: '/assets/skin-morena-oscura.jpg' }
     ]
   },
   {
@@ -66,12 +66,12 @@ const questions: Question[] = [
     title: '¿Cuál es tu tipo de silueta?',
     subtitle: 'Selecciona la que mejor describa tu figura',
     options: [
-      { id: 'reloj-arena', label: 'Reloj de Arena', image: '/assets/silhouette-reloj-arena.svg' },
-      { id: 'triangulo', label: 'Triángulo', image: '/assets/silhouette-triangulo.svg' },
-      { id: 'triangulo-inv', label: 'Triángulo Invertido', image: '/assets/silhouette-triangulo-inv.svg' },
-      { id: 'rectangulo', label: 'Rectángulo', image: '/assets/silhouette-rectangulo.svg' },
-      { id: 'ovalada', label: 'Ovalada', image: '/assets/silhouette-ovalada.svg' },
-      { id: 'diamante', label: 'Diamante', image: '/assets/silhouette-diamante.svg' }
+      { id: 'reloj-arena', label: 'Reloj de Arena', image: '/assets/silhouette-reloj-arena.jpg' },
+      { id: 'triangulo', label: 'Triángulo', image: '/assets/silhouette-triangulo.jpg' },
+      { id: 'triangulo-inv', label: 'Triángulo Invertido', image: '/assets/silhouette-triangulo-inv.jpg' },
+      { id: 'rectangulo', label: 'Rectángulo', image: '/assets/silhouette-rectangulo.jpg' },
+      { id: 'ovalada', label: 'Ovalada', image: '/assets/silhouette-ovalada.jpg' },
+      { id: 'diamante', label: 'Diamante', image: '/assets/silhouette-diamante.jpg' }
     ]
   },
   {
@@ -137,9 +137,9 @@ const questions: Question[] = [
     title: '¿Dorado o plateado?',
     subtitle: '¿Qué joyería te queda mejor?',
     options: [
-      { id: 'dorado', label: 'Dorado', image: '/assets/jewelry-dorado.svg' },
-      { id: 'plateado', label: 'Plateado', image: '/assets/jewelry-plateado.svg' },
-      { id: 'ambos', label: 'Ambos', image: '/assets/jewelry-ambos.svg' }
+      { id: 'dorado', label: 'Dorado', image: '/assets/jewelry-dorado.jpg' },
+      { id: 'plateado', label: 'Plateado', image: '/assets/jewelry-plateado.jpg' },
+      { id: 'ambos', label: 'Ambos', image: '/assets/jewelry-ambos.jpg' }
     ]
   },
   {
@@ -189,12 +189,12 @@ const questions: Question[] = [
     title: '¿Cuál es tu look de referencia?',
     subtitle: 'Elige el arquetipo que más te inspire',
     options: [
-      { id: 'natural', label: 'Natural', image: '/assets/archetype-natural.svg' },
-      { id: 'dramatica', label: 'Dramática', image: '/assets/archetype-dramatica.svg' },
-      { id: 'romantica', label: 'Romántica', image: '/assets/archetype-romantica.svg' },
-      { id: 'ingenua', label: 'Ingenua', image: '/assets/archetype-ingenua.svg' },
-      { id: 'arquitectonica', label: 'Arquitectónica', image: '/assets/archetype-arquitectonica.svg' },
-      { id: 'glamourosa', label: 'Glamourosa', image: '/assets/archetype-glamourosa.svg' }
+      { id: 'natural', label: 'Natural', image: '/assets/archetype-natural.jpg' },
+      { id: 'dramatica', label: 'Dramática', image: '/assets/archetype-dramatica.jpg' },
+      { id: 'romantica', label: 'Romántica', image: '/assets/archetype-romantica.jpg' },
+      { id: 'ingenua', label: 'Ingenua', image: '/assets/archetype-ingenua.jpg' },
+      { id: 'arquitectonica', label: 'Arquitectónica', image: '/assets/archetype-arquitectonica.jpg' },
+      { id: 'glamourosa', label: 'Glamourosa', image: '/assets/archetype-glamourosa.jpg' }
     ]
   },
   {
