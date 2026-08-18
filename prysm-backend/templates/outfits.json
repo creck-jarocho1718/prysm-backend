@@ -1,0 +1,44 @@
+{
+  "hourglass": {
+    "name_es": "Reloj de Arena",
+    "recommended_silhouette": "Acentuar cintura definida",
+    "fabrics": ["sedosas", "fluidas", "algo de estructura en hombros"],
+    "avoid": ["recortes en la cintura", "cortes exactly rectos"],
+    "tips": ["Escoges realzar tu cintura", "EVITA formas rectangulares"]
+  },
+  "triangle": {
+    "name_es": "Triángulo",
+    "recommended_silhouette": "Equilibrar caderas anchas con hombros",
+    "fabrics": ["con volumen en hombros", "mas ligeras en cadera"],
+    "avoid": ["faldas ajustadas en cadera", "pantalones slim en bajo"],
+    "tips": ["Crear volumen arriba, simplificar abajo"]
+  },
+  "inverted_triangle": {
+    "name_es": "Triángulo Invertido",
+    "recommended_silhouette": "Equilibrar hombros anchos con cadera",
+    "fabrics": ["volumen en cadera", "cortes en A"],
+    "avoid": ["hombreras", "estampados grandes arriba"],
+    "tips": ["Añadir volumen abajo, simplificar arriba"]
+  },
+  "rectangle": {
+    "name_es": "Rectángulo",
+    "recommended_silhouette": "Crear ilusión de cintura",
+    "fabrics": ["que den forma", "cinturóns", "pliegues"],
+    "avoid": ["cortes completamente rectos"],
+    "tips": ["Crear curvas con cinturóns y drapeados"]
+  },
+  "oval": {
+    "name_es": "Ovalada",
+    "recommended_silhouette": "Equilibrar volumen del medio",
+    "fabrics": ["estructurados arriba", "corte en A abajo"],
+    "avoid": ["cortes ajustados al medio"],
+    "tips": ["Definir cuello y escote, fluir abajo"]
+  },
+  "diamond": {
+    "name_es": "Diamante",
+    "recommended_silhouette": "Equilibrar volumen de cadera y muslos",
+    "fabrics": ["top estructurado", "bottom fluido"],
+    "avoid": ["cortes ajustados abajo"],
+    "tips": ["Crear proporción con top más estructurado"]
+  }
+}

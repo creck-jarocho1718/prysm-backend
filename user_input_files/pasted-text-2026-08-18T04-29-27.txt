@@ -1,0 +1,371 @@
+PROMPT: Backend + IA + PDF para PRYSM
+Contexto
+PRYSM es una plataforma de asesoría de imagen personal. Las clientas hacen un quiz de 12 preguntas, suben fotos de su rostro (frontal, perfil), y reciben un informe personalizado en PDF sobre su temporada de color, estilo, cabello y outfits.
+
+Stack actual:
+
+Frontend: HTML/JS vanilla en /workspace/prysm-platform/index.html
+Base de datos: Supabase (ya conectado)
+Pagos: MercadoPago (ya conectado)
+Análisis de foto: pixel-sampling básico con Canvas API — FAKE, no es IA real
+PDF: solo preview HTML — NO existe PDF real generado
+Flujo actual:
+
+Landing → Quiz (12 preguntas) → Subir fotos → "Analizando..." → Preview → Pago $299 → Reporte (HTML)
+Flujo deseado:
+
+Landing → Quiz → Subir fotos → BACKEND: IA analiza foto → PDF real personalizado → Preview → Pago → Descarga PDF
+Objetivo
+Construir un Backend API en Node.js que:
+
+1.
+Reciba las fotos + respuestas del quiz desde el frontend
+2.
+Analice la foto con visión artificial real para determinar temporada de color
+3.
+Genere un PDF premium personalizado con los datos de la clienta
+4.
+Devuelva el PDF al frontend para que la clienta lo vea y descargue
+Arquitectura técnica
+Directorio del proyecto:
+
+text
+
+
+/workspace/prysm-backend/
+├── package.json
+├── server.js              # Express API principal
+├── routes/
+│   ├── analyze.js         # POST /api/analyze → IA + PDF
+│   └── health.js          # GET /api/health
+├── services/
+│   ├── colorAnalysis.js   # Análisis de color con IA (Canvas + algoritmos)
+│   ├── seasonMapper.js    # Mapeo undertone + depth → temporada
+│   └── pdfGenerator.js    # Motor de plantillas PDF
+├── templates/
+│   ├── palette-8colors.json    # 8 colores por temporada
+│   ├── style-guide.json        # Tips de estilo por silueta
+│   └── outfits.json            # Outfits por ocasión
+├── uploads/               # Fotos temporales
+└── output/                # PDFs generados
+Puerto: 3001
+
+API Endpoints
+POST /api/analyze
+Request (multipart/form-data):
+
+json
+
+
+{
+  "name": "Valentina García",
+  "email": "valentina@email.com",
+  "photoFront": "<base64 o file>",
+  "photoLeft": "<base64 o file>",
+  "photoRight": "<base64 o file>",
+  "answers": {
+    "skinTone": "medium",
+    "undertone": "warm",
+    "bodyType": "hourglass",
+    "budget": "medium",
+    "style": ["classic", "minimalist"],
+    "occasions": ["work", "casual"],
+    "metal": "gold",
+    "aspiration": "sophisticated"
+  }
+}
+Response:
+
+json
+
+
+{
+  "success": true,
+  "reportId": "uuid-xxx",
+  "pdfUrl": "/output/report-uuid.pdf",
+  "analysis": {
+    "season": {
+      "name": "Otoño Profundo",
+      "sub": "Deep Autumn",
+      "temperature": "warm",
+      "depth": "deep"
+    },
+    "skinColor": "#C68642",
+    "undertone": "warm",
+    "contrast": "high",
+    "palette": {
+      "protagonist": ["#B5691B", "#6E2C00", "#E07B39"],
+      "secondary": ["#2F4F1E", "#A0522D"],
+      "neutral": ["#8B4513"],
+      "accent": ["#C68642", "#C0392B"]
+    },
+    "bodyType": "hourglass",
+    "recommendedSilhouette": "defined_waist",
+    "hairColor": "#4A2810",
+    "hairColors": ["#4A2810", "#7B3F00", "#C68642"],
+    "hairCuts": ["medium_length", "v_cut", "soft_layers"],
+    "faceShape": "oval",
+    "fabrics": ["silk", "cotton", "leather", "quality_linen"],
+    "outfits": {
+      "casual": { "pieces": ["ocre_silk_shirt", "camel_palazzo", "white_sneakers"], "colors": ["#B5691B", "#C68642"] },
+      "office": { "pieces": ["coffee_blazer", "beige_silk_blouse", "navy_slim_pants"], "colors": ["#6E2C00", "#A0522D"] },
+      "date": { "pieces": ["ocre_satin_slip_dress", "block_heel_gold", "gold_earrings"], "colors": ["#E07B39", "#B5691B"] },
+      "travel": { "pieces": ["moss_green_midi_dress", "dark_denim", "camel_coat"], "colors": ["#2F4F1E", "#C68642"] }
+    },
+    "jewelry": {
+      "metal": "gold",
+      "tones": ["gold", "bronze", "copper"],
+      "avoid": ["silver", "steel"],
+      "styles": ["drop_earrings", "v_necklaces", "layered_chains"]
+    },
+    "bags": {
+      "styles": ["soft_leather_tote", "small_crossbody", "structured_clutch"],
+      "colors": ["coffee", "camel", "cognac"]
+    }
+  }
+}
+GET /api/report/:id
+Descarga el PDF generado.
+
+GET /api/health
+Health check.
+
+Servicio 1: Análisis de Color (colorAnalysis.js)
+Input: imagen (base64 o file) del rostro de la clienta Output: { skinColor, undertone, depth, contrast, saturation }
+
+Cómo funciona — usar Canvas API para pixel sampling + algoritmo de colorimetría:
+
+1.
+Recibir imagen → cargar en <canvas>
+2.
+Definir región de muestra: forehead + both cheeks (evitar ojos, boca, cabello, fondo)
+3.
+Extraer pixels de la región → promediar R, G, B
+4.
+Convertir a HSL para análisis
+5.
+Determinar undertone:
+Si R > B → warm
+Si B > R → cool
+Si diferencia < umbral → neutral
+6.
+Determinar depth (luminosidad):
+L > 0.60 → light
+L < 0.38 → deep
+resto → medium
+7.
+Determinar saturación:
+S > 0.5 → high
+S < 0.25 → low
+resto → medium
+8.
+Devolver valores + color hex del piel
+Región de muestreo (la IA determina esto):
+
+javascript
+
+
+// Frontal face zones to sample
+const zones = [
+  { name: 'forehead', x: 0.5, y: 0.2, w: 0.3, h: 0.15 },
+  { name: 'left_cheek', x: 0.3, y: 0.45, w: 0.2, h: 0.15 },
+  { name: 'right_cheek', x: 0.5, y: 0.45, w: 0.2, h: 0.15 },
+  { name: 'nose_bridge', x: 0.5, y: 0.42, w: 0.1, h: 0.1 }
+];
+// Eliminar pixels con valor atípico (pelo, sombra, ropa)
+Servicio 2: Mapeo de Temporada (seasonMapper.js)
+Input: { undertone, depth, contrast, saturation } Output: { season, palette, recommendations }
+
+Mapeo completo (12 temporadas):
+
+undertone	depth	season	name_es	name_en
+warm	light	spring	Primavera Cálida	Warm Spring
+warm	medium	autumn	Otoño Profundo	Deep Autumn
+warm	deep	autumn	Otoño Intenso	Deep Autumn
+cool	light	summer	Verano Suave	Soft Summer
+cool	medium	summer	Verano Profundo	Deep Summer
+cool	deep	winter	Invierno Brillante	Bright Winter
+neutral	light	spring	Primavera Neutra	Neutral Spring
+neutral	medium	autumn	Otoño Neutro	Neutral Autumn
+neutral	deep	winter	Invierno Neutro	Neutral Winter
+Paletas por temporada (8 colores cada una):
+
+javascript
+
+
+const palettes = {
+  'deep_autumn': {
+    protagonist: ['#B5691B', '#6E2C00', '#E07B39'],
+    secondary: ['#2F4F1E', '#A0522D'],
+    neutral: ['#8B4513', '#567568'],
+    accent: ['#C68642', '#C0392B'],
+    avoid: ['#ADD8E6', '#FFB6C1', '#E6E6FA', '#87CEEB', '#98FB98']
+  },
+  'soft_summer': {
+    protagonist: ['#9B8FA0', '#7A9E9F', '#C4A8B8'],
+    secondary: ['#8EAFC2', '#A89BB0'],
+    neutral: ['#B8B4BC', '#909090'],
+    accent: ['#D4A8B8', '#B8909A'],
+    avoid: ['#FF4500', '#FFD700', '#FF1493', '#000080']
+  },
+  // ... (todas las temporadas)
+};
+Servicio 3: Generación de PDF (pdfGenerator.js)
+Tecnología: Playwright para render HTML → PDF (mismo método que ya usamos para el preview de Valentina)
+
+Cómo funciona:
+
+1.
+Recibir datos del análisis
+2.
+Renderizar HTML con los datos de la clienta usando una plantilla
+3.
+Usar Playwright para convertir HTML → PDF
+4.
+Guardar en /output/{reportId}.pdf
+5.
+Devolver URL del PDF
+Plantilla HTML del PDF (7 páginas):
+
+Página 1 — Cover:
+
+Foto de la clienta (centrada, editorial)
+Nombre: {name}
+Temporada: {season.name_es}
+PRYSM Score (calculado dinámicamente: 8.0-9.9 basado en consistencia de respuestas)
+Mini paleta visual con los 6 colores protagonista
+Fecha del informe
+Página 2 — Temporada:
+
+Explicación de por qué esta temporada
+Características: undertone, depth, contrast, saturation
+Los 6 hex codes de la temporada con nombres descriptivos
+Tip: cómo usar estos colores
+Página 3 — 8 Colores:
+
+8 swatches con hex codes exactos
+Categorías: Protagonista, Secundario, Neutro, Acento
+Colores a evitar (4 ejemplos)
+Guía de compra: "En tienda", "Online", "Para tu estilista"
+Página 4 — Guía de Estilo:
+
+Tipo de cuerpo detectado + silueta ideal
+Tips: qué favoreces (Sí usar) / qué evitar (No usar)
+Telas recomendadas basadas en su respuestas del quiz
+Página 5 — Cabello:
+
+3 tonos de cabello recomendados con hex
+4 cortes recomendados
+Forma de rostro detectada + explicación
+Tip para la estilista
+Página 6 — Outfits:
+
+4 looks: Casual, Oficina, Citas, Viajes
+Piezas específicas por look
+Colores usados en cada look
+Página 7 — Cierre:
+
+Resumen de todo lo incluido
+Joyería: metal, estilos, qué evitar
+Bolsos recomendados
+URL de PRYSM
+Estilos del PDF:
+
+Tipografía: Instrument Serif (headings) + Outfit (body)
+Colores: Verde teal #205E53 + Dorado #D4A473
+Fondo: Blanco crema #faf8f3 y blanco puro
+Formato: A4, layout editorial premium
+Metadatos PDF: Title, Author, Subject
+Integración con Frontend
+En index.html, найдено en la sección "analizando", cambiar la lógica de:
+
+ANTES (fake):
+
+javascript
+
+
+// Canvas pixel sampling básico — NO es IA
+const canvas = document.createElement('canvas');
+const ctx = canvas.getContext('2d');
+ctx.drawImage(img, 0, 0);
+const pixel = ctx.getImageData(x, y, 1, 1).data;
+// ...
+DESPUÉS:
+
+javascript
+
+
+// Llamar al backend real
+const formData = new FormData();
+formData.append('name', state.user.name);
+formData.append('email', state.answers.email);
+formData.append('photoFront', state.user.photos.front); // base64
+formData.append('answers', JSON.stringify(state.answers));
+const response = await fetch('http://localhost:3001/api/analyze', {
+  method: 'POST',
+  body: formData
+});
+const data = await response.json();
+state.analysis = data.analysis;
+state.reportId = data.reportId;
+state.pdfUrl = data.pdfUrl;
+// Ir a pantalla de resultados
+go('result-preview');
+Deploy
+El backend debe desplegarse en un servicio que mantenga el servidor corriendo 24/7:
+
+Opción 1 (recomendada): Railway o Render (fáciles, económicos)
+Opción 2: VPS con PM2
+Opción 3: Cloud Run de Google Cloud
+Variables de entorno necesarias:
+
+text
+
+
+PORT=3001
+FRONTEND_URL=https://tu-dominio.com
+SUPABASE_URL=https://zizbijecjdqfnvqwassm.supabase.co
+SUPABASE_KEY=eyJhbGci... (key anon pública)
+Testing
+Para verificar que funciona, hacer estas pruebas:
+
+1.
+Health check:
+bash
+
+
+curl http://localhost:3001/api/health
+# Esperado: { status: "ok", timestamp: "..." }
+2.
+Análisis completo:
+bash
+
+
+curl -X POST http://localhost:3001/api/analyze \
+  -F "name=Test Client" \
+  -F "email=test@test.com" \
+  -F "photoFront=@test-photo.jpg" \
+  -F "answers={\"skinTone\":\"medium\",\"undertone\":\"warm\",\"bodyType\":\"hourglass\"}"
+# Esperado: JSON con season, palette, reportId y pdfUrl
+3.
+Verificar PDF generado:
+bash
+
+
+curl http://localhost:3001/api/report/{reportId} -o test-report.pdf
+# Esperado: PDF de 7 páginas con datos reales
+Cosas importantes
+1.
+No inventar datos. Todo el contenido del PDF debe venir de las respuestas del quiz o del análisis de la foto. Si una respuesta no está disponible, mostrar "No disponible" — nunca inventar.
+
+2.
+La foto de la clienta debe aparecer en la cover del PDF. Usar la foto que sube en el quiz.
+
+3.
+Tiempo de respuesta del análisis: Debe ser menor a 10 segundos. Playwright tarda ~3-5 segundos en generar el PDF. El análisis de color < 1 segundo.
+
+4.
+Manejo de errores: Si la foto no se puede analizar, fallback a determinar la temporada solo con las respuestas del quiz (skinTone + undertone del quiz).
+
+5.
+Limpieza: Eliminar fotos temporales después de generar el PDF (máximo 24 horas de retención).

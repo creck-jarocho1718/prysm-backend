@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+import { AnalysisResponse } from '../services/api';
 
 interface ResultPreviewProps {
   userName: string;
+  analysisResult: AnalysisResponse | null;
   onViewReport: () => void;
   onPaywall: () => void;
 }
@@ -58,8 +60,35 @@ const testimonials = [
   }
 ];
 
-export default function ResultPreview({ userName, onViewReport, onPaywall }: ResultPreviewProps) {
+// Fallback colors for demo/preview
+const fallbackPalette = {
+  protagonist: ['#B5691B', '#6E2C00', '#E07B39', '#2F4F1E', '#A0522D', '#8B4513'],
+  secondary: ['#3D2314', '#C68642', '#567568', '#C0392B'],
+  neutral: ['#4A2810', '#7B3F00', '#C68642'],
+  accent: ['#d4a473', '#205E53', '#B5691B', '#1a1a1a'],
+  avoid: ['#ADD8E6', '#87CEEB', '#98FB98']
+};
+
+export default function ResultPreview({
+  userName,
+  analysisResult,
+  onViewReport,
+  onPaywall
+}: ResultPreviewProps) {
   const [animated, setAnimated] = useState(false);
+
+  // Get analysis data from prop or localStorage
+  const analysis = analysisResult || (typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('prysm_analysis') || 'null') : null);
+  const seasonName = analysis?.analysis?.season?.name || 'Otoño Profundo';
+  const prysmScore = analysis?.analysis?.prysmScore?.toString() || '8.5';
+  const bodyTypeName = analysis?.analysis?.bodyType?.name || 'Reloj de Arena';
+  const palette = analysis?.analysis?.palette || fallbackPalette;
+
+  // Combine protagonist and secondary colors for the hero color strip
+  const heroColors = [
+    ...(palette.protagonist || []).slice(0, 3),
+    ...(palette.secondary || []).slice(0, 3)
+  ];
 
   useEffect(() => {
     const timer = setTimeout(() => setAnimated(true), 100);
@@ -70,6 +99,10 @@ export default function ResultPreview({ userName, onViewReport, onPaywall }: Res
     if (window.app?.showVerifyModal) {
       window.app.showVerifyModal();
     }
+  };
+
+  const handlePreviewClick = () => {
+    onPaywall();
   };
 
   return (
@@ -98,7 +131,7 @@ export default function ResultPreview({ userName, onViewReport, onPaywall }: Res
             Tu informe<br /><em>está listo.</em>
           </h1>
           <div className="rp-hero-name" id="rpNameTag">
-            {userName || 'Valentina'} · PRYSM-2026 · Otoño Profundo
+            {userName || 'Valentina'} · PRYSM-2026 · {seasonName}
           </div>
           <a
             className="rp-scroll-hint"
@@ -132,10 +165,10 @@ export default function ResultPreview({ userName, onViewReport, onPaywall }: Res
         </div>
       </div>
 
-      {/* STATS */}
+      {/* STATS - Now using real data */}
       <div className="rp-stats">
         <div>
-          <div className="rp-stat-num" id="rpScoreDisplay">9.4</div>
+          <div className="rp-stat-num" id="rpScoreDisplay">{prysmScore}</div>
           <div className="rp-stat-label">PRYSM Score</div>
         </div>
         <div>
@@ -167,24 +200,18 @@ export default function ResultPreview({ userName, onViewReport, onPaywall }: Res
           </div>
 
           <div className="rp-color-grid">
-            {/* Card 1 */}
+            {/* Card 1 - Temporada de color */}
             <div className="rp-color-card" style={{ animationDelay: '0.1s' }}>
               <div className="rp-color-strip">
                 <div className="rp-color-strip-top">
-                  <div className="rp-color-dot" style={{ background: '#B5691B' }} />
-                  <div className="rp-color-dot" style={{ background: '#6E2C00' }} />
-                  <div className="rp-color-dot" style={{ background: '#E07B39' }} />
-                  <div className="rp-color-dot" style={{ background: '#2F4F1E' }} />
-                  <div className="rp-color-dot" style={{ background: '#A0522D' }} />
-                  <div className="rp-color-dot" style={{ background: '#8B4513' }} />
+                  {heroColors.slice(0, 6).map((color, i) => (
+                    <div key={i} className="rp-color-dot" style={{ background: color }} />
+                  ))}
                 </div>
                 <div className="rp-color-strip-bottom">
-                  <div className="rp-strip-segment" style={{ background: '#B5691B' }} />
-                  <div className="rp-strip-segment" style={{ background: '#6E2C00' }} />
-                  <div className="rp-strip-segment" style={{ background: '#E07B39' }} />
-                  <div className="rp-strip-segment" style={{ background: '#2F4F1E' }} />
-                  <div className="rp-strip-segment" style={{ background: '#A0522D' }} />
-                  <div className="rp-strip-segment" style={{ background: '#8B4513' }} />
+                  {heroColors.slice(0, 6).map((color, i) => (
+                    <div key={i} className="rp-strip-segment" style={{ background: color }} />
+                  ))}
                 </div>
               </div>
               <div className="rp-color-content">
@@ -192,27 +219,25 @@ export default function ResultPreview({ userName, onViewReport, onPaywall }: Res
                 <div className="rp-color-title">Temporada de color</div>
                 <div className="rp-color-desc">Tu subtipo exacto y por qué estos colores funcionan con tu tono de piel, ojos y cabello.</div>
                 <div className="rp-color-hex-row">
-                  <div className="rp-color-hex-chip">#B5691B</div>
-                  <div className="rp-color-hex-chip">#6E2C00</div>
-                  <div className="rp-color-hex-chip">#E07B39</div>
+                  {heroColors.slice(0, 3).map((color, i) => (
+                    <div key={i} className="rp-color-hex-chip">{color}</div>
+                  ))}
                 </div>
               </div>
             </div>
 
-            {/* Card 2 */}
+            {/* Card 2 - 8 colores */}
             <div className="rp-color-card" style={{ animationDelay: '0.2s' }}>
               <div className="rp-color-strip">
                 <div className="rp-color-strip-top">
-                  <div className="rp-color-dot" style={{ background: '#3D2314' }} />
-                  <div className="rp-color-dot" style={{ background: '#C68642' }} />
-                  <div className="rp-color-dot" style={{ background: '#567568' }} />
-                  <div className="rp-color-dot" style={{ background: '#C0392B' }} />
+                  {(palette.secondary || []).slice(0, 4).map((color, i) => (
+                    <div key={i} className="rp-color-dot" style={{ background: color }} />
+                  ))}
                 </div>
                 <div className="rp-color-strip-bottom">
-                  <div className="rp-strip-segment" style={{ background: '#3D2314' }} />
-                  <div className="rp-strip-segment" style={{ background: '#C68642' }} />
-                  <div className="rp-strip-segment" style={{ background: '#567568' }} />
-                  <div className="rp-strip-segment" style={{ background: '#C0392B' }} />
+                  {(palette.secondary || []).slice(0, 4).map((color, i) => (
+                    <div key={i} className="rp-strip-segment" style={{ background: color }} />
+                  ))}
                 </div>
               </div>
               <div className="rp-color-content">
@@ -220,14 +245,14 @@ export default function ResultPreview({ userName, onViewReport, onPaywall }: Res
                 <div className="rp-color-title">8 colores que te favorecen</div>
                 <div className="rp-color-desc">Tus colores protagonistas, los de acento y los que debes evitar. Con hex codes para comprar online.</div>
                 <div className="rp-color-hex-row">
-                  <div className="rp-color-hex-chip">#C68642</div>
-                  <div className="rp-color-hex-chip">#567568</div>
-                  <div className="rp-color-hex-chip">#C0392B</div>
+                  {(palette.secondary || []).slice(0, 3).map((color, i) => (
+                    <div key={i} className="rp-color-hex-chip">{color}</div>
+                  ))}
                 </div>
               </div>
             </div>
 
-            {/* Card 3 */}
+            {/* Card 3 - Silueta */}
             <div className="rp-color-card" style={{ animationDelay: '0.3s' }}>
               <div className="rp-color-strip">
                 <div className="rp-color-strip-top" style={{ background: 'linear-gradient(135deg,rgba(212,164,115,.1),rgba(32,94,83,.08))', flexDirection: 'column', gap: '4px' }}>
@@ -247,24 +272,24 @@ export default function ResultPreview({ userName, onViewReport, onPaywall }: Res
                 <div className="rp-color-title">Guía de estilo y silueta</div>
                 <div className="rp-color-desc">Qué siluetas, telas y proporciones realzan tu figura. Qué cortar, qué evitar y cómo dressing tu cuerpo.</div>
                 <div className="rp-color-hex-row">
-                  <div className="rp-color-hex-chip">Reloj de arena</div>
+                  <div className="rp-color-hex-chip">{bodyTypeName}</div>
                   <div className="rp-color-hex-chip">Algodón · Seda</div>
                 </div>
               </div>
             </div>
 
-            {/* Card 4 */}
+            {/* Card 4 - Cabello */}
             <div className="rp-color-card" style={{ animationDelay: '0.4s' }}>
               <div className="rp-color-strip">
                 <div className="rp-color-strip-top">
-                  <div className="rp-color-dot" style={{ background: '#4A2810' }} />
-                  <div className="rp-color-dot" style={{ background: '#7B3F00' }} />
-                  <div className="rp-color-dot" style={{ background: '#C68642' }} />
+                  {(palette.neutral || []).slice(0, 3).map((color, i) => (
+                    <div key={i} className="rp-color-dot" style={{ background: color }} />
+                  ))}
                 </div>
                 <div className="rp-color-strip-bottom">
-                  <div className="rp-strip-segment" style={{ background: '#4A2810' }} />
-                  <div className="rp-strip-segment" style={{ background: '#7B3F00' }} />
-                  <div className="rp-strip-segment" style={{ background: '#C68642' }} />
+                  {(palette.neutral || []).slice(0, 3).map((color, i) => (
+                    <div key={i} className="rp-strip-segment" style={{ background: color }} />
+                  ))}
                 </div>
               </div>
               <div className="rp-color-content">
@@ -278,22 +303,20 @@ export default function ResultPreview({ userName, onViewReport, onPaywall }: Res
               </div>
             </div>
 
-            {/* Card 5 */}
+            {/* Card 5 - Outfits */}
             <div className="rp-color-card" style={{ animationDelay: '0.5s' }}>
               <div className="rp-color-strip">
                 <div className="rp-color-strip-top" style={{ background: 'linear-gradient(135deg,rgba(255,255,255,.04),rgba(255,255,255,.02))', flexDirection: 'column', gap: '4px', justifyContent: 'center' }}>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px', width: '100%', maxWidth: '80px' }}>
-                    <div style={{ height: '24px', background: 'rgba(212,164,115,.1)', borderRadius: '4px', border: '1px solid rgba(212,164,115,.1)' }} />
-                    <div style={{ height: '24px', background: 'rgba(32,94,83,.15)', borderRadius: '4px', border: '1px solid rgba(32,94,83,.15)' }} />
-                    <div style={{ height: '24px', background: 'rgba(181,105,27,.15)', borderRadius: '4px', border: '1px solid rgba(181,105,27,.1)' }} />
-                    <div style={{ height: '24px', background: 'rgba(255,255,255,.04)', borderRadius: '4px', border: '1px solid rgba(255,255,255,.04)' }} />
+                    {(palette.accent || []).slice(0, 4).map((color, i) => (
+                      <div key={i} style={{ height: '24px', background: color, borderRadius: '4px', border: `1px solid ${color}` }} />
+                    ))}
                   </div>
                 </div>
                 <div className="rp-color-strip-bottom">
-                  <div className="rp-strip-segment" style={{ background: '#d4a473' }} />
-                  <div className="rp-strip-segment" style={{ background: '#205E53' }} />
-                  <div className="rp-strip-segment" style={{ background: '#B5691B' }} />
-                  <div className="rp-strip-segment" style={{ background: '#1a1a1a' }} />
+                  {(palette.accent || []).slice(0, 4).map((color, i) => (
+                    <div key={i} className="rp-strip-segment" style={{ background: color }} />
+                  ))}
                 </div>
               </div>
               <div className="rp-color-content">
@@ -307,7 +330,7 @@ export default function ResultPreview({ userName, onViewReport, onPaywall }: Res
               </div>
             </div>
 
-            {/* Card 6 */}
+            {/* Card 6 - PDF */}
             <div className="rp-color-card" style={{ animationDelay: '0.6s' }}>
               <div className="rp-color-strip">
                 <div className="rp-color-strip-top" style={{ background: 'linear-gradient(135deg,rgba(212,164,115,.12),rgba(32,94,83,.08))', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
@@ -343,18 +366,16 @@ export default function ResultPreview({ userName, onViewReport, onPaywall }: Res
           <div className="rp-price-tag">Acceso completo · Pago único</div>
           <div className="rp-price-amount">$299 <small>MXN</small></div>
           <div className="rp-price-note">Sin suscripción · Acceso de por vida</div>
-          <a
+          <button
             className="rp-buy-btn"
-            href="https://link.mercadopago.com.mx/prysm"
-            target="_blank"
-            rel="noopener noreferrer"
+            onClick={handlePreviewClick}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <rect x="3" y="11" width="18" height="11" rx="2"/>
               <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
             </svg>
             Obtener mi informe ahora
-          </a>
+          </button>
           <div className="rp-guarantee">✓ Acceso inmediato · ✓ PDF premium · ✓ Sin límite de tiempo</div>
           <div className="rp-verify" onClick={handleVerifyClick}>¿Ya pagaste? Verificar mi pago</div>
         </div>

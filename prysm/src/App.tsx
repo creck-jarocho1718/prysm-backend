@@ -6,6 +6,7 @@ import ResultPreview from './components/ResultPreview';
 import Report from './components/Report';
 import Paywall from './components/Paywall';
 import Share from './components/Share';
+import { AnalysisResponse, QuizAnswers } from './services/api';
 
 export type Screen = 'landing' | 'quiz' | 'analyzing' | 'result' | 'report' | 'paywall' | 'share';
 
@@ -27,6 +28,16 @@ function App() {
   const [userEmail, setUserEmail] = useState('');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [uploadedPhotos, setUploadedPhotos] = useState<string[]>([]);
+  const [analysisResult, setAnalysisResult] = useState<AnalysisResponse | null>(null);
+
+  // Convert QuizAnswer[] to QuizAnswers format for API
+  const getQuizAnswers = useCallback((): QuizAnswers => {
+    const result: QuizAnswers = {};
+    answers.forEach(a => {
+      result[a.questionId] = a.value;
+    });
+    return result;
+  }, [answers]);
 
   const handleStartQuiz = useCallback(() => {
     setCurrentScreen('quiz');
@@ -57,11 +68,18 @@ function App() {
     setUploadedPhotos(photos);
   }, []);
 
+  const handleNameSubmit = useCallback((name: string, email: string) => {
+    setUserName(name);
+    setUserEmail(email);
+    setCurrentQuestionIndex(prev => prev + 1);
+  }, []);
+
   const handleStartAnalysis = useCallback(() => {
     setCurrentScreen('analyzing');
   }, []);
 
-  const handleAnalysisComplete = useCallback(() => {
+  const handleAnalysisComplete = useCallback((result: AnalysisResponse) => {
+    setAnalysisResult(result);
     setCurrentScreen('result');
   }, []);
 
@@ -77,12 +95,6 @@ function App() {
     setCurrentScreen('share');
   }, []);
 
-  const handleNameSubmit = useCallback((name: string, email: string) => {
-    setUserName(name);
-    setUserEmail(email);
-    setCurrentQuestionIndex(prev => prev + 1);
-  }, []);
-
   const handleRestart = useCallback(() => {
     setCurrentScreen('landing');
     setAnswers([]);
@@ -90,6 +102,9 @@ function App() {
     setUserEmail('');
     setCurrentQuestionIndex(0);
     setUploadedPhotos([]);
+    setAnalysisResult(null);
+    localStorage.removeItem('prysm_analysis');
+    localStorage.removeItem('prysm_pdf_url');
   }, []);
 
   useEffect(() => {
@@ -123,11 +138,18 @@ function App() {
         />
       )}
       {currentScreen === 'analyzing' && (
-        <Analyzing onComplete={handleAnalysisComplete} />
+        <Analyzing
+          onComplete={handleAnalysisComplete}
+          userName={userName}
+          userEmail={userEmail}
+          answers={getQuizAnswers()}
+          photos={uploadedPhotos}
+        />
       )}
       {currentScreen === 'result' && (
         <ResultPreview
           userName={userName}
+          analysisResult={analysisResult}
           onViewReport={handleViewReport}
           onPaywall={handlePaywall}
         />
@@ -135,6 +157,7 @@ function App() {
       {currentScreen === 'report' && (
         <Report
           userName={userName}
+          analysisResult={analysisResult}
           onShare={handleShare}
           onRestart={handleRestart}
         />
