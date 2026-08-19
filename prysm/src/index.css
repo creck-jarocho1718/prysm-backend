@@ -2934,33 +2934,36 @@ body {
   align-items: center;
   gap: 8px;
   margin-top: 20px;
-  padding: 6px 16px;
-  background: rgba(212,164,115,.08);
-  border: 1px solid rgba(212,164,115,.3);
+  padding: 8px 20px;
+  background: rgba(212,164,115,.15);
+  border: 2px solid var(--gold);
   border-radius: 100px;
   position: relative;
+  box-shadow: 0 0 15px rgba(212,164,115,.2);
 }
-/* Gold left accent */
+/* Gold left accent - PROMINENT */
 .rp-editorial-badge::before {
   content: '';
   position: absolute;
-  left: -1px;
+  left: -3px;
   top: 50%;
   transform: translateY(-50%);
-  width: 2px;
-  height: 60%;
+  width: 4px;
+  height: 70%;
   background: var(--gold);
-  border-radius: 0 2px 2px 0;
+  border-radius: 0 3px 3px 0;
 }
 .rp-editorial-badge-icon {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--gold);
+  text-shadow: 0 0 10px rgba(212,164,115,.4);
 }
 .rp-editorial-badge-text {
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: .15em;
   text-transform: uppercase;
-  color: rgba(212,164,115,.8);
+  color: var(--gold);
+  font-weight: 600;
 }
 
 /* Stats */
@@ -2978,12 +2981,14 @@ body {
   color: var(--gold);
   line-height: 1;
   margin-bottom: 4px;
+  text-shadow: 0 0 15px rgba(212,164,115,.4);
 }
 .rp-stat-label {
-  font-size: 9px;
-  color: rgba(255,255,255,.25);
+  font-size: 10px;
+  color: var(--gold);
   letter-spacing: .15em;
   text-transform: uppercase;
+  font-weight: 500;
 }
 
 /* Includes section */
@@ -3000,11 +3005,12 @@ body {
   animation: fadeSlideUp .8s ease .1s both;
 }
 .rp-includes-label {
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: .5em;
   text-transform: uppercase;
-  color: rgba(212,164,115,.5);
+  color: var(--gold);
   margin-bottom: 12px;
+  font-weight: 600;
 }
 .rp-includes-title {
   font-family: var(--serif);
@@ -3016,6 +3022,7 @@ body {
 .rp-includes-title em {
   font-style: italic;
   color: var(--gold);
+  text-shadow: 0 0 20px rgba(212,164,115,.3);
 }
 .rp-includes-sub {
   font-size: 12px;
@@ -3070,26 +3077,28 @@ body {
 .rp-color-card {
   display: grid;
   grid-template-columns: 140px 1fr;
-  background: linear-gradient(135deg, rgba(255,255,255,.03), rgba(212,164,115,.02));
-  border: 1px solid rgba(212,164,115,.25);
+  background: linear-gradient(135deg, rgba(255,255,255,.04), rgba(212,164,115,.04));
+  border: 2px solid var(--gold);
   border-radius: 20px;
   overflow: hidden;
   animation: fadeSlideUp .8s ease both;
   transition: all .35s ease;
   cursor: default;
   position: relative;
+  box-shadow: 0 0 20px rgba(212,164,115,.2), inset 0 0 40px rgba(212,164,115,.05);
 }
-/* Gold left accent line */
+/* Gold left accent line - PROMINENT */
 .rp-color-card::before {
   content: '';
   position: absolute;
   left: 0;
-  top: 20%;
-  width: 3px;
-  height: 60%;
-  background: linear-gradient(180deg, transparent, var(--gold), transparent);
-  border-radius: 0 2px 2px 0;
-  opacity: 0.8;
+  top: 0;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--gold), var(--gold-dark), var(--gold));
+  border-radius: 20px 0 0 20px;
+  opacity: 1;
+  z-index: 10;
 }
 .rp-color-card:hover {
   border-color: var(--gold);
@@ -3105,35 +3114,35 @@ body {
   flex-direction: column;
   position: relative;
   overflow: hidden;
+  border-left: 3px solid var(--gold);
 }
 .rp-color-strip-top {
   flex: 1;
-  background: linear-gradient(135deg, rgba(212,164,115,.08), rgba(255,255,255,.02));
+  background: linear-gradient(135deg, rgba(212,164,115,.15), rgba(255,255,255,.04));
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 16px;
   gap: 6px;
   flex-wrap: wrap;
-  border-bottom: 1px solid rgba(212,164,115,.15);
+  border-bottom: 3px solid var(--gold);
 }
 .rp-color-dot {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  border: 2px solid rgba(212,164,115,.4);
+  border: 3px solid var(--gold);
   transition: all .2s ease;
-  box-shadow: 0 0 8px rgba(212,164,115,.2);
+  box-shadow: 0 0 15px rgba(212,164,115,.5);
 }
 .rp-color-card:hover .rp-color-dot {
   transform: scale(1.15);
-  border-color: var(--gold);
-  box-shadow: 0 0 12px rgba(212,164,115,.4);
+  box-shadow: 0 0 20px rgba(212,164,115,.7);
 }
 .rp-color-strip-bottom {
-  height: 5px;
+  height: 8px;
   display: flex;
-  background: linear-gradient(90deg, rgba(212,164,115,.2), rgba(212,164,115,.05), rgba(212,164,115,.2));
+  background: linear-gradient(90deg, var(--gold), rgba(212,164,115,.6), var(--gold));
 }
 .rp-strip-segment {
   flex: 1;
@@ -3149,12 +3158,13 @@ body {
   justify-content: center;
 }
 .rp-color-number {
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: .3em;
   text-transform: uppercase;
   color: var(--gold);
   margin-bottom: 6px;
-  font-weight: 500;
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(212,164,115,.4);
 }
 .rp-color-title {
   font-family: var(--serif);
@@ -3174,24 +3184,27 @@ body {
   flex-wrap: wrap;
 }
 .rp-color-hex-chip {
-  font-size: 10px;
+  font-size: 11px;
   font-family: monospace;
   color: var(--gold);
-  background: rgba(212,164,115,.08);
-  border: 1px solid rgba(212,164,115,.25);
+  background: rgba(212,164,115,.2);
+  border: 2px solid var(--gold);
   border-radius: 100px;
-  padding: 3px 10px;
+  padding: 5px 14px;
   letter-spacing: .05em;
+  font-weight: 600;
+  box-shadow: 0 0 10px rgba(212,164,115,.2);
 }
 
 /* Divider */
 .rp-divider {
-  width: 1px;
-  height: 48px;
-  background: linear-gradient(to bottom, transparent, rgba(212,164,115,.4), transparent);
+  width: 3px;
+  height: 60px;
+  background: linear-gradient(to bottom, transparent, var(--gold), var(--gold-dark), var(--gold), transparent);
   margin: 0 auto 0;
   position: relative;
   z-index: 1;
+  box-shadow: 0 0 15px rgba(212,164,115,.4);
 }
 
 /* Price section */
@@ -3204,23 +3217,24 @@ body {
 .rp-price-card {
   max-width: 460px;
   margin: 0 auto;
-  background: linear-gradient(145deg, rgba(32,94,83,.2), rgba(32,94,83,.08));
-  border: 1px solid rgba(212,164,115,.25);
+  background: linear-gradient(145deg, rgba(32,94,83,.25), rgba(32,94,83,.12));
+  border: 3px solid var(--gold);
   border-radius: 28px;
   padding: 52px 40px;
   position: relative;
   overflow: hidden;
   animation: fadeSlideUp .8s ease .1s both;
+  box-shadow: 0 0 30px rgba(212,164,115,.25), inset 0 0 40px rgba(212,164,115,.05);
 }
-/* Gold top accent line */
+/* Gold top accent line - PROMINENT */
 .rp-price-card::after {
   content: '';
   position: absolute;
   top: 0;
-  left: 10%;
-  right: 10%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  left: 5%;
+  right: 5%;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, var(--gold), var(--gold-dark), var(--gold), transparent);
 }
 .rp-price-card::before {
   content: '';
@@ -3349,11 +3363,12 @@ body {
   animation: fadeSlideUp .8s ease .1s both;
 }
 .rp-carousel-label {
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: .5em;
   text-transform: uppercase;
-  color: rgba(212,164,115,.5);
+  color: var(--gold);
   margin-bottom: 8px;
+  font-weight: 600;
 }
 .rp-carousel-title {
   font-family: var(--serif);
@@ -3404,24 +3419,25 @@ body {
 .rp-testimonial-card {
   flex-shrink: 0;
   width: 300px;
-  background: linear-gradient(145deg, rgba(255,255,255,.04), rgba(212,164,115,.02));
-  border: 1px solid rgba(212,164,115,.2);
+  background: linear-gradient(145deg, rgba(255,255,255,.05), rgba(212,164,115,.05));
+  border: 2px solid var(--gold);
   border-radius: 20px;
   padding: 24px;
   position: relative;
   transition: all .3s ease;
+  box-shadow: 0 0 15px rgba(212,164,115,.15);
 }
-/* Gold top accent */
+/* Gold top accent - PROMINENT */
 .rp-testimonial-card::before {
   content: '';
   position: absolute;
   top: 0;
-  left: 20%;
-  right: 20%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  border-radius: 0 0 4px 4px;
-  opacity: 0.6;
+  left: 10%;
+  right: 10%;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, var(--gold), var(--gold-dark), var(--gold), transparent);
+  border-radius: 0 0 6px 6px;
+  opacity: 1;
 }
 .rp-testimonial-card:hover {
   border-color: var(--gold);
@@ -3433,9 +3449,10 @@ body {
 }
 .rp-tc-stars {
   color: var(--gold);
-  font-size: 12px;
-  letter-spacing: 3px;
+  font-size: 14px;
+  letter-spacing: 4px;
   margin-bottom: 14px;
+  text-shadow: 0 0 10px rgba(212,164,115,.4);
 }
 .rp-tc-text {
   font-size: 12px;
