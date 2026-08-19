@@ -1,0 +1,259 @@
+Construye un PDF editorial premium de 7 páginas para PRYSM — una plataforma de asesoría de imagen personal. Este PDF es el informe final que recibe la clienta después de completar el quiz y subir sus fotos.
+
+DATOS QUE RECIBES (usar estos, nunca inventar)
+Cuando la clienta termina el quiz, el sistema genera estos datos automáticamente:
+
+name: nombre de la clienta (string)
+season.name: temporada de color (ej: "Otoño Profundo", "Verano Suave", "Invierno Brillante", etc.)
+season.name_en: nombre en inglés (ej: "Deep Autumn", "Soft Summer")
+season.temperature: warm / cool / neutral
+season.depth: light / medium / deep
+season.description: descripción de la temporada (1-2 oraciones)
+palette.protagonist: array de 3 hex codes de colores protagonistas
+palette.secondary: array de 2 hex codes de colores secundarios
+palette.neutral: array de 2 hex codes de colores neutrales
+palette.accent: array de 2 hex codes de colores de acento
+palette.avoid: array de 4-5 hex codes de colores a evitar
+silhouette: tipo de cuerpo (ej: "Reloj de arena", "Triángulo invertido", "Rectangular")
+silhouette_tips.do: array de 4 tips de qué favoreces
+silhouette_tips.dont: array de 4 tips de qué evitar
+fabrics: array de 5 telas recomendadas
+hair_colors: array de 3 hex codes de tonos de cabello
+hair_cuts: array de 4 cortes recomendados
+face_shape: forma de rostro (ej: "Ovalada", "Cuadrada", "Redonda")
+outfits: objeto con 4 looks {casual, office, date, travel}, cada uno tiene {name, pieces: [], colors: []}
+jewelry: {metal, tones: [], avoid: [], styles: []}
+bags: array de 3 tipos de bolso
+prysmScore: número del 8.0 al 9.9
+skin.baseColor: hex code del color de piel detectado
+skin.undertone: warm / cool / neutral
+skin.depth: light / medium / deep
+skin.contrast: high / medium / low
+photoUrl: URL de la foto que subió la clienta (para poner en la cover)
+DISEÑO — Reglas obligatorias
+Tipografía:
+
+Headings: Instrument Serif de Google Fonts
+Body/UI: Outfit de Google Fonts
+Hex codes: Space Mono o monospace
+Colores de marca:
+
+Verde teal: #205E53
+Dorado: #D4A473
+Dorado claro: #e8c9a0
+Verde oscuro casi negro: #0f1a17
+Blanco crema: #faf8f3
+Blanco puro: #ffffff
+Formato de página:
+
+A4 vertical (210mm × 297mm)
+Sin márgenes visibles (contenido full bleed o con márgenes internos de 14-18mm)
+7 páginas con page-break-after: always en cada una
+ESTRUCTURA DE LAS 7 PÁGINAS
+PÁGINA 1 — Cover
+
+Fondo: gradiente de verde oscuro casi negro (#0f1a17 a #1a2820). Agregar una textura sutil de líneas diagonales muy tenues usando repeating-linear-gradient.
+
+Elementos:
+
+Esquina superior izquierda: "PRYSM" en dorado, serif, pequeño, 50% de opacity
+Esquina superior derecha: "2026" en gris muy tenue
+Centro izquierdo (60% del ancho):
+Badge: borde dorado con "✦ Análisis completado · PRYSM Engine 2026"
+Título: "Tu guía personal de estilo" en blanco, serif, muy grande (38-40pt)
+Sub: "Documento exclusivo · [NOMBRE DE LA CLIENTA]"
+Mini paleta: 6 círculos de 18mm con los colores protagonista
+Centro derecho: FOTO DE LA CLIENTA (usar photoUrl)
+Recortar en forma ovalada
+Filtro: brightness(0.6) saturate(0.7) (blanco y negro con toque sepia)
+Sin borde, se funde con el fondo
+Esquina inferior izquierda:
+"PRYSM Score" label en gris
+Número grande en blanco con 6% opacity ("9.2")
+Esquina inferior derecha:
+Nombre de la clienta
+Temporada (ej: "Otoño Profundo")
+Fecha actual
+PÁGINA 2 — Tu Temporada de Color
+
+Layout split: izquierda 35% (verde teal), derecha 65% (blanco crema).
+
+Izquierda:
+
+Label "Tu estación" en blanco tenue
+Nombre de la temporada en grande serif blanco
+Subtítulo: "[name_en] · [temperature] · [depth]" en dorado
+Paleta visual: 6 rectángulos grandes con los colores de temporada (protagonist + secondary)
+Descripción de la temporada (2-3 oraciones)
+Derecha:
+
+Label "Tu análisis de color"
+Título "¿Por qué estos colores son los tuyos?"
+Texto explicativo breve
+Grid 2×2 con 4 características:
+Subtono: valor + explicación de 1 línea
+Profundidad: valor + explicación
+Contraste: valor + explicación
+Temperatura: valor + explicación
+Mini hex codes de los colores de temporada
+PÁGINA 3 — Tus 8 Colores
+
+Header centrado con label de temporada, título "Tus 8 colores que te favorecen", subtítulo "Hex codes exactos para comprar online o mostrarle a tu estilista".
+
+Grid 4×2 con 8 tarjetas de color:
+
+Cada tarjeta: swatch grande con el color
+Tag pequeño: "Protagonista" / "Secundario" / "Acento" / "Neutro"
+Nombre del color en español (generar un nombre descriptivo basado en el hex)
+Hex code en monospace debajo
+Sección inferior con fondo gris claro:
+
+Título "Colores que debes evitar"
+4-5 círculos con los colores a evitar
+Texto breve de por qué evitarlos
+PÁGINA 4 — Guía de Estilo
+
+Layout split 50/50.
+
+Izquierda (fondo gris claro):
+
+Label "Tu morfología"
+Título "Tu silueta ideal"
+Nombre de la silueta (ej: "Reloj de arena · Curvilínea")
+Ilustración: figura femenina estilizada con barras proporcionales (no usar imágenes de internet)
+4 tips "Sí usar" con ✓ dorado
+4 tips "Evitar" con ✗ roja
+Derecha (fondo negro):
+
+Label "Telas y materiales" en dorado
+Título "Materiales que realzan tu figura"
+5 items de tela con: cuadrado de color/textura + nombre + descripción de 1 línea
+PÁGINA 5 — Cabello y Rostro
+
+Header centrado.
+
+Izquierda:
+
+Sección "Tonos de cabello recomendados"
+3 tarjetas con: círculo de color + nombre + hex + descripción
+Derecha:
+
+Sección "Cortes recomendados"
+Grid 2×2 con 4 cortes (icono + nombre + descripción)
+Sección "Tu forma de rostro"
+Figura ovalada + nombre
+Texto explicativo de 1-2 oraciones
+PÁGINA 6 — Looks por Ocasión
+
+Header centrado.
+
+Grid 2×2 con 4 tarjetas de outfit:
+
+1.
+Día a día — Header verde teal, icono ☀
+2.
+Oficina — Header dorado, icono ✦
+3.
+Citas — Header verde teal, icono ♥
+4.
+Viajes — Header dorado, icono ✈
+Cada tarjeta:
+
+Header con nombre de ocasión en blanco
+Body blanco con:
+Lista de 3-4 piezas (nombres específicos, no genéricos)
+4 círculos de color con los colores del look
+PÁGINA 7 — Cierre
+
+Layout split 50/50.
+
+Izquierda (fondo verde oscuro):
+
+Label "Tu resumen"
+Título "Todo lo que incluye tu guía"
+6 items con ✓ verde + texto descriptivo
+Watermark "PRYSM" en grande muy tenue
+Derecha (fondo blanco):
+
+Sección "Joyería ideal" — 3 items con icono ✦
+Sección "Bolsos recomendados" — 3 items con icono ✦
+Badge dorado: "PRYSM · prysmstyle.art"
+Footer: PRYSM + prysmstyle.art · Premium Style Guide 2026
+CÓMO GENERAR EL PDF
+Usa Playwright (Node.js) para renderizar el HTML y convertirlo a PDF:
+
+javascript
+
+
+const { chromium } = require('playwright');
+async function generatePDF(data, outputPath) {
+  const html = buildHTML(data); // Template literal con los datos inyectados
+  const browser = await chromium.launch({ headless: true });
+  const page = await browser.newPage();
+  await page.setContent(html, { waitUntil: 'networkidle' });
+  await page.pdf({
+    path: outputPath,
+    format: 'A4',
+    printBackground: true,
+    margin: { top: 0, right: 0, bottom: 0, left: 0 }
+  });
+  await browser.close();
+}
+REGLAS CRÍTICAS
+1.
+Usar los datos reales, nunca inventar. Si un dato no viene del análisis, poner "No disponible" — no inventar colores, nombres o descripciones.
+
+2.
+La foto de la clienta va en la cover. Siempre. Si no hay foto, usar un placeholder ovalado con las iniciales.
+
+3.
+El PDF debe tener 7 páginas exactas. No 6, no 8. Si el contenido no llena una página, agregar espacio o repetir elementos.
+
+4.
+Sin marketing. Este PDF lo recibe la clienta como documento profesional. Cero promociones, cero links, cero llamados a acción.
+
+5.
+Los hex codes deben ser exactos. Copiarlos tal cual vienen del sistema, sin modificar.
+
+6.
+Los outfits deben usar los colores de la paleta. Cada look debe mostrar los colores correctos de la clienta, no colores genéricos.
+
+EJEMPLO DE DATOS QUE RECIBIRÍAS
+json
+
+
+{
+  "name": "Valentina García",
+  "season": {
+    "name": "Otoño Profundo",
+    "name_en": "Deep Autumn",
+    "temperature": "warm",
+    "depth": "deep"
+  },
+  "palette": {
+    "protagonist": ["#B5691B", "#6E2C00", "#E07B39"],
+    "secondary": ["#2F4F1E", "#A0522D"],
+    "neutral": ["#8B4513", "#567568"],
+    "accent": ["#C68642", "#C0392B"],
+    "avoid": ["#ADD8E6", "#FFB6C1", "#E6E6FA", "#87CEEB"]
+  },
+  "silhouette": "Reloj de arena",
+  "silhouette_tips": {
+    "do": ["Cintura definida", "Escotes V y palabra de honor", "Mangas que marquen el hombro", "Faldas Midi y Maxi"],
+    "dont": ["Ropa totalmente recta sin forma", "Cintura alta", "Escote alto rígido", "Tejidos muy fluidos"]
+  },
+  "fabrics": ["Seda natural", "Algodón premium", "Cuero suave", "Punto pesado", "Lino de calidad"],
+  "hair_colors": ["#4A2810", "#7B3F00", "#C68642"],
+  "hair_cuts": ["Largo medios", "Corte en V", "Bucle suave", "Flequillo lateral"],
+  "face_shape": "Ovalada",
+  "outfits": {
+    "casual": { "name": "Día a día", "pieces": ["Camisa seda ocre", "Pantalón palazzo camel", "Sneakers blancas"], "colors": ["#B5691B", "#C68642", "#f5f0e8"] },
+    "office": { "name": "Oficina", "pieces": ["Blazer café oscuro", "Blusa seda beige", "Pantalón slim navy"], "colors": ["#6E2C00", "#A0522D", "#f5f0e8"] },
+    "date": { "name": "Citas", "pieces": ["Vestido slip ocre", "Tacón bloque dorado", "Pendientes aro"], "colors": ["#E07B39", "#B5691B", "#D4A473"] },
+    "travel": { "name": "Viajes", "pieces": ["Vestido midi verde musgo", "Denim oscuro", "Gaban camel"], "colors": ["#2F4F1E", "#C68642", "#d4c8b8"] }
+  },
+  "jewelry": { "metal": "Oro cálido", "tones": ["Oro", "Bronce", "Cobre"], "avoid": ["Plata", "Acero"], "styles": ["Aros colgantes", "Collares en V"] },
+  "bags": ["Tote de cuero suave", "Crossbody pequeña", "Clutch estructurada"],
+  "prysmScore": "9.2",
+  "photoUrl": "https://..."
+}

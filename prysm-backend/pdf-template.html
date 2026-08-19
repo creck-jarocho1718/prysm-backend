@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PRYSM - Tu Guía Personal de Estilo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600&family=Space+Mono&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --teal: #205E53;
+      --gold: #D4A473;
+      --gold-light: #e8c9a0;
+      --dark-green: #0f1a17;
+      --cream: #faf8f3;
+      --white: #ffffff;
+      --grey-light: #f0ede8;
+      --grey: #6a6a68;
+    }
+
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 300;
+      color: #000;
+      background: #fff;
+    }
+
+    .page {
+      width: 210mm;
+      height: 297mm;
+      position: relative;
+      overflow: hidden;
+      page-break-after: always;
+    }
+
+    /* ========== PAGE 1: COVER ========== */
+    .cover {
+      background: linear-gradient(135deg, #0f1a17 0%, #1a2820 50%, #0f1a17 100%);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 18mm;
+    }
+
+    .cover::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 40px,
+        rgba(255,255,255,0.008) 40px,
+        rgba(255,255,255,0.008) 41px
+      );
+      pointer-events: none;
+    }
+
+    .cover-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cover-logo {
+      font-family: 'Instrument Serif', serif;
+      font-size: 18px;
+      color: #D4A473;
+      opacity: 0.6;
+      letter-spacing: 0.3em;
+    }
+
+    .cover-year {
+      font-size: 11px;
+      color: rgba(255,255,255,0.25);
+      letter-spacing: 0.2em;
+    }
+
+    .cover-main {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20mm;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cover-left {
+      flex: 1;
+    }
+
+    .cover-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border: 1px solid #D4A473;
+      border-radius: 100px;
+      font-size: 9px;
+      color: #D4A473;
+      letter-spacing: 0.15em;
+      margin-bottom: 12mm;
+    }
+
+    .cover-badge::before {
+      content: '✦';
+      font-size: 8px;
+    }
+
+    .cover-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 42px;
+      line-height: 1.05;
+      margin-bottom: 8mm;
+      letter-spacing: -0.02em;
+    }
+
+    .cover-subtitle {
+      font-size: 11px;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.1em;
+      margin-bottom: 10mm;
+    }
+
+    .cover-palette {
+      display: flex;
+      gap: 6px;
+    }
+
+    .cover-palette-dot {
+      width: 18mm;
+      height: 18mm;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .cover-right {
+      flex-shrink: 0;
+    }
+
+    .cover-photo {
+      width: 70mm;
+      height: 90mm;
+      border-radius: 50%;
+      object-fit: cover;
+      filter: brightness(0.6) saturate(0.7);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    .cover-photo-placeholder {
+      width: 70mm;
+      height: 90mm;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2a3530, #1a2520);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Instrument Serif', serif;
+      font-size: 28px;
+      color: rgba(255,255,255,0.3);
+    }
+
+    .cover-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cover-score {
+      font-family: 'Instrument Serif', serif;
+    }
+
+    .cover-score-label {
+      font-size: 8px;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.3em;
+      margin-bottom: 2px;
+    }
+
+    .cover-score-num {
+      font-size: 48px;
+      color: rgba(255,255,255,0.08);
+      line-height: 1;
+    }
+
+    .cover-meta {
+      text-align: right;
+    }
+
+    .cover-meta-name {
+      font-family: 'Instrument Serif', serif;
+      font-size: 16px;
+      margin-bottom: 2px;
+    }
+
+    .cover-meta-season {
+      font-size: 10px;
+      color: #D4A473;
+      letter-spacing: 0.1em;
+      margin-bottom: 2px;
+    }
+
+    .cover-meta-date {
+      font-size: 9px;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* ========== PAGE 2: TEMPORADA DE COLOR ========== */
+    .season-page {
+      display: flex;
+      height: 100%;
+    }
+
+    .season-left {
+      width: 35%;
+      background: #205E53;
+      color: #fff;
+      padding: 18mm;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .season-label {
+      font-size: 9px;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.3em;
+      margin-bottom: 6px;
+    }
+
+    .season-name {
+      font-family: 'Instrument Serif', serif;
+      font-size: 28px;
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+
+    .season-subtitle {
+      font-size: 10px;
+      color: #D4A473;
+      letter-spacing: 0.1em;
+      margin-bottom: 12mm;
+    }
+
+    .season-palette {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 10mm;
+    }
+
+    .season-swatch {
+      width: 100%;
+      height: 22mm;
+    }
+
+    .season-desc {
+      font-size: 11px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.8);
+      flex: 1;
+    }
+
+    .season-right {
+      width: 65%;
+      background: #faf8f3;
+      padding: 18mm;
+    }
+
+    .season-right-label {
+      font-size: 9px;
+      color: #6a6a68;
+      letter-spacing: 0.3em;
+      margin-bottom: 4px;
+    }
+
+    .season-right-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 24px;
+      margin-bottom: 8mm;
+    }
+
+    .season-right-text {
+      font-size: 11px;
+      color: #6a6a68;
+      line-height: 1.7;
+      margin-bottom: 10mm;
+    }
+
+    .season-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 10mm;
+    }
+
+    .season-feature {
+      padding: 8px;
+      background: #fff;
+      border-radius: 6px;
+    }
+
+    .season-feature-label {
+      font-size: 8px;
+      color: #D4A473;
+      letter-spacing: 0.2em;
+      margin-bottom: 2px;
+    }
+
+    .season-feature-value {
+      font-family: 'Instrument Serif', serif;
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+
+    .season-feature-desc {
+      font-size: 9px;
+      color: #6a6a68;
+      line-height: 1.4;
+    }
+
+    .season-hex {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .season-hex-chip {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      padding: 4px 8px;
+      background: #fff;
+      border-radius: 4px;
+      color: #205E53;
+    }
+
+    /* ========== PAGE 3: 8 COLORES ========== */
+    .colors-page {
+      background: #fff;
+      padding: 18mm;
+    }
+
+    .colors-header {
+      text-align: center;
+      margin-bottom: 12mm;
+    }
+
+    .colors-label {
+      font-size: 9px;
+      color: #D4A473;
+      letter-spacing: 0.3em;
+      margin-bottom: 4px;
+    }
+
+    .colors-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 28px;
+      margin-bottom: 4px;
+    }
+
+    .colors-subtitle {
+      font-size: 10px;
+      color: #6a6a68;
+    }
+
+    .colors-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 10mm;
+    }
+
+    .color-card {
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .color-swatch {
+      height: 40mm;
+    }
+
+    .color-info {
+      padding: 6px;
+      background: #faf8f3;
+    }
+
+    .color-tag {
+      font-size: 7px;
+      color: #D4A473;
+      letter-spacing: 0.15em;
+      margin-bottom: 2px;
+    }
+
+    .color-name {
+      font-family: 'Instrument Serif', serif;
+      font-size: 11px;
+      margin-bottom: 2px;
+    }
+
+    .color-hex {
+      font-family: 'Space Mono', monospace;
+      font-size: 8px;
+      color: #6a6a68;
+    }
+
+    .avoid-section {
+      background: #f0ede8;
+      padding: 10mm;
+      border-radius: 10px;
+    }
+
+    .avoid-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .avoid-colors {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .avoid-dot {
+      width: 20mm;
+      height: 20mm;
+      border-radius: 50%;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .avoid-text {
+      font-size: 10px;
+      color: #6a6a68;
+      line-height: 1.5;
+    }
+
+    /* ========== PAGE 4: GUÍA DE ESTILO ========== */
+    .style-page {
+      display: flex;
+      height: 100%;
+    }
+
+    .style-left {
+      width: 50%;
+      background: #f0ede8;
+      padding: 18mm;
+    }
+
+    .style-label {
+      font-size: 9px;
+      color: #6a6a68;
+      letter-spacing: 0.3em;
+      margin-bottom: 4px;
+    }
+
+    .style-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .style-silhouette {
+      font-size: 12px;
+      color: #205E53;
+      margin-bottom: 10mm;
+    }
+
+    .style-figure {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 10mm;
+    }
+
+    .style-figure svg {
+      width: 60mm;
+      height: 80mm;
+    }
+
+    .style-tips {
+      display: flex;
+      gap: 10mm;
+    }
+
+    .style-tips-col h4 {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      margin-bottom: 6px;
+    }
+
+    .style-tips-col.do h4 {
+      color: #205E53;
+    }
+
+    .style-tips-col.dont h4 {
+      color: #c44;
+    }
+
+    .style-tips-list {
+      font-size: 9px;
+      line-height: 1.8;
+    }
+
+    .style-tips-list li {
+      list-style: none;
+      margin-bottom: 2px;
+    }
+
+    .style-tips-list.do li::before {
+      content: '✓ ';
+      color: #D4A473;
+    }
+
+    .style-tips-list.dont li::before {
+      content: '✗ ';
+      color: #c44;
+    }
+
+    .style-right {
+      width: 50%;
+      background: #0f1a17;
+      color: #fff;
+      padding: 18mm;
+    }
+
+    .style-right-label {
+      font-size: 9px;
+      color: #D4A473;
+      letter-spacing: 0.3em;
+      margin-bottom: 4px;
+    }
+
+    .style-right-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 20px;
+      margin-bottom: 10mm;
+    }
+
+    .fabric-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .fabric-swatch {
+      width: 12mm;
+      height: 12mm;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .fabric-name {
+      font-family: 'Instrument Serif', serif;
+      font-size: 12px;
+      margin-bottom: 1px;
+    }
+
+    .fabric-desc {
+      font-size: 9px;
+      color: rgba(255,255,255,0.6);
+    }
+
+    /* ========== PAGE 5: CABELLO Y ROSTRO ========== */
+    .hair-page {
+      background: #fff;
+      padding: 18mm;
+    }
+
+    .hair-header {
+      text-align: center;
+      margin-bottom: 12mm;
+    }
+
+    .hair-label {
+      font-size: 9px;
+      color: #6a6a68;
+      letter-spacing: 0.3em;
+      margin-bottom: 4px;
+    }
+
+    .hair-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 26px;
+    }
+
+    .hair-content {
+      display: flex;
+      gap: 12mm;
+    }
+
+    .hair-left {
+      flex: 1;
+    }
+
+    .hair-section-title {
+      font-size: 10px;
+      color: #205E53;
+      letter-spacing: 0.2em;
+      margin-bottom: 8px;
+    }
+
+    .hair-colors {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12mm;
+    }
+
+    .hair-color-card {
+      flex: 1;
+      padding: 8px;
+      background: #faf8f3;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .hair-color-dot {
+      width: 20mm;
+      height: 20mm;
+      border-radius: 50%;
+      margin: 0 auto 6px;
+    }
+
+    .hair-color-name {
+      font-family: 'Instrument Serif', serif;
+      font-size: 10px;
+      margin-bottom: 2px;
+    }
+
+    .hair-color-hex {
+      font-family: 'Space Mono', monospace;
+      font-size: 8px;
+      color: #6a6a68;
+    }
+
+    .hair-right {
+      flex: 1;
+    }
+
+    .hair-cuts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12mm;
+    }
+
+    .hair-cut-card {
+      padding: 8px;
+      background: #faf8f3;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .hair-cut-icon {
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+
+    .hair-cut-name {
+      font-family: 'Instrument Serif', serif;
+      font-size: 10px;
+    }
+
+    .face-section {
+      background: #205E53;
+      color: #fff;
+      padding: 10mm;
+      border-radius: 10px;
+    }
+
+    .face-title {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      margin-bottom: 6px;
+    }
+
+    .face-content {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .face-figure {
+      width: 30mm;
+      height: 40mm;
+    }
+
+    .face-name {
+      font-family: 'Instrument Serif', serif;
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+
+    .face-desc {
+      font-size: 10px;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.5;
+    }
+
+    /* ========== PAGE 6: LOOKS ========== */
+    .looks-page {
+      background: #fff;
+      padding: 18mm;
+    }
+
+    .looks-header {
+      text-align: center;
+      margin-bottom: 12mm;
+    }
+
+    .looks-label {
+      font-size: 9px;
+      color: #6a6a68;
+      letter-spacing: 0.3em;
+      margin-bottom: 4px;
+    }
+
+    .looks-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 26px;
+    }
+
+    .looks-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .look-card {
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid #f0ede8;
+    }
+
+    .look-header {
+      padding: 8px 12px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .look-header.casual { background: #205E53; }
+    .look-header.office { background: #D4A473; }
+    .look-header.date { background: #205E53; }
+    .look-header.travel { background: #D4A473; }
+
+    .look-icon {
+      font-size: 14px;
+    }
+
+    .look-name {
+      font-family: 'Instrument Serif', serif;
+      font-size: 14px;
+    }
+
+    .look-body {
+      padding: 10px;
+      background: #faf8f3;
+    }
+
+    .look-pieces {
+      font-size: 9px;
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+
+    .look-colors {
+      display: flex;
+      gap: 4px;
+    }
+
+    .look-color-dot {
+      width: 10mm;
+      height: 10mm;
+      border-radius: 50%;
+    }
+
+    /* ========== PAGE 7: CIERRE ========== */
+    .close-page {
+      display: flex;
+      height: 100%;
+    }
+
+    .close-left {
+      width: 50%;
+      background: #0f1a17;
+      color: #fff;
+      padding: 18mm;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .close-watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-15deg);
+      font-family: 'Instrument Serif', serif;
+      font-size: 100px;
+      color: rgba(255,255,255,0.03);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .close-label {
+      font-size: 9px;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.3em;
+      margin-bottom: 4px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .close-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 22px;
+      margin-bottom: 12mm;
+      position: relative;
+      z-index: 1;
+    }
+
+    .close-items {
+      position: relative;
+      z-index: 1;
+    }
+
+    .close-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 10px;
+    }
+
+    .close-item::before {
+      content: '✓';
+      color: #205E53;
+      font-weight: bold;
+    }
+
+    .close-right {
+      width: 50%;
+      background: #fff;
+      padding: 18mm;
+    }
+
+    .close-section {
+      margin-bottom: 12mm;
+    }
+
+    .close-section-title {
+      font-size: 11px;
+      color: #205E53;
+      letter-spacing: 0.2em;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .close-section-title::before {
+      content: '✦';
+      color: #D4A473;
+    }
+
+    .close-item-list {
+      font-size: 10px;
+      line-height: 1.8;
+    }
+
+    .close-item-list li {
+      list-style: none;
+      margin-bottom: 2px;
+    }
+
+    .close-item-list li::before {
+      content: '·';
+      color: #D4A473;
+      margin-right: 4px;
+    }
+
+    .close-badge {
+      display: inline-flex;
+      padding: 8px 16px;
+      border: 2px solid #D4A473;
+      border-radius: 100px;
+      font-size: 10px;
+      color: #D4A473;
+      letter-spacing: 0.1em;
+      margin-bottom: 8mm;
+    }
+
+    .close-footer {
+      font-size: 9px;
+      color: #6a6a68;
+      letter-spacing: 0.1em;
+    }
+
+    /* ========== UTILITY ========== */
+    .text-gold { color: #D4A473; }
+    .text-teal { color: #205E53; }
+    .font-serif { font-family: 'Instrument Serif', serif; }
+  </style>
+</head>
+<body>
+
+  <!-- PAGE 1: COVER -->
+  <div class="page cover">
+    <div class="cover-header">
+      <div class="cover-logo">PRYSM</div>
+      <div class="cover-year">2026</div>
+    </div>
+
+    <div class="cover-main">
+      <div class="cover-left">
+        <div class="cover-badge">Análisis completado · PRYSM Engine 2026</div>
+        <h1 class="cover-title">Tu guía personal<br>de estilo</h1>
+        <div class="cover-subtitle">Documento exclusivo · {{clientName}}</div>
+        <div class="cover-palette">
+          {{#each palette.protagonist}}
+          <div class="cover-palette-dot" style="background: {{this}}"></div>
+          {{/each}}
+        </div>
+      </div>
+      <div class="cover-right">
+        {{#if photoUrl}}
+        <img class="cover-photo" src="{{photoUrl}}" alt="{{clientName}}">
+        {{else}}
+        <div class="cover-photo-placeholder">{{initials}}</div>
+        {{/if}}
+      </div>
+    </div>
+
+    <div class="cover-footer">
+      <div class="cover-score">
+        <div class="cover-score-label">PRYSM Score</div>
+        <div class="cover-score-num">{{prysmScore}}</div>
+      </div>
+      <div class="cover-meta">
+        <div class="cover-meta-name">{{clientName}}</div>
+        <div class="cover-meta-season">{{season.name}}</div>
+        <div class="cover-meta-date">{{currentDate}}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 2: TEMPORADA DE COLOR -->
+  <div class="page">
+    <div class="season-page">
+      <div class="season-left">
+        <div class="season-label">Tu estación</div>
+        <div class="season-name">{{season.name}}</div>
+        <div class="season-subtitle">{{season.name_en}} · {{season.temperature}} · {{season.depth}}</div>
+
+        <div class="season-palette">
+          {{#each palette.protagonist}}
+          <div class="season-swatch" style="background: {{this}}"></div>
+          {{/each}}
+          {{#each palette.secondary}}
+          <div class="season-swatch" style="background: {{this}}"></div>
+          {{/each}}
+        </div>
+
+        <div class="season-desc">{{season.description}}</div>
+      </div>
+
+      <div class="season-right">
+        <div class="season-right-label">Tu análisis de color</div>
+        <div class="season-right-title">¿Por qué estos colores son los tuyos?</div>
+        <div class="season-right-text">
+          Tu tono de piel, ojos y cabello tienen características únicas que hacen que ciertos colores te iluminen mientras otros pueden opacarte. Los colores de tu temporada trabajan en armonía con tu coloración natural.
+        </div>
+
+        <div class="season-grid">
+          <div class="season-feature">
+            <div class="season-feature-label">SUBTONO</div>
+            <div class="season-feature-value">{{skin.undertone}}</div>
+            <div class="season-feature-desc">{{#if (eq skin.undertone 'warm')}}Tonos cálidos como el oro te favorecen{{else if (eq skin.undertone 'cool')}}Tonos fríos como la plata te favorecen{{else}}Tonos neutros versatile{{/if}}</div>
+          </div>
+          <div class="season-feature">
+            <div class="season-feature-label">PROFUNDIDAD</div>
+            <div class="season-feature-value">{{skin.depth}}</div>
+            <div class="season-feature-desc">{{#if (eq skin.depth 'deep')}}Colores profundos y saturados{{else if (eq skin.depth 'light')}}Colores suaves y claros{{else}}Colores de intensidad media{{/if}}</div>
+          </div>
+          <div class="season-feature">
+            <div class="season-feature-label">CONTRASTE</div>
+            <div class="season-feature-value">{{skin.contrast}}</div>
+            <div class="season-feature-desc">{{#if (eq skin.contrast 'high')}}Alto contraste en tu look{{else if (eq skin.contrast 'low')}}Looks suaves y armónicos{{else}}Versatilidad en combinaciones{{/if}}</div>
+          </div>
+          <div class="season-feature">
+            <div class="season-feature-label">TEMPERATURA</div>
+            <div class="season-feature-value">{{season.temperature}}</div>
+            <div class="season-feature-desc">{{#if (eq season.temperature 'warm')}}Tonos cálidos y terrosos{{else if (eq season.temperature 'cool')}}Tonos fríos y vibrantes{{else}}Tonos neutros equilibrados{{/if}}</div>
+          </div>
+        </div>
+
+        <div class="season-hex">
+          {{#each palette.protagonist}}
+          <div class="season-hex-chip">{{this}}</div>
+          {{/each}}
+          {{#each palette.secondary}}
+          <div class="season-hex-chip">{{this}}</div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 3: 8 COLORES -->
+  <div class="page colors-page">
+    <div class="colors-header">
+      <div class="colors-label">{{season.name}}</div>
+      <div class="colors-title">Tus 8 colores que te favorecen</div>
+      <div class="colors-subtitle">Hex codes exactos para comprar online o mostrarle a tu estilista</div>
+    </div>
+
+    <div class="colors-grid">
+      {{#each palette.protagonist}}
+      <div class="color-card">
+        <div class="color-swatch" style="background: {{this}}"></div>
+        <div class="color-info">
+          <div class="color-tag">PROTAGONISTA</div>
+          <div class="color-name">{{colorName this}}</div>
+          <div class="color-hex">{{this}}</div>
+        </div>
+      </div>
+      {{/each}}
+      {{#each palette.secondary}}
+      <div class="color-card">
+        <div class="color-swatch" style="background: {{this}}"></div>
+        <div class="color-info">
+          <div class="color-tag">SECUNDARIO</div>
+          <div class="color-name">{{colorName this}}</div>
+          <div class="color-hex">{{this}}</div>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+
+    <div class="avoid-section">
+      <div class="avoid-title">Colores que debes evitar</div>
+      <div class="avoid-colors">
+        {{#each palette.avoid}}
+        <div class="avoid-dot" style="background: {{this}}"></div>
+        {{/each}}
+      </div>
+      <div class="avoid-text">
+        Estos colores crean demasiado contraste con tu tono de piel, haciendo que te veas cansada u opaca.
+        Evítalos en prendas cerca de tu rostro.
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 4: GUÍA DE ESTILO -->
+  <div class="page">
+    <div class="style-page">
+      <div class="style-left">
+        <div class="style-label">Tu morfología</div>
+        <div class="style-title">Tu silueta ideal</div>
+        <div class="style-silhouette">{{silhouette}}</div>
+
+        <div class="style-figure">
+          <svg viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Stylized female figure silhouette -->
+            <ellipse cx="30" cy="12" rx="8" ry="10" fill="#D4A473" opacity="0.6"/>
+            <path d="M30 22 C20 25, 15 35, 18 50 C20 60, 25 75, 25 78 L35 78 C35 75, 40 60, 42 50 C45 35, 40 25, 30 22" fill="#D4A473" opacity="0.4"/>
+            <!-- Proportional lines -->
+            <line x1="30" y1="22" x2="30" y2="78" stroke="#D4A473" stroke-width="0.5" stroke-dasharray="2,2"/>
+          </svg>
+        </div>
+
+        <div class="style-tips">
+          <div class="style-tips-col do">
+            <h4>SÍ USAR</h4>
+            <ul class="style-tips-list do">
+              {{#each silhouette_tips.do}}
+              <li>{{this}}</li>
+              {{/each}}
+            </ul>
+          </div>
+          <div class="style-tips-col dont">
+            <h4>EVITAR</h4>
+            <ul class="style-tips-list dont">
+              {{#each silhouette_tips.dont}}
+              <li>{{this}}</li>
+              {{/each}}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="style-right">
+        <div class="style-right-label">Telas y materiales</div>
+        <div class="style-right-title">Materiales que realzan tu figura</div>
+
+        {{#each fabrics}}
+        <div class="fabric-item">
+          <div class="fabric-swatch" style="background: {{fabricColor @index}}"></div>
+          <div>
+            <div class="fabric-name">{{this}}</div>
+            <div class="fabric-desc">{{fabricDesc this}}</div>
+          </div>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 5: CABELLO Y ROSTRO -->
+  <div class="page hair-page">
+    <div class="hair-header">
+      <div class="hair-label">{{season.name}}</div>
+      <div class="hair-title">Cabello y Rostro</div>
+    </div>
+
+    <div class="hair-content">
+      <div class="hair-left">
+        <div class="hair-section-title">TONOS DE CABELLO RECOMENDADOS</div>
+        <div class="hair-colors">
+          {{#each hair_colors}}
+          <div class="hair-color-card">
+            <div class="hair-color-dot" style="background: {{this}}"></div>
+            <div class="hair-color-name">{{hairColorName this}}</div>
+            <div class="hair-color-hex">{{this}}</div>
+          </div>
+          {{/each}}
+        </div>
+
+        <div class="hair-section-title">TU FORMA DE ROSTRO</div>
+        <div class="face-section">
+          <div class="face-title">ANÁLISIS FACIAL</div>
+          <div class="face-content">
+            <svg class="face-figure" viewBox="0 0 30 40" fill="none">
+              <ellipse cx="15" cy="20" rx="12" ry="16" fill="#D4A473" opacity="0.5"/>
+              <ellipse cx="11" cy="17" rx="2" ry="1.5" fill="#0f1a17"/>
+              <ellipse cx="19" cy="17" rx="2" ry="1.5" fill="#0f1a17"/>
+              <path d="M12 26 Q15 28 18 26" stroke="#0f1a17" stroke-width="1" fill="none"/>
+            </svg>
+            <div>
+              <div class="face-name">{{face_shape}}</div>
+              <div class="face-desc">
+                {{#if (eq face_shape 'Ovalada')}}Tu rostro es el más versátil. Casi todos los peinados y accesorios te favorecen.{{else if (eq face_shape 'Cuadrada')}}Tu mandíbula definida se suaviza con largos suaves y volumen en la parte superior.{{else if (eq face_shape 'Redonda')}}Los ángulos estratégicos y el largo por debajo del mentón estilizan tu rostro.{{else}}Tu tipo de rostro tiene características únicas que favorecen ciertos estilos específicos.{{/if}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hair-right">
+        <div class="hair-section-title">CORTES RECOMENDADOS</div>
+        <div class="hair-cuts-grid">
+          {{#each hair_cuts}}
+          <div class="hair-cut-card">
+            <div class="hair-cut-icon">✂</div>
+            <div class="hair-cut-name">{{this}}</div>
+          </div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 6: LOOKS -->
+  <div class="page looks-page">
+    <div class="looks-header">
+      <div class="looks-label">{{season.name}}</div>
+      <div class="looks-title">Looks por Ocasión</div>
+    </div>
+
+    <div class="looks-grid">
+      <div class="look-card">
+        <div class="look-header casual">
+          <div class="look-icon">☀</div>
+          <div class="look-name">{{outfits.casual.name}}</div>
+        </div>
+        <div class="look-body">
+          <div class="look-pieces">
+            {{#each outfits.casual.pieces}}
+            · {{this}}<br>
+            {{/each}}
+          </div>
+          <div class="look-colors">
+            {{#each outfits.casual.colors}}
+            <div class="look-color-dot" style="background: {{this}}"></div>
+            {{/each}}
+          </div>
+        </div>
+      </div>
+
+      <div class="look-card">
+        <div class="look-header office">
+          <div class="look-icon">✦</div>
+          <div class="look-name">{{outfits.office.name}}</div>
+        </div>
+        <div class="look-body">
+          <div class="look-pieces">
+            {{#each outfits.office.pieces}}
+            · {{this}}<br>
+            {{/each}}
+          </div>
+          <div class="look-colors">
+            {{#each outfits.office.colors}}
+            <div class="look-color-dot" style="background: {{this}}"></div>
+            {{/each}}
+          </div>
+        </div>
+      </div>
+
+      <div class="look-card">
+        <div class="look-header date">
+          <div class="look-icon">♥</div>
+          <div class="look-name">{{outfits.date.name}}</div>
+        </div>
+        <div class="look-body">
+          <div class="look-pieces">
+            {{#each outfits.date.pieces}}
+            · {{this}}<br>
+            {{/each}}
+          </div>
+          <div class="look-colors">
+            {{#each outfits.date.colors}}
+            <div class="look-color-dot" style="background: {{this}}"></div>
+            {{/each}}
+          </div>
+        </div>
+      </div>
+
+      <div class="look-card">
+        <div class="look-header travel">
+          <div class="look-icon">✈</div>
+          <div class="look-name">{{outfits.travel.name}}</div>
+        </div>
+        <div class="look-body">
+          <div class="look-pieces">
+            {{#each outfits.travel.pieces}}
+            · {{this}}<br>
+            {{/each}}
+          </div>
+          <div class="look-colors">
+            {{#each outfits.travel.colors}}
+            <div class="look-color-dot" style="background: {{this}}"></div>
+            {{/each}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 7: CIERRE -->
+  <div class="page">
+    <div class="close-page">
+      <div class="close-left">
+        <div class="close-watermark">PRYSM</div>
+        <div class="close-label">Tu resumen</div>
+        <div class="close-title">Todo lo que incluye tu guía</div>
+
+        <div class="close-items">
+          <div class="close-item">Temporada de color personalizada</div>
+          <div class="close-item">8 colores que te favorecen con hex codes</div>
+          <div class="close-item">Colores a evitar claramente identificados</div>
+          <div class="close-item">Silueta ideal con tips específicos</div>
+          <div class="close-item">Tonos de cabello recomendados</div>
+          <div class="close-item">4 looks completos por ocasión</div>
+        </div>
+      </div>
+
+      <div class="close-right">
+        <div class="close-section">
+          <div class="close-section-title">Joyería ideal</div>
+          <ul class="close-item-list">
+            <li>Metal: {{jewelry.metal}}</li>
+            <li>Tonos: {{jewelry.tonesString}}</li>
+            <li>Evitar: {{jewelry.avoidString}}</li>
+          </ul>
+        </div>
+
+        <div class="close-section">
+          <div class="close-section-title">Bolsos recomendados</div>
+          <ul class="close-item-list">
+            {{#each bags}}
+            <li>{{this}}</li>
+            {{/each}}
+          </ul>
+        </div>
+
+        <div class="close-badge">PRYSM · prysmstyle.art</div>
+
+        <div class="close-footer">
+          PRYSM · prysmstyle.art<br>
+          Premium Style Guide 2026
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
