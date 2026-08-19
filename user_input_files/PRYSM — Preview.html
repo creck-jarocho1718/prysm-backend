@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<!-- saved from url=(0039)https://vbxepgan25urb.space.minimax.io/ -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRYSM — Preview</title>
+<link href="./PRYSM — Preview_files/css2" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --serif:'Instrument Serif',serif;
+  --sans:'Outfit',sans-serif;
+  --green:#205E53;
+  --green-mid:#2d7a6e;
+  --green-light:#3a9e8d;
+  --gold:#D4A473;
+  --gold-light:#e8c9a0;
+  --gold-dark:#a07840;
+  --bg:#0f1a17;
+}
+html{scroll-behavior:smooth;}
+body{
+  font-family:var(--sans);
+  background:var(--bg);
+  color:#fff;
+  line-height:1.5;
+  font-weight:300;
+  font-size:15px;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+/* ─── AMBIENT ORBS ─── */
+.orb{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0;animation:orbFloat 10s ease-in-out infinite;}
+.orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(32,94,83,.25),transparent 70%);top:-200px;left:-200px;animation-delay:0s;}
+.orb-2{width:700px;height:700px;background:radial-gradient(circle,rgba(32,94,83,.2),transparent 70%);top:30%;right:-250px;animation-delay:-4s;}
+.orb-3{width:500px;height:500px;background:radial-gradient(circle,rgba(45,122,110,.18),transparent 70%);bottom:5%;left:10%;animation-delay:-7s;}
+@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(40px,-25px) scale(1.06);}66%{transform:translate(-25px,20px) scale(0.96);}}
+
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(32px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes slideInLeft{from{opacity:0;transform:translateX(-20px);}to{opacity:1;transform:translateX(0);}}
+@keyframes slideInRight{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:translateX(0);}}
+
+/* ─── HERO ─── */
+.rp-hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;}
+.rp-hero-bg{position:absolute;inset:0;z-index:0;}
+.rp-hero-bg img{width:100%;height:100%;object-fit:cover;object-position:center 20%;filter:brightness(0.45) saturate(0.85);}
+.rp-hero-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(to bottom,rgba(15,26,23,.25) 0%,transparent 25%,transparent 50%,rgba(15,26,23,.8) 80%,rgba(15,26,23,1) 100%),linear-gradient(to right,rgba(15,26,23,.6) 0%,transparent 55%);}
+.rp-hero-content{position:relative;z-index:2;padding:48px 48px 80px;max-width:640px;animation:fadeSlideUp 1s ease both;}
+.rp-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border:1px solid rgba(212,164,115,.45);border-radius:100px;font-size:9px;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);margin-bottom:24px;}
+.rp-badge-dot{width:5px;height:5px;background:var(--gold);border-radius:50%;animation:pulse 2.5s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.7);}}
+.rp-hero-title{font-family:var(--serif);font-size:clamp(52px,10vw,120px);line-height:.86;letter-spacing:-.025em;color:#fff;margin-bottom:6px;}
+.rp-hero-title em{font-style:italic;color:var(--gold);}
+.rp-hero-name{font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:48px;}
+.rp-scroll-hint{display:flex;flex-direction:column;align-items:flex-start;gap:8px;cursor:pointer;text-decoration:none;transition:opacity .3s ease;}
+.rp-scroll-hint:hover{opacity:.7;}
+.rp-scroll-hint span{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.3);}
+.rp-scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,rgba(212,164,115,.6),transparent);position:relative;overflow:hidden;}
+.rp-scroll-line::after{content:'';position:absolute;top:-100%;left:0;width:100%;height:100%;background:linear-gradient(to bottom,transparent,var(--gold),transparent);animation:scrollDrop 2s ease-in-out infinite;}
+@keyframes scrollDrop{0%{top:-100%;}100%{top:100%;}}
+
+/* ─── MAIN ─── */
+.rp-main{position:relative;z-index:1;background:var(--bg);}
+
+/* ─── EDITORIAL CREDIBILITY ─── */
+.rp-editorial{
+  padding:24px 48px 0;
+  text-align:center;
+  animation:fadeSlideUp .8s ease .05s both;
+}
+.rp-editorial-label{
+  font-size:8px;
+  letter-spacing:.4em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.15);
+  margin-bottom:16px;
+}
+.rp-editorial-logos{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:32px;
+  flex-wrap:wrap;
+  opacity:.35;
+  transition:opacity .3s ease;
+}
+.rp-editorial-logos:hover{opacity:.55;}
+.rp-editorial-logo{
+  font-family:var(--serif);
+  font-size:clamp(14px,2vw,18px);
+  color:#fff;
+  letter-spacing:.05em;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.rp-editorial-logo span{
+  font-family:var(--sans);
+  font-size:8px;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.4);
+  font-weight:300;
+}
+.rp-editorial-dot{
+  width:3px;height:3px;
+  background:rgba(255,255,255,.2);
+  border-radius:50%;
+}
+.rp-editorial-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-top:20px;
+  padding:6px 16px;
+  background:rgba(212,164,115,.08);
+  border:1px solid rgba(212,164,115,.15);
+  border-radius:100px;
+}
+.rp-editorial-badge-icon{
+  font-size:12px;
+}
+.rp-editorial-badge-text{
+  font-size:9px;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:rgba(212,164,115,.6);
+}
+
+/* ─── STATS ─── */
+.rp-stats{padding:40px 48px;display:flex;justify-content:center;gap:48px;flex-wrap:wrap;animation:fadeSlideUp .8s ease .1s both;}
+.rp-stat-num{font-family:var(--serif);font-size:clamp(28px,5vw,44px);color:var(--gold);line-height:1;margin-bottom:4px;}
+.rp-stat-label{font-size:9px;color:rgba(255,255,255,.25);letter-spacing:.15em;text-transform:uppercase;}
+
+/* ─── INCLUDES SECTION ─── */
+.rp-includes-section{padding:40px 48px 80px;max-width:1100px;margin:0 auto;}
+.rp-includes-header{text-align:center;margin-bottom:56px;animation:fadeSlideUp .8s ease .1s both;}
+.rp-includes-label{font-size:9px;letter-spacing:.5em;text-transform:uppercase;color:rgba(212,164,115,.5);margin-bottom:12px;}
+.rp-includes-title{font-family:var(--serif);font-size:clamp(28px,5vw,52px);color:#fff;letter-spacing:-.02em;margin-bottom:8px;}
+.rp-includes-title em{font-style:italic;color:var(--gold);}
+.rp-includes-sub{font-size:12px;color:rgba(255,255,255,.3);letter-spacing:.05em;}
+
+/* Left side: title copy */
+.rp-includes-body{display:grid;grid-template-columns:1fr 2fr;gap:64px;align-items:start;}
+@media(max-width:800px){.rp-includes-body{grid-template-columns:1fr;gap:40px;}}
+
+.rp-includes-intro{position:sticky;top:40px;animation:fadeSlideUp .8s ease .2s both;}
+.rp-includes-intro-title{font-family:var(--serif);font-size:clamp(24px,3vw,36px);color:#fff;letter-spacing:-.02em;line-height:1.15;margin-bottom:16px;}
+.rp-includes-intro-title em{font-style:italic;color:var(--gold);}
+.rp-includes-intro-text{font-size:13px;color:rgba(255,255,255,.4);line-height:1.7;margin-bottom:24px;}
+.rp-includes-intro-cta{font-size:11px;color:rgba(212,164,115,.7);letter-spacing:.1em;text-transform:uppercase;}
+
+/* Color Cards Grid */
+.rp-color-grid{display:flex;flex-direction:column;gap:20px;}
+
+.rp-color-card{
+  display:grid;
+  grid-template-columns:140px 1fr;
+  background:rgba(255,255,255,.025);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:20px;
+  overflow:hidden;
+  animation:fadeSlideUp .8s ease both;
+  transition:all .35s ease;
+  cursor:default;
+}
+.rp-color-card:hover{
+  border-color:rgba(212,164,115,.2);
+  transform:translateX(6px);
+  box-shadow:0 12px 40px rgba(0,0,0,.3);
+}
+.rp-color-card:nth-child(1){animation-delay:.1s;}
+.rp-color-card:nth-child(2){animation-delay:.2s;}
+.rp-color-card:nth-child(3){animation-delay:.3s;}
+.rp-color-card:nth-child(4){animation-delay:.4s;}
+.rp-color-card:nth-child(5){animation-delay:.5s;}
+.rp-color-card:nth-child(6){animation-delay:.6s;}
+
+/* Color palette strip */
+.rp-color-strip{
+  display:flex;
+  flex-direction:column;
+  position:relative;
+  overflow:hidden;
+}
+.rp-color-strip-top{
+  flex:1;
+  background:linear-gradient(135deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+  gap:6px;
+  flex-wrap:wrap;
+}
+.rp-color-dot{width:20px;height:20px;border-radius:50%;border:2px solid rgba(255,255,255,.08);transition:transform .2s ease;}
+.rp-color-card:hover .rp-color-dot{transform:scale(1.15);}
+.rp-color-strip-bottom{
+  height:4px;
+  display:flex;
+}
+.rp-strip-segment{flex:1;transition:flex .3s ease;}
+.rp-color-card:hover .rp-strip-segment{flex:1.5;}
+
+/* Card content */
+.rp-color-content{padding:24px 28px;display:flex;flex-direction:column;justify-content:center;}
+.rp-color-number{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.2);margin-bottom:6px;}
+.rp-color-title{font-family:var(--serif);font-size:20px;color:#fff;margin-bottom:6px;}
+.rp-color-desc{font-size:12px;color:rgba(255,255,255,.35);line-height:1.6;margin-bottom:14px;}
+.rp-color-hex-row{display:flex;gap:8px;flex-wrap:wrap;}
+.rp-color-hex-chip{
+  font-size:10px;
+  font-family:monospace;
+  color:rgba(255,255,255,.5);
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:100px;
+  padding:3px 10px;
+  letter-spacing:.05em;
+}
+.rp-color-tag{position:absolute;top:12px;right:12px;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);background:rgba(212,164,115,.1);padding:3px 8px;border-radius:100px;}
+
+/* ─── DIVIDER ─── */
+.rp-divider{width:1px;height:48px;background:linear-gradient(to bottom,transparent,rgba(212,164,115,.4),transparent);margin:0 auto 0;}
+
+/* ─── PRICE CTA ─── */
+.rp-price-section{padding:48px 48px 80px;text-align:center;}
+.rp-price-card{max-width:460px;margin:0 auto;background:linear-gradient(145deg,rgba(32,94,83,.2),rgba(32,94,83,.08));border:1px solid rgba(32,94,83,.35);border-radius:28px;padding:52px 40px;position:relative;overflow:hidden;animation:fadeSlideUp .8s ease .1s both;}
+.rp-price-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(212,164,115,.08),transparent 30%);animation:priceShine 8s linear infinite;}
+@keyframes priceShine{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+.rp-price-card > *{position:relative;z-index:1;}
+.rp-price-tag{font-size:9px;letter-spacing:.4em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.rp-price-amount{font-family:var(--serif);font-size:clamp(52px,10vw,80px);color:#fff;line-height:1;margin-bottom:4px;}
+.rp-price-amount small{font-family:var(--sans);font-size:18px;color:rgba(255,255,255,.35);font-weight:300;}
+.rp-price-note{font-size:10px;color:rgba(255,255,255,.25);letter-spacing:.1em;text-transform:uppercase;margin-bottom:32px;}
+.rp-buy-btn{display:inline-flex;align-items:center;gap:12px;padding:20px 52px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#fff;text-decoration:none;border-radius:14px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:500;transition:all .3s ease;box-shadow:0 8px 32px rgba(212,164,115,.3);margin-bottom:20px;position:relative;overflow:hidden;}
+.rp-buy-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);transform:translateX(-100%);transition:transform .5s ease;}
+.rp-buy-btn:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 16px 48px rgba(212,164,115,.45);}
+.rp-buy-btn:hover::before{transform:translateX(0);}
+.rp-guarantee{font-size:10px;color:rgba(255,255,255,.2);letter-spacing:.05em;margin-bottom:20px;}
+.rp-verify{font-size:10px;color:rgba(255,255,255,.2);text-decoration:underline;cursor:pointer;letter-spacing:.1em;text-transform:uppercase;transition:color .2s ease;}
+.rp-verify:hover{color:rgba(255,255,255,.4);}
+.rp-trust-row{display:flex;justify-content:center;gap:20px;margin-top:28px;flex-wrap:wrap;}
+.rp-trust-item{display:flex;align-items:center;gap:5px;font-size:9px;color:rgba(255,255,255,.2);letter-spacing:.1em;text-transform:uppercase;}
+
+/* ─── CAROUSEL ─── */
+.rp-carousel-section{padding:60px 0 80px;background:rgba(0,0,0,.15);border-top:1px solid rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.04);overflow:hidden;}
+.rp-carousel-header{text-align:center;padding:0 48px;margin-bottom:32px;animation:fadeSlideUp .8s ease .1s both;}
+.rp-carousel-label{font-size:9px;letter-spacing:.5em;text-transform:uppercase;color:rgba(212,164,115,.5);margin-bottom:8px;}
+.rp-carousel-title{font-family:var(--serif);font-size:clamp(22px,4vw,36px);color:#fff;letter-spacing:-.01em;}
+.rp-carousel-title em{font-style:italic;color:var(--gold);}
+.rp-carousel-sub{font-size:11px;color:rgba(255,255,255,.25);margin-top:4px;letter-spacing:.05em;}
+.rp-carousel-track-wrap{position:relative;}
+.rp-carousel-track-wrap::before,.rp-carousel-track-wrap::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2;pointer-events:none;}
+.rp-carousel-track-wrap::before{left:0;background:linear-gradient(to right,var(--bg),transparent);}
+.rp-carousel-track-wrap::after{right:0;background:linear-gradient(to left,var(--bg),transparent);}
+.rp-carousel-track{display:flex;gap:20px;animation:carouselScroll 40s linear infinite;width:max-content;}
+.rp-carousel-track:hover{animation-play-state:paused;}
+@keyframes carouselScroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+.rp-testimonial-card{flex-shrink:0;width:300px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:24px;position:relative;transition:all .3s ease;}
+.rp-testimonial-card:hover{border-color:rgba(212,164,115,.2);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.3);}
+.rp-tc-stars{color:var(--gold);font-size:12px;letter-spacing:3px;margin-bottom:14px;}
+.rp-tc-text{font-size:12px;color:rgba(255,255,255,.55);line-height:1.65;margin-bottom:16px;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
+.rp-tc-author{display:flex;align-items:center;gap:10px;}
+.rp-tc-avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;}
+.rp-tc-name{font-size:12px;font-weight:500;color:#fff;}
+.rp-tc-meta{font-size:10px;color:rgba(255,255,255,.3);margin-top:1px;}
+.rp-carousel-stars-badge{position:absolute;top:16px;right:16px;display:flex;align-items:center;gap:4px;background:rgba(32,94,83,.3);padding:3px 8px;border-radius:100px;}
+.rp-tc-score-badge{font-size:10px;color:var(--gold);font-weight:500;}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:640px){
+  .rp-hero-content{padding:32px 24px 60px;}
+  .rp-editorial{padding:20px 24px 0;}
+  .rp-editorial-logos{gap:16px;}
+  .rp-stats,.rp-includes-section,.rp-price-section,.rp-carousel-header{padding-left:24px;padding-right:24px;}
+  .rp-price-card{padding:40px 24px;}
+  .rp-color-card{grid-template-columns:100px 1fr;}
+  .rp-color-strip-top{gap:4px;}
+  .rp-color-dot{width:16px;height:16px;}
+  .rp-testimonial-card{width:260px;}
+  .rp-carousel-header{padding:0 24px;}
+}
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- HERO -->
+<div class="rp-hero" id="hero">
+  <div class="rp-hero-bg">
+    <img src="./PRYSM — Preview_files/photo-1469334031218-e382a71b716b" alt="Fashion editorial">
+  </div>
+  <div class="rp-hero-overlay"></div>
+  <div class="rp-hero-content">
+    <div class="rp-badge"><div class="rp-badge-dot"></div>Análisis completado</div>
+    <div class="rp-hero-title">Tu informe<br><em>está listo.</em></div>
+    <div class="rp-hero-name">Valentina · PRYSM-2026 · Otoño Profundo</div>
+    <a class="rp-scroll-hint" href="https://vbxepgan25urb.space.minimax.io/#includes" onclick="document.getElementById(&#39;includes&#39;).scrollIntoView({behavior:&#39;smooth&#39;});return false;">
+      <span>Descubre más</span>
+      <div class="rp-scroll-line"></div>
+    </a>
+  </div>
+</div>
+
+<div class="rp-main" id="main-content">
+
+  <!-- EDITORIAL CREDIBILITY -->
+  <div class="rp-editorial">
+    <div class="rp-editorial-label">Tendencia editorial · Respaldado por la industria de moda</div>
+    <div class="rp-editorial-logos">
+      <div class="rp-editorial-logo">Vogue <span>Style Lab</span></div>
+      <div class="rp-editorial-dot"></div>
+      <div class="rp-editorial-logo">Elle <span>Beauty</span></div>
+      <div class="rp-editorial-dot"></div>
+      <div class="rp-editorial-logo">Harper's <span>Bazaar</span></div>
+      <div class="rp-editorial-dot"></div>
+      <div class="rp-editorial-logo">Forbes <span>Style</span></div>
+    </div>
+    <div class="rp-editorial-badge">
+      <div class="rp-editorial-badge-icon">✦</div>
+      <div class="rp-editorial-badge-text">Metodología respaldada por estilistas profesionales</div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="rp-stats">
+    <div><div class="rp-stat-num">9.4</div><div class="rp-stat-label">PRYSM Score</div></div>
+    <div><div class="rp-stat-num">6</div><div class="rp-stat-label">Categorías</div></div>
+    <div><div class="rp-stat-num">$299</div><div class="rp-stat-label">MXN · Pago único</div></div>
+  </div>
+
+  <!-- INCLUDES -->
+  <div class="rp-includes-section" id="includes">
+    <div class="rp-includes-header">
+      <div class="rp-includes-label">Tu informe incluye</div>
+      <div class="rp-includes-title">Todo lo que necesitas para verte <em>increíble</em></div>
+      <div class="rp-includes-sub">Cada sección personalizada con tus datos reales de análisis</div>
+    </div>
+
+    <div class="rp-includes-body">
+
+      <!-- Left intro -->
+      <div class="rp-includes-intro">
+        <div class="rp-includes-intro-title">Tu guía <em>editorial</em> de estilo personal</div>
+        <div class="rp-includes-intro-text">No es un test genérico. Es un documento de 7 páginas diseñado exclusivamente para ti, con los colores, siluetas y recomendaciones que mejor funcionan con tu biotipo único.</div>
+        <div class="rp-includes-intro-cta">↓ Tus resultados personalizados</div>
+      </div>
+
+      <!-- Color cards -->
+      <div class="rp-color-grid">
+
+        <!-- Card 1: Temporada de color -->
+        <div class="rp-color-card">
+          <div class="rp-color-strip">
+            <div class="rp-color-strip-top">
+              <div class="rp-color-dot" style="background:#B5691B"></div>
+              <div class="rp-color-dot" style="background:#6E2C00"></div>
+              <div class="rp-color-dot" style="background:#E07B39"></div>
+              <div class="rp-color-dot" style="background:#2F4F1E"></div>
+              <div class="rp-color-dot" style="background:#A0522D"></div>
+              <div class="rp-color-dot" style="background:#8B4513"></div>
+            </div>
+            <div class="rp-color-strip-bottom">
+              <div class="rp-strip-segment" style="background:#B5691B"></div>
+              <div class="rp-strip-segment" style="background:#6E2C00"></div>
+              <div class="rp-strip-segment" style="background:#E07B39"></div>
+              <div class="rp-strip-segment" style="background:#2F4F1E"></div>
+              <div class="rp-strip-segment" style="background:#A0522D"></div>
+              <div class="rp-strip-segment" style="background:#8B4513"></div>
+            </div>
+          </div>
+          <div class="rp-color-content">
+            <div class="rp-color-number">01</div>
+            <div class="rp-color-title">Temporada de color</div>
+            <div class="rp-color-desc">Tu subtipo exacto y por qué estos colores funcionan con tu tono de piel, ojos y cabello.</div>
+            <div class="rp-color-hex-row">
+              <div class="rp-color-hex-chip">#B5691B</div>
+              <div class="rp-color-hex-chip">#6E2C00</div>
+              <div class="rp-color-hex-chip">#E07B39</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: 8 colores favoritos -->
+        <div class="rp-color-card">
+          <div class="rp-color-strip">
+            <div class="rp-color-strip-top">
+              <div class="rp-color-dot" style="background:#3D2314"></div>
+              <div class="rp-color-dot" style="background:#C68642"></div>
+              <div class="rp-color-dot" style="background:#567568"></div>
+              <div class="rp-color-dot" style="background:#C0392B"></div>
+            </div>
+            <div class="rp-color-strip-bottom">
+              <div class="rp-strip-segment" style="background:#3D2314"></div>
+              <div class="rp-strip-segment" style="background:#C68642"></div>
+              <div class="rp-strip-segment" style="background:#567568"></div>
+              <div class="rp-strip-segment" style="background:#C0392B"></div>
+            </div>
+          </div>
+          <div class="rp-color-content">
+            <div class="rp-color-number">02</div>
+            <div class="rp-color-title">8 colores que te favorecen</div>
+            <div class="rp-color-desc">Tus colores protagonistas, los de acento y los que debes evitar. Con hex codes para comprar online.</div>
+            <div class="rp-color-hex-row">
+              <div class="rp-color-hex-chip">#C68642</div>
+              <div class="rp-color-hex-chip">#567568</div>
+              <div class="rp-color-hex-chip">#C0392B</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Guía de estilo -->
+        <div class="rp-color-card">
+          <div class="rp-color-strip">
+            <div class="rp-color-strip-top" style="background:linear-gradient(135deg,rgba(212,164,115,.1),rgba(32,94,83,.08));flex-direction:column;gap:4px;">
+              <div style="display:flex;gap:4px;width:100%;justify-content:center;">
+                <div style="width:20px;height:28px;background:rgba(255,255,255,.06);border-radius:3px 3px 0 0;"></div>
+                <div style="width:30px;height:36px;background:rgba(212,164,115,.15);border-radius:3px 3px 0 0;border:1px solid rgba(212,164,115,.2);"></div>
+                <div style="width:20px;height:30px;background:rgba(255,255,255,.06);border-radius:3px 3px 0 0;"></div>
+              </div>
+              <div style="font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.2);">Silueta hora</div>
+            </div>
+            <div class="rp-color-strip-bottom">
+              <div class="rp-strip-segment" style="background:linear-gradient(90deg,#d4a473,#205E53)"></div>
+            </div>
+          </div>
+          <div class="rp-color-content">
+            <div class="rp-color-number">03</div>
+            <div class="rp-color-title">Guía de estilo y silueta</div>
+            <div class="rp-color-desc">Qué siluetas, telas y proporciones realzan tu figura. Qué cortar, qué evitar y cómo dressing tu cuerpo.</div>
+            <div class="rp-color-hex-row">
+              <div class="rp-color-hex-chip">Reloj de arena</div>
+              <div class="rp-color-hex-chip">Algodón · Seda</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Cabello -->
+        <div class="rp-color-card">
+          <div class="rp-color-strip">
+            <div class="rp-color-strip-top">
+              <div class="rp-color-dot" style="background:#4A2810"></div>
+              <div class="rp-color-dot" style="background:#7B3F00"></div>
+              <div class="rp-color-dot" style="background:#C68642"></div>
+            </div>
+            <div class="rp-color-strip-bottom">
+              <div class="rp-strip-segment" style="background:#4A2810"></div>
+              <div class="rp-strip-segment" style="background:#7B3F00"></div>
+              <div class="rp-strip-segment" style="background:#C68642"></div>
+            </div>
+          </div>
+          <div class="rp-color-content">
+            <div class="rp-color-number">04</div>
+            <div class="rp-color-title">Color y corte de cabello</div>
+            <div class="rp-color-desc">Tonos que iluminan tu rostro y el corte que mejor se adapta a tu forma de cara y textura de pelo.</div>
+            <div class="rp-color-hex-row">
+              <div class="rp-color-hex-chip">Castaño cálido</div>
+              <div class="rp-color-hex-chip">Corte en V</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5: Outfits -->
+        <div class="rp-color-card">
+          <div class="rp-color-strip">
+            <div class="rp-color-strip-top" style="background:linear-gradient(135deg,rgba(255,255,255,.04),rgba(255,255,255,.02));flex-direction:column;gap:4px;justify-content:center;">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;width:100%;max-width:80px;">
+                <div style="height:24px;background:rgba(212,164,115,.1);border-radius:4px;border:1px solid rgba(212,164,115,.1);"></div>
+                <div style="height:24px;background:rgba(32,94,83,.15);border-radius:4px;border:1px solid rgba(32,94,83,.15);"></div>
+                <div style="height:24px;background:rgba(181,105,27,.15);border-radius:4px;border:1px solid rgba(181,105,27,.1);"></div>
+                <div style="height:24px;background:rgba(255,255,255,.04);border-radius:4px;border:1px solid rgba(255,255,255,.04);"></div>
+              </div>
+            </div>
+            <div class="rp-color-strip-bottom">
+              <div class="rp-strip-segment" style="background:#d4a473"></div>
+              <div class="rp-strip-segment" style="background:#205E53"></div>
+              <div class="rp-strip-segment" style="background:#B5691B"></div>
+              <div class="rp-strip-segment" style="background:#1a1a1a"></div>
+            </div>
+          </div>
+          <div class="rp-color-content">
+            <div class="rp-color-number">05</div>
+            <div class="rp-color-title">4 outfits por ocasión</div>
+            <div class="rp-color-desc">Día a día, oficina, citas y viajes. Cada uno adaptado a tu presupuesto real y fácil de replicar.</div>
+            <div class="rp-color-hex-row">
+              <div class="rp-color-hex-chip">4 looks completos</div>
+              <div class="rp-color-hex-chip">Adaptados</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6: PDF Premium -->
+        <div class="rp-color-card">
+          <div class="rp-color-strip">
+            <div class="rp-color-strip-top" style="background:linear-gradient(135deg,rgba(212,164,115,.12),rgba(32,94,83,.08));flex-direction:column;align-items:center;justify-content:center;gap:8px;">
+              <div style="width:50px;height:64px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:4px;display:flex;align-items:center;justify-content:center;">
+                <div style="font-family:var(--serif);font-size:10px;color:rgba(212,164,115,.5);">P</div>
+              </div>
+              <div style="font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.2);">7 páginas</div>
+            </div>
+            <div class="rp-color-strip-bottom">
+              <div class="rp-strip-segment" style="background:linear-gradient(90deg,#d4a473,#205E53)"></div>
+            </div>
+          </div>
+          <div class="rp-color-content">
+            <div class="rp-color-number">06</div>
+            <div class="rp-color-title">PDF premium editorial</div>
+            <div class="rp-color-desc">7 páginas diseñadas tipo revista. Guarda, imprime o muestraselo a tu estilista. Acceso permanente.</div>
+            <div class="rp-color-hex-row">
+              <div class="rp-color-hex-chip">Descargar</div>
+              <div class="rp-color-hex-chip">Imprimir</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- PRICE CTA -->
+  <div class="rp-price-section">
+    <div class="rp-divider" style="margin-bottom:48px"></div>
+    <div class="rp-price-card">
+      <div class="rp-price-tag">Acceso completo · Pago único</div>
+      <div class="rp-price-amount">$299 <small>MXN</small></div>
+      <div class="rp-price-note">Sin suscripción · Acceso de por vida</div>
+      <a class="rp-buy-btn" href="https://link.mercadopago.com.mx/prysm" target="_blank">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        Obtener mi informe ahora
+      </a>
+      <div class="rp-guarantee">✓ Acceso inmediato · ✓ PDF premium · ✓ Sin límite de tiempo</div>
+      <div class="rp-verify">¿Ya pagaste? Verificar mi pago</div>
+    </div>
+    <div class="rp-trust-row">
+      <div class="rp-trust-item"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Pago seguro</div>
+      <div class="rp-trust-item"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>MercadoPago</div>
+      <div class="rp-trust-item"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>Sin suscripción</div>
+    </div>
+  </div>
+
+  <!-- CAROUSEL -->
+  <div class="rp-carousel-section">
+    <div class="rp-carousel-header">
+      <div class="rp-carousel-label">Resultados reales</div>
+      <div class="rp-carousel-title">Lo que dicen <em>nuestras clientas</em></div>
+      <div class="rp-carousel-sub">Valoración promedio 4.9/5 · Más de 2,400 mujeres en México</div>
+    </div>
+    <div class="rp-carousel-track-wrap">
+      <div class="rp-carousel-track">
+        <div class="rp-testimonial-card"><div class="rp-carousel-stars-badge"><div class="rp-tc-score-badge">9.1</div></div><div class="rp-tc-stars">★★★★★</div><div class="rp-tc-text">"Nunca supe que el color burdeos me sentaba así de bien. En dos semanas me hicieron 4 cumplidos en el trabajo. El informe cambió cómo me visto para siempre."</div><div class="rp-tc-author"><img class="rp-tc-avatar" src="./PRYSM — Preview_files/photo-1494790108377-be9c29b29330" alt=""><div><div class="rp-tc-name">Camila R.</div><div class="rp-tc-meta">Ciudad de México</div></div></div></div>
+        <div class="rp-testimonial-card"><div class="rp-carousel-stars-badge"><div class="rp-tc-score-badge">9.4</div></div><div class="rp-tc-stars">★★★★★</div><div class="rp-tc-text">"Pensé que era un test más, pero la guía de compras me ahorró $400 USD en ropa que habría comprado y nunca usado. La mejor inversión en mi imagen personal."</div><div class="rp-tc-author"><img class="rp-tc-avatar" src="./PRYSM — Preview_files/photo-1438761681033-6461ffad8d80" alt=""><div><div class="rp-tc-name">Valentina T.</div><div class="rp-tc-meta">Guadalajara</div></div></div></div>
+        <div class="rp-testimonial-card"><div class="rp-carousel-stars-badge"><div class="rp-tc-score-badge">9.7</div></div><div class="rp-tc-stars">★★★★★</div><div class="rp-tc-text">"La sección de cabello fue un cambio de vida. Mi estilista no podía creer lo preciso que era. Ahora voy a mis citas con una seguridad que nunca tuve."</div><div class="rp-tc-author"><img class="rp-tc-avatar" src="./PRYSM — Preview_files/photo-1534528741775-53994a69daeb" alt=""><div><div class="rp-tc-name">Andrea M.</div><div class="rp-tc-meta">Monterrey</div></div></div></div>
+        <div class="rp-testimonial-card"><div class="rp-carousel-stars-badge"><div class="rp-tc-score-badge">8.9</div></div><div class="rp-tc-stars">★★★★★</div><div class="rp-tc-text">"Tengo 52 años y pensé que ya no había nada que hacer. El informe me demostró que estaba equivocada. Mis amigas me preguntan qué me hice."</div><div class="rp-tc-author"><img class="rp-tc-avatar" src="./PRYSM — Preview_files/photo-1544005313-94ddf0286df2" alt=""><div><div class="rp-tc-name">Lucía H.</div><div class="rp-tc-meta">Puebla</div></div></div></div>
+        <div class="rp-testimonial-card"><div class="rp-carousel-stars-badge"><div class="rp-tc-score-badge">9.2</div></div><div class="rp-tc-stars">★★★★★</div><div class="rp-tc-text">"Trabajo en televisión y el informe me dio exactamente los colores que debo usar frente a cámara. Mi director de arte me preguntó qué había cambiado."</div><div class="rp-tc-author"><img class="rp-tc-avatar" src="./PRYSM — Preview_files/photo-1488426862026-3ee34a7d66df" alt=""><div><div class="rp-tc-name">Daniela S.</div><div class="rp-tc-meta">Ciudad de México</div></div></div></div>
+        <div class="rp-testimonial-card"><div class="rp-carousel-stars-badge"><div class="rp-tc-score-badge">9.5</div></div><div class="rp-tc-stars">★★★★★</div><div class="rp-tc-text">"Me compré un vestido azul que nunca me había puesto. El informe dijo que era mi color y tenía razón. Ahora todo lo que compro me queda bien."</div><div class="rp-tc-author"><img class="rp-tc-avatar" src="./PRYSM — Preview_files/photo-1524504388940-b1c1722653e1" alt=""><div><div class="rp-tc-name">Sofía G.</div><div class="rp-tc-meta">Tijuana</div></div></div></div>
+        <div class="rp-testimonial-card"><div class="rp-carousel-stars-badge"><div class="rp-tc-score-badge">9.1</div></div><div class="rp-tc-stars">★★★★★</div><div class="rp-tc-text">"Nunca supe que el color burdeos me sentaba así de bien. En dos semanas me hicieron 4 cumplidos en el trabajo. El informe cambió cómo me visto para siempre."</div><div class="rp-tc-author"><img class="rp-tc-avatar" src="./PRYSM — Preview_files/photo-1494790108377-be9c29b29330" alt=""><div><div class="rp-tc-name">Camila R.</div><div class="rp-tc-meta">Ciudad de México</div></div></div></div>
+        <div class="rp-testimonial-card"><div class="rp-carousel-stars-badge"><div class="rp-tc-score-badge">9.4</div></div><div class="rp-tc-stars">★★★★★</div><div class="rp-tc-text">"Pensé que era un test más, pero la guía de compras me ahorró $400 USD en ropa que habría comprado y nunca usado."</div><div class="rp-tc-author"><img class="rp-tc-avatar" src="./PRYSM — Preview_files/photo-1438761681033-6461ffad8d80" alt=""><div><div class="rp-tc-name">Valentina T.</div><div class="rp-tc-meta">Guadalajara</div></div></div></div>
+        <div class="rp-testimonial-card"><div class="rp-carousel-stars-badge"><div class="rp-tc-score-badge">9.7</div></div><div class="rp-tc-stars">★★★★★</div><div class="rp-tc-text">"La sección de cabello fue un cambio de vida. Mi estilista no podía creer lo preciso que era. Ahora voy a mis citas con una seguridad que nunca tuve."</div><div class="rp-tc-author"><img class="rp-tc-avatar" src="./PRYSM — Preview_files/photo-1534528741775-53994a69daeb" alt=""><div><div class="rp-tc-name">Andrea M.</div><div class="rp-tc-meta">Monterrey</div></div></div></div>
+        <div class="rp-testimonial-card"><div class="rp-carousel-stars-badge"><div class="rp-tc-score-badge">8.9</div></div><div class="rp-tc-stars">★★★★★</div><div class="rp-tc-text">"Tengo 52 años y pensé que ya no había nada que hacer. El informe me demostró que estaba equivocada."</div><div class="rp-tc-author"><img class="rp-tc-avatar" src="./PRYSM — Preview_files/photo-1544005313-94ddf0286df2" alt=""><div><div class="rp-tc-name">Lucía H.</div><div class="rp-tc-meta">Puebla</div></div></div></div>
+        <div class="rp-testimonial-card"><div class="rp-carousel-stars-badge"><div class="rp-tc-score-badge">9.2</div></div><div class="rp-tc-stars">★★★★★</div><div class="rp-tc-text">"Trabajo en televisión y el informe me dio exactamente los colores que debo usar frente a cámara."</div><div class="rp-tc-author"><img class="rp-tc-avatar" src="./PRYSM — Preview_files/photo-1488426862026-3ee34a7d66df" alt=""><div><div class="rp-tc-name">Daniela S.</div><div class="rp-tc-meta">Ciudad de México</div></div></div></div>
+        <div class="rp-testimonial-card"><div class="rp-carousel-stars-badge"><div class="rp-tc-score-badge">9.5</div></div><div class="rp-tc-stars">★★★★★</div><div class="rp-tc-text">"Me compré un vestido azul que nunca me había puesto. El informe dijo que era mi color y tenía razón. Ahora todo lo que compro me queda bien."</div><div class="rp-tc-author"><img class="rp-tc-avatar" src="./PRYSM — Preview_files/photo-1524504388940-b1c1722653e1" alt=""><div><div class="rp-tc-name">Sofía G.</div><div class="rp-tc-meta">Tijuana</div></div></div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script data-minimax-analytics="minimax-website-analytics-v1">(function(){
+"use strict";
+var t="eyJ2IjoxLCJraWQiOiJwcmUtdXMtMjAyNjA4MTUtdjEiLCJiaXpfaWQiOiJNYXZpcyIsIm5vZGVfaWQiOiI0MzE5ODMzNDU5MDU4MjciLCJpc3N1ZWRfYXQiOjE3ODcwMTgyNTc5Nzl9.KyYoWQxoHzyDnj3oy6TOxE_sGGl1nVxRWmT2lIsfPM4",u="https://agent.minimax.io/minimax-cloud/api/v1/website-traffic/page-views",last="";
+function path(){
+var h=window.location.hash||"",p=h.indexOf("#!")===0?h.slice(2):h.indexOf("#/")===0?h.slice(1):(window.location.pathname||"/");
+p=p.split(/[?#]/,1)[0]||"/";
+if(p.charAt(0)!=="/")p="/"+p;
+p=p.replace(/\/+/g,"/").replace(/%([0-9a-fA-F]{2})/g,function(_,x){var c=String.fromCharCode(parseInt(x,16));return /[A-Za-z0-9._~-]/.test(c)?c:"%"+x.toUpperCase();});
+if(p.length>1)p=p.replace(/\/+$/,"");
+return p||"/";
+}
+function send(){
+var p=path();if(p===last)return;last=p;
+var b="v=1&t="+encodeURIComponent(t)+"&p="+encodeURIComponent(p),ok=false;
+try{if(navigator.sendBeacon){ok=navigator.sendBeacon(u,new Blob([b],{type:"application/x-www-form-urlencoded;charset=UTF-8"}));}}catch(e){}
+if(!ok){try{fetch(u,{method:"POST",body:b,keepalive:true,mode:"no-cors",credentials:"omit",headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"}});}catch(e){}}
+}
+["pushState","replaceState"].forEach(function(n){var f=history[n];if(!f)return;history[n]=function(){var r=f.apply(this,arguments);setTimeout(send,0);return r;};});
+window.addEventListener("popstate",send);window.addEventListener("hashchange",send);send();
+})();</script>
+<style>
+#minimax-floating-ball {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 12px;
+  background: #222222;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  color: #F8F8F8;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  z-index: 9999;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+#minimax-floating-ball:hover {
+  transform: translateY(-2px);
+  background: #383838;
+}
+.minimax-ball-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.minimax-logo-wave {
+  width: 20px;
+  height: 20px;
+  background-image: url("data:image/svg+xml,%3Csvg%20preserveAspectRatio%3D%27none%27%20width%3D%27100%25%27%20height%3D%27100%25%27%20overflow%3D%27visible%27%20style%3D%27display%3A%20block%3B%27%20viewBox%3D%270%200%20170.136%20138.225%27%20fill%3D%27none%27%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%3E%3Cg%20id%3D%27Frame%202116748449%27%3E%3Cpath%20id%3D%27Subtract%27%20d%3D%27M170%20101.783C170%20105.144%20168.49%20108.327%20165.886%20110.453L134.963%20135.702C132.964%20137.334%20130.463%20138.225%20127.883%20138.225H10.4938C4.69824%20138.225%200%20133.527%200%20127.732V39.2289C0%2035.8597%201.51758%2032.6698%204.13162%2030.5442L38.5402%202.56547C40.536%200.942662%2043.0298%200.0567377%2045.602%200.0567377H159.506C165.302%200.0567377%20170%204.75498%20170%2010.5506V101.783Z%27%20fill%3D%27black%27%20style%3D%27fill%3Ablack%3Bfill-opacity%3A1%3B%27/%3E%3Cpath%20id%3D%27Subtract_2%27%20d%3D%27M149.011%2094.4632C149.011%2096.1471%20148.253%2097.7415%20146.946%2098.8043L125.893%20115.936C124.895%20116.748%20123.648%20117.191%20122.361%20117.191H24.6479C22.716%20117.191%2021.15%20115.625%2021.15%20113.693V46.1166C21.15%2044.4267%2021.9135%2042.8274%2023.2274%2041.7648L47.367%2022.2437C48.3638%2021.4376%2049.607%2020.9982%2050.8888%2020.9988L145.514%2021.0427C147.446%2021.0436%20149.011%2022.6094%20149.011%2024.5406V94.4632Z%27%20fill%3D%27white%27%20style%3D%27fill%3Awhite%3Bfill-opacity%3A1%3B%27/%3E%3Cpath%20id%3D%27Rectangle%20111142564%27%20d%3D%27M42.111%2080.8025C42.111%2077.7115%2044.6167%2075.2057%2047.7077%2075.2057H60.9999C64.0908%2075.2057%2066.5966%2077.7115%2066.5966%2080.8025V121.029H42.111V80.8025Z%27%20fill%3D%27black%27%20style%3D%27fill%3Ablack%3Bfill-opacity%3A1%3B%27/%3E%3Cpath%20id%3D%27Rectangle%20111142567%27%20d%3D%27M79.1894%2080.8025C79.1894%2077.7115%2081.6952%2075.2057%2084.7861%2075.2057H98.0783C101.169%2075.2057%20103.675%2077.7115%20103.675%2080.8025V121.029H79.1894V80.8025Z%27%20fill%3D%27black%27%20style%3D%27fill%3Ablack%3Bfill-opacity%3A1%3B%27/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 14px 11px;
+  background-color: #8FD1FF;
+  border-radius: 4px;
+}
+
+.minimax-ball-text {
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.minimax-close-icon {
+  margin-left: 8px;
+  font-size: 16px;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.minimax-close-icon:hover {
+  opacity: 1;
+}
+</style>
+<div id="minimax-floating-ball" style="opacity: 1; transform: translateY(0px);">
+  <div class="minimax-ball-content">
+    <div class="minimax-logo-wave"></div>
+    <span class="minimax-ball-text">Created by MiniMax Agent</span>
+  </div>
+  <div class="minimax-close-icon">×</div>
+</div>
+<script>
+// Initialize floating ball functionality
+function initFloatingBall() {
+  const ball = document.getElementById('minimax-floating-ball');
+  if (!ball) return;
+
+  // Initial animation
+  ball.style.opacity = '0';
+  ball.style.transform = 'translateY(20px)';
+
+  setTimeout(() => {
+    ball.style.opacity = '1';
+    ball.style.transform = 'translateY(0)';
+  }, 500);
+
+  // Handle logo click
+  const ballContent = ball.querySelector('.minimax-ball-content');
+  ballContent.addEventListener('click', function (e) {
+    e.stopPropagation();
+    window.open('https://agent.minimax.io/', '_blank');
+    ball.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+      ball.style.transform = 'scale(1)';
+    }, 100);
+  });
+
+  // Handle close button click
+  const closeIcon = ball.querySelector('.minimax-close-icon');
+  closeIcon.addEventListener('click', function (e) {
+    e.stopPropagation();
+    ball.style.opacity = '0';
+    ball.style.transform = 'translateY(20px)';
+
+    setTimeout(() => {
+      ball.style.display = 'none';
+    }, 300);
+  });
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', initFloatingBall); 
+</script>
+
+
+</body></html>
