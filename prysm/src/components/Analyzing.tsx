@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { analyzeImage, AnalysisResponse, QuizAnswers } from '../services/api';
+import { analyzePhotos, SkinAnalysisResult } from '../services/colorAnalysis';
 
 interface AnalyzingProps {
   onComplete: (result: AnalysisResponse) => void;
@@ -10,11 +11,11 @@ interface AnalyzingProps {
 }
 
 const steps = [
-  { id: 1, label: 'Analizando tu selección de colores' },
-  { id: 2, label: 'Evaluando preferencias de estilo' },
-  { id: 3, label: 'Procesando siluetas ideales' },
+  { id: 1, label: 'Analizando tu tono de piel' },
+  { id: 2, label: 'Evaluando tu selección de colores' },
+  { id: 3, label: 'Mapeando tu temporada de color' },
   { id: 4, label: 'Generando recomendaciones' },
-  { id: 5, label: 'Preparando tu informe' }
+  { id: 5, label: 'Preparando tu informe personalizado' }
 ];
 
 // Fallback result when backend is unavailable
@@ -79,31 +80,51 @@ export default function Analyzing({
     if (progress >= 100 && !isComplete) {
       setIsComplete(true);
 
-      // Try backend first, use fallback on error
-      analyzeImage({
-        name: userName,
-        email: userEmail,
-        photos: photos,
-        answers: answers
-      })
-      .then(result => {
-        if (result.success) {
-          localStorage.setItem('prysm_analysis', JSON.stringify(result));
-          localStorage.setItem('prysm_pdf_url', result.pdfUrl || '');
-          onComplete(result);
-        } else {
-          // Backend returned error, use fallback
-          console.log('Backend analysis failed, using demo data');
+      // Step 1: Analyze photos with Canvas API (if photos available)
+      const performAnalysis = async () => {
+        try {
+          let skinAnalysis: SkinAnalysisResult | undefined;
+
+          if (photos.length > 0) {
+            console.log('[Analyzing] Starting photo analysis...');
+            const photoResults = await analyzePhotos(photos);
+            skinAnalysis = photoResults.combined;
+            console.log('[Analyzing] Photo analysis complete:', skinAnalysis);
+          }
+
+          // Step 2: Send to backend with skin analysis data
+          console.log('[Analyzing] Sending to backend...');
+          const result = await analyzeImage({
+            name: userName,
+            email: userEmail,
+            photos: photos,
+            answers: answers,
+            skinAnalysis: skinAnalysis
+          });
+
+          if (result.success) {
+            localStorage.setItem('prysm_analysis', JSON.stringify(result));
+            localStorage.setItem('prysm_pdf_url', result.pdfUrl || '');
+
+            // Store skin analysis for display
+            if (skinAnalysis) {
+              localStorage.setItem('prysm_skin_analysis', JSON.stringify(skinAnalysis));
+            }
+
+            onComplete(result);
+          } else {
+            console.log('Backend analysis failed, using demo data');
+            localStorage.setItem('prysm_analysis', JSON.stringify(fallbackResult));
+            onComplete(fallbackResult);
+          }
+        } catch (err) {
+          console.log('Analysis error, using demo data:', err);
           localStorage.setItem('prysm_analysis', JSON.stringify(fallbackResult));
           onComplete(fallbackResult);
         }
-      })
-      .catch(err => {
-        // Backend unreachable, use fallback
-        console.log('Backend unavailable, using demo data:', err.message);
-        localStorage.setItem('prysm_analysis', JSON.stringify(fallbackResult));
-        onComplete(fallbackResult);
-      });
+      };
+
+      performAnalysis();
     }
   }, [progress, isComplete, userName, userEmail, photos, answers, onComplete]);
 

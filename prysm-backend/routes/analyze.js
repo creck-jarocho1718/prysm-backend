@@ -85,7 +85,7 @@ router.post('/', (req, res) => {
 
     try {
       // Parse request data
-      const { name, email, answers } = req.body;
+      const { name, email, answers, skinAnalysis: skinAnalysisJson } = req.body;
       let parsedAnswers = {};
 
       if (answers) {
@@ -96,7 +96,20 @@ router.post('/', (req, res) => {
         }
       }
 
-      // Get uploaded files
+      // Parse skin analysis if provided (from frontend Canvas API)
+      let skinAnalysis = null;
+      if (skinAnalysisJson) {
+        try {
+          skinAnalysis = typeof skinAnalysisJson === 'string'
+            ? JSON.parse(skinAnalysisJson)
+            : skinAnalysisJson;
+          console.log('[Analysis] Using frontend skin analysis:', skinAnalysis);
+        } catch (e) {
+          console.warn('[Analysis] Failed to parse skin analysis:', e.message);
+        }
+      }
+
+      // Get uploaded files (for potential future use)
       const files = req.files || {};
       const photoFront = files.photoFront?.[0]?.path;
       const photoLeft = files.photoLeft?.[0]?.path;
@@ -105,29 +118,15 @@ router.post('/', (req, res) => {
       console.log(`[Analysis] Starting for: ${name} (${email})`);
       console.log(`[Analysis] Photos: front=${!!photoFront}, left=${!!photoLeft}, right=${!!photoRight}`);
 
-      // Step 1: Analyze photos if available
-      let skinAnalysis = null;
-      let dominantColors = [];
-
-      if (photoFront) {
-        try {
-          console.log('[Analysis] Analyzing front photo...');
-          const frontResult = await colorAnalysis.analyzeImage(photoFront);
-          skinAnalysis = frontResult;
-          dominantColors = frontResult.dominantColors || [];
-          console.log('[Analysis] Front photo analysis complete:', frontResult.undertone, frontResult.depth);
-        } catch (imgErr) {
-          console.warn('[Analysis] Front photo analysis failed:', imgErr.message);
-        }
-      }
-
-      // Step 2: If no photo analysis, use quiz answers
+      // Step 1: Use skin analysis from frontend if available, otherwise use quiz answers
       if (!skinAnalysis) {
-        console.log('[Analysis] Using quiz answers for skin analysis...');
+        console.log('[Analysis] No frontend skin analysis, using quiz answers...');
         skinAnalysis = colorAnalysis.analyzeFromQuizAnswers(parsedAnswers);
+      } else {
+        console.log('[Analysis] Using frontend skin analysis:', skinAnalysis.undertone, skinAnalysis.depth);
       }
 
-      // Step 3: Map to color season
+      // Step 2: Map to color season
       console.log('[Analysis] Mapping to season...');
       const seasonResult = seasonMapper.mapToSeason(skinAnalysis);
       const season = seasonResult.season;
@@ -161,6 +160,7 @@ router.post('/', (req, res) => {
       const bodyOutfits = outfits[bodyType] || outfits.hourglass;
 
       // Step 7: Prepare report data
+      const hasRealSkinAnalysis = skinAnalysisJson && skinAnalysis;
       const reportData = {
         name: name || 'Cliente',
         email: email || '',
@@ -198,8 +198,10 @@ router.post('/', (req, res) => {
         // Additional data from quiz
         quizAnswers: parsedAnswers,
         // Metadata
-        analysisMethod: photoFront ? 'photo_analysis' : 'quiz_answers',
-        dominantColors: dominantColors
+        analysisMethod: hasRealSkinAnalysis ? 'photo_analysis' : 'quiz_answers',
+        // Include skin analysis data for PDF
+        skinAnalysis: skinAnalysis,
+        dominantColors: skinAnalysis?.skinColor ? [skinAnalysis.skinColor] : []
       };
 
       // Step 8: Generate PDF
@@ -233,6 +235,13 @@ router.post('/', (req, res) => {
           prysmScore: parseFloat(prysmScore),
           analysisMethod: reportData.analysisMethod
         },
+        skinAnalysis: hasRealSkinAnalysis ? {
+          skinColor: skinAnalysis.skinColor,
+          undertone: skinAnalysis.undertone,
+          depth: skinAnalysis.depth,
+          saturation: skinAnalysis.saturation,
+          confidence: skinAnalysis.confidence
+        } : null,
         processingTime: `${processingTime}s`
       });
 

@@ -10,11 +10,25 @@ export interface QuizAnswers {
   [key: string]: string | string[];
 }
 
+export interface SkinAnalysisData {
+  skinColor: string;
+  undertone: 'warm' | 'cool' | 'neutral';
+  depth: 'light' | 'medium' | 'deep';
+  saturation: 'low' | 'medium' | 'high';
+  contrast: 'low' | 'medium' | 'high';
+  confidence: number;
+  raw: {
+    rgb: { r: number; g: number; b: number };
+    hsl: { h: number; s: number; l: number };
+  };
+}
+
 export interface AnalysisRequest {
   name: string;
   email: string;
   photos: string[]; // base64 encoded images
   answers: QuizAnswers;
+  skinAnalysis?: SkinAnalysisData; // Pre-analyzed skin data from frontend
 }
 
 export interface SeasonInfo {
@@ -62,6 +76,11 @@ export async function analyzeImage(request: AnalysisRequest): Promise<AnalysisRe
     formData.append('name', request.name);
     formData.append('email', request.email);
     formData.append('answers', JSON.stringify(request.answers));
+
+    // Add skin analysis data if available
+    if (request.skinAnalysis) {
+      formData.append('skinAnalysis', JSON.stringify(request.skinAnalysis));
+    }
 
     // Add photos
     request.photos.forEach((photo, index) => {

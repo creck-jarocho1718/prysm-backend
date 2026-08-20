@@ -16,7 +16,67 @@ if (!fs.existsSync(OUTPUT_DIR)) {
 }
 
 /**
- * Generate PDF from analysis data
+ * Generate PDF from report data (called from analyze.js)
+ * This is the main entry point for the API
+ */
+async function generateReport(reportData) {
+  const { name, email, season, palette, bodyType, prysmScore, skinAnalysis, analysisMethod } = reportData;
+  const reportId = uuidv4();
+  const filename = `report-${reportId}.pdf`;
+  const outputPath = path.join(OUTPUT_DIR, filename);
+
+  // Extract the photo URL if available (base64 or URL)
+  const clientPhoto = reportData.photoUrl || null;
+
+  // Generate HTML content
+  const html = generateHTML({
+    name: name || 'Clienta',
+    email: email || '',
+    reportId,
+    season,
+    palette,
+    bodyType,
+    prysmScore: prysmScore || 8.5,
+    skinAnalysis,
+    analysisMethod,
+    clientPhoto
+  });
+
+  // Render with Playwright and save as PDF
+  const browser = await playwright.chromium.launch({
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  });
+
+  const page = await browser.newPage({
+    viewport: { width: 794, height: 1123 } // A4 dimensions
+  });
+
+  await page.setContent(html, {
+    waitUntil: 'networkidle',
+    timeout: 30000
+  });
+
+  // Generate PDF
+  await page.pdf({
+    path: outputPath,
+    format: 'A4',
+    printBackground: true,
+    margin: { top: 0, right: 0, bottom: 0, left: 0 }
+  });
+
+  await browser.close();
+
+  return {
+    reportId,
+    filename,
+    pdfUrl: `/output/${filename}`,
+    pdfPath: outputPath
+  };
+}
+
+/**
+ * Generate PDF from analysis data (legacy function)
  */
 async function generatePDF(data) {
   const { name, email, analysis, answers, clientPhoto } = data;
@@ -71,9 +131,19 @@ async function generatePDF(data) {
  * Generate HTML content for PDF
  */
 function generateHTML(data) {
-  const { name, email, reportId, analysis, answers } = data;
-  const { season, palette, hairColors, bodyType } = analysis;
-  const outfits = answers.outfits || getDefaultOutfits(season.id);
+  // Support both old and new data structure
+  const { name, email, reportId, season, palette, bodyType, prysmScore, skinAnalysis, analysisMethod, clientPhoto, analysis, answers } = data;
+
+  // Use new structure if available, otherwise fall back to legacy
+  const effectiveSeason = season || (analysis?.season);
+  const effectivePalette = palette || (analysis?.palette);
+  const effectiveBodyType = bodyType || (analysis?.bodyType);
+  const effectiveScore = prysmScore || analysis?.prysmScore || 9.4;
+  const effectiveSkinAnalysis = skinAnalysis || analysis?.skinAnalysis;
+
+  // Hair colors based on season
+  const hairColors = getHairColorsForSeason(effectiveSeason?.id);
+  const outfits = answers?.outfits || getDefaultOutfits(effectiveSeason?.id);
 
   return `
 <!DOCTYPE html>
@@ -484,11 +554,11 @@ function generateHTML(data) {
     <div class="cover">
       <div class="cover-logo">PRYSM</div>
       <div class="cover-title">Tu Informe de<br>Estilo Personal</div>
-      <div class="cover-season">${season.name_es}</div>
+      <div class="cover-season">${effectiveSeason?.name_es || 'Temporada Personalizada'}</div>
       <div class="cover-palette">
-        ${palette.protagonist.slice(0, 4).map(c => `<div class="cover-palette-color" style="background: ${c}"></div>`).join('')}
+        ${(effectivePalette?.protagonist || ['#B5691B', '#6E2C00', '#E07B39', '#C68642']).slice(0, 4).map(c => `<div class="cover-palette-color" style="background: ${c}"></div>`).join('')}
       </div>
-      <div class="cover-score">9.4</div>
+      <div class="cover-score">${effectiveScore.toFixed(1)}</div>
       <div class="cover-score-label">PRYSM Score</div>
       <div class="cover-footer">
         ${name} · ${new Date().toLocaleDateString('es-MX')} · PRYSM-2026
@@ -509,12 +579,12 @@ function generateHTML(data) {
       <div class="section">
         <div class="section-title">Temporada Identificada</div>
         <div style="font-family: 'Instrument Serif', serif; font-size: 36px; color: var(--teal); margin-bottom: 15px;">
-          ${season.name_es}
+          ${effectiveSeason?.name_es || 'Temporada Personalizada'}
         </div>
         <div style="color: var(--text-light); font-size: 14px; margin-bottom: 20px;">
-          ${season.name_en}
+          ${effectiveSeason?.name_en || 'Custom Season'}
         </div>
-        <p class="section-text">${season.description}</p>
+        <p class="section-text">${effectiveSeason?.description || 'Tu paleta personalizada basada en tu análisis.'}</p>
       </div>
 
       <div class="section">
@@ -522,27 +592,27 @@ function generateHTML(data) {
         <div class="char-list">
           <div class="char-item">
             <div class="char-label">Subtipo de Temperatura</div>
-            <div class="char-value">${season.characteristics.undertone}</div>
+            <div class="char-value">${effectiveSeason?.characteristics?.undertone || 'Cálido'}</div>
           </div>
           <div class="char-item">
             <div class="char-label">Intensidad</div>
-            <div class="char-value">${season.characteristics.depth}</div>
+            <div class="char-value">${effectiveSeason?.characteristics?.depth || 'Medio'}</div>
           </div>
           <div class="char-item">
             <div class="char-label">Contraste</div>
-            <div class="char-value">${season.characteristics.contrast}</div>
+            <div class="char-value">${effectiveSeason?.characteristics?.contrast || 'Medio'}</div>
           </div>
           <div class="char-item">
             <div class="char-label">Tono de Piel</div>
-            <div class="char-value">${analysis.skinColor || 'No disponible'}</div>
+            <div class="char-value">${effectiveSkinAnalysis?.skinColor || effectiveSkinAnalysis?.depth || 'Detectado de foto'}</div>
           </div>
         </div>
       </div>
 
       <div class="section">
-        <div class="section-title">Tu Paleta de ${season.name_es}</div>
+        <div class="section-title">Tu Paleta de ${effectiveSeason?.name_es || 'Temporada'}</div>
         <div class="color-grid">
-          ${palette.protagonist.map(c => `
+          ${(effectivePalette?.protagonist || ['#B5691B', '#6E2C00', '#E07B39', '#C68642']).map(c => `
             <div class="color-swatch">
               <div class="color-block" style="background: ${c}"></div>
               <div class="color-hex">${c}</div>
@@ -572,7 +642,7 @@ function generateHTML(data) {
           <div class="section">
             <div class="section-title">Protagonista</div>
             <div class="color-grid">
-              ${palette.protagonist.map(c => `
+              ${(effectivePalette?.protagonist || ['#B5691B', '#6E2C00', '#E07B39']).map(c => `
                 <div class="color-swatch">
                   <div class="color-block" style="background: ${c}"></div>
                   <div class="color-hex">${c}</div>
@@ -584,7 +654,7 @@ function generateHTML(data) {
           <div class="section">
             <div class="section-title">Secundarios</div>
             <div class="color-grid">
-              ${palette.secondary.map(c => `
+              ${(effectivePalette?.secondary || ['#2F4F1E', '#A0522D']).map(c => `
                 <div class="color-swatch">
                   <div class="color-block" style="background: ${c}"></div>
                   <div class="color-hex">${c}</div>
@@ -598,7 +668,7 @@ function generateHTML(data) {
           <div class="section">
             <div class="section-title">Neutros</div>
             <div class="color-grid">
-              ${palette.neutral.map(c => `
+              ${(effectivePalette?.neutral || ['#8B4513', '#567568']).map(c => `
                 <div class="color-swatch">
                   <div class="color-block" style="background: ${c}"></div>
                   <div class="color-hex">${c}</div>
@@ -610,7 +680,7 @@ function generateHTML(data) {
           <div class="section">
             <div class="section-title">Acento</div>
             <div class="color-grid">
-              ${palette.accent.map(c => `
+              ${(effectivePalette?.accent || ['#C68642', '#C0392B']).map(c => `
                 <div class="color-swatch">
                   <div class="color-block" style="background: ${c}"></div>
                   <div class="color-hex">${c}</div>
@@ -624,7 +694,7 @@ function generateHTML(data) {
       <div class="section" style="margin-top: 30px;">
         <div class="section-title">Colores a Evitar</div>
         <div class="avoid-grid">
-          ${palette.avoid.map(c => `
+          ${(effectivePalette?.avoid || ['#ADD8E6', '#FFB6C1', '#E6E6FA']).map(c => `
             <div class="avoid-color" style="background: ${c}">✗</div>
           `).join('')}
         </div>
@@ -649,7 +719,7 @@ function generateHTML(data) {
       <div class="section">
         <div class="section-title">Tu Tipo de Cuerpo</div>
         <div style="font-family: 'Instrument Serif', serif; font-size: 28px; color: var(--teal); margin-bottom: 20px;">
-          ${answers.bodyTypeLabel || answers.bodyType || 'Reloj de Arena'}
+          ${effectiveBodyType?.name || effectiveBodyType?.id || 'Reloj de Arena'}
         </div>
         <p class="section-text">
           Tu figura tiene proporciones que favorecen ciertos cortes y siluetas.
@@ -706,11 +776,11 @@ function generateHTML(data) {
       <div class="section">
         <div class="section-title">Tonos que Te Iluminan</div>
         <div class="hair-grid">
-          ${(hairColors || ['#4A2810', '#7B3F00', '#C68642']).map((c, i) => `
+          ${hairColors.map((c, i) => `
             <div class="hair-item">
-              <div class="hair-block" style="background: ${c}"></div>
-              <div class="color-hex">${c}</div>
-              <div class="color-label">Tono ${i + 1}</div>
+              <div class="hair-block" style="background: ${c.color}"></div>
+              <div class="color-hex">${c.color}</div>
+              <div class="color-label">${c.name}</div>
             </div>
           `).join('')}
         </div>
@@ -730,7 +800,7 @@ function generateHTML(data) {
       <div class="section" style="margin-top: 30px;">
         <div class="section-title">Consejo para tu Estilista</div>
         <div style="padding: 20px; background: linear-gradient(135deg, rgba(212,164,115,.1), rgba(32,94,83,.08)); border-radius: 12px; font-size: 12px; color: var(--text-light);">
-          Pide tonos cálidos y dorados como ${hairColors?.[2] || '#C68642'} que complementen tu temporada de ${season.name_es}. Evita tonos cenizos o muy oscuros que pueden apagarte.
+          Pide tonos cálidos y dorados como ${hairColors[2]?.color || '#C68642'} que complementen tu temporada de ${effectiveSeason?.name_es || 'Otoño'}. Evita tonos cenizos o muy oscuros que pueden apagarte.
         </div>
       </div>
     </div>
@@ -755,7 +825,7 @@ function generateHTML(data) {
           <div class="outfit-title">Día a Día</div>
           <div class="outfit-pieces">Blusa ocre, pantalón beige, sneakers blancas</div>
           <div class="outfit-colors">
-            ${palette.protagonist.slice(0, 3).map(c => `<div class="outfit-color" style="background: ${c}"></div>`).join('')}
+            ${(effectivePalette?.protagonist || ['#B5691B', '#C68642', '#D4A473']).slice(0, 3).map(c => `<div class="outfit-color" style="background: ${c}"></div>`).join('')}
           </div>
         </div>
 
@@ -763,7 +833,7 @@ function generateHTML(data) {
           <div class="outfit-title">Oficina</div>
           <div class="outfit-pieces">Blazer café, blusa seda beige, pantalón navy</div>
           <div class="outfit-colors">
-            ${palette.secondary.slice(0, 3).map(c => `<div class="outfit-color" style="background: ${c}"></div>`).join('')}
+            ${(effectivePalette?.secondary || ['#6E2C00', '#A0522D']).slice(0, 3).map(c => `<div class="outfit-color" style="background: ${c}"></div>`).join('')}
           </div>
         </div>
 
@@ -771,7 +841,7 @@ function generateHTML(data) {
           <div class="outfit-title">Citas</div>
           <div class="outfit-pieces">Vestido satin ocre, tacones gold, pendientes</div>
           <div class="outfit-colors">
-            ${palette.accent.slice(0, 3).map(c => `<div class="outfit-color" style="background: ${c}"></div>`).join('')}
+            ${(effectivePalette?.accent || ['#E07B39', '#C68642']).slice(0, 3).map(c => `<div class="outfit-color" style="background: ${c}"></div>`).join('')}
           </div>
         </div>
 
@@ -779,7 +849,7 @@ function generateHTML(data) {
           <div class="outfit-title">Viajes</div>
           <div class="outfit-pieces">Vestido midi verde musgo, denim oscuro, blazer camel</div>
           <div class="outfit-colors">
-            ${palette.neutral.slice(0, 3).map(c => `<div class="outfit-color" style="background: ${c}"></div>`).join('')}
+            ${(effectivePalette?.neutral || ['#567568', '#8B4513']).slice(0, 3).map(c => `<div class="outfit-color" style="background: ${c}"></div>`).join('')}
           </div>
         </div>
       </div>
@@ -811,7 +881,7 @@ function generateHTML(data) {
     <div class="final-page">
       <div class="final-logo">PRYSM</div>
       <div class="final-title">Tu Guía Está Completa</div>
-      <div class="prysm-score-final">PRYSM Score: 9.4</div>
+      <div class="prysm-score-final">PRYSM Score: ${effectiveScore.toFixed(1)}</div>
       <p class="final-text">
         Este informe es tuyo para siempre. Guárdalo, imprímelo o muéstraselo a tu estilista.
         Con los colores, cortes y consejos de este documento, cada compra será un acierto.
@@ -833,6 +903,34 @@ function generateHTML(data) {
 </body>
 </html>
   `;
+}
+
+/**
+ * Get hair colors based on season
+ */
+function getHairColorsForSeason(seasonId) {
+  const warmSeasons = ['warm_spring', 'deep_autumn', 'neutral_autumn', 'neutral_spring'];
+  const coolSeasons = ['soft_summer', 'deep_summer', 'bright_winter', 'neutral_winter'];
+
+  if (warmSeasons.includes(seasonId)) {
+    return [
+      { color: '#4A2810', name: 'Castaño cálido' },
+      { color: '#7B3F00', name: 'Cobre' },
+      { color: '#C68642', name: 'Dorado miel' }
+    ];
+  } else if (coolSeasons.includes(seasonId)) {
+    return [
+      { color: '#2C1810', name: 'Castaño oscuro' },
+      { color: '#4A3728', name: 'Castaño medio' },
+      { color: '#8B6914', name: 'Avellana' }
+    ];
+  } else {
+    return [
+      { color: '#4A2810', name: 'Castaño' },
+      { color: '#7B3F00', name: 'Cobre' },
+      { color: '#C68642', name: 'Dorado' }
+    ];
+  }
 }
 
 /**
@@ -860,6 +958,7 @@ async function deletePDF(filename) {
 }
 
 module.exports = {
+  generateReport,
   generatePDF,
   generateHTML,
   deletePDF,
