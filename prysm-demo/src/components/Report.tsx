@@ -61,10 +61,62 @@ export default function Report({
   };
 
   const handleDownloadPdf = () => {
-    if (pdfUrl) {
-      const fullUrl = getPdfUrl(pdfUrl);
-      window.open(fullUrl, '_blank');
+    // Demo mode: generate a simple PDF preview
+    if (!pdfUrl) {
+      // Create demo PDF HTML
+      const demoHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>Informe PRYSM Demo - ${userName}</title>
+          <style>
+            body { font-family: Georgia, serif; padding: 40px; max-width: 800px; margin: 0 auto; }
+            h1 { color: #2c2c2c; border-bottom: 2px solid #d4a473; padding-bottom: 10px; }
+            .season { font-size: 24px; color: #8b6f47; margin: 20px 0; }
+            .palette { display: flex; gap: 10px; margin: 20px 0; }
+            .color-swatch { width: 60px; height: 60px; border-radius: 4px; }
+            .tips { background: #f9f7f4; padding: 20px; margin: 20px 0; border-radius: 8px; }
+            .footer { margin-top: 40px; font-size: 12px; color: #888; text-align: center; }
+          </style>
+        </head>
+        <body>
+          <h1>PRYSM</h1>
+          <p>Informe Personal de Imagen para ${userName}</p>
+          <div class="season">Tu Temporada: <strong>${seasonName}</strong></div>
+          <p><strong>PRYSM Score:</strong> ${prysmScore}/10</p>
+          <p><strong>Tipo de Cuerpo:</strong> ${bodyTypeName}</p>
+
+          <h2>Tu Paleta de Colores</h2>
+          <div class="palette">
+            ${(palette.protagonist || []).map(c => `<div class="color-swatch" style="background:${c}"></div>`).join('')}
+          </div>
+
+          <div class="tips">
+            <h3>Consejos Rápidos</h3>
+            <p>• Usa colores cálidos de tierra como dominantes</p>
+            <p>• Añade acentos en tonos contrastantes</p>
+            <p>• Evita colores pastel que wash you out</p>
+          </div>
+
+          <div class="footer">
+            <p>Este es un DEMO del informe completo.</p>
+            <p>Para el informe premium de 7 páginas, visita prysm.mx</p>
+            <p>Generado: ${new Date().toLocaleDateString('es-ES')}</p>
+          </div>
+        </body>
+        </html>
+      `;
+
+      // Open demo PDF in new tab
+      const blob = new Blob([demoHtml], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+      return;
     }
+
+    const fullUrl = getPdfUrl(pdfUrl);
+    window.open(fullUrl, '_blank');
   };
 
   const sections = [
@@ -253,12 +305,12 @@ export default function Report({
             </svg>
             Compartir
           </button>
-          {pdfUrl && (
+          {(
             <button className="report-dl-btn primary" onClick={handleDownloadPdf}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
               </svg>
-              Descargar PDF
+              {pdfUrl ? 'Descargar PDF' : 'Ver Demo PDF'}
             </button>
           )}
           <button className="report-dl-btn primary" onClick={onRestart}>
