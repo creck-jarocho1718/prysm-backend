@@ -2,10 +2,9 @@ import { useEffect, useState } from 'react';
 
 interface LandingProps {
   onStart: () => void;
-  onViewDemo: () => void;
 }
 
-export default function Landing({ onStart, onViewDemo }: LandingProps) {
+export default function Landing({ onStart }: LandingProps) {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -32,46 +31,16 @@ export default function Landing({ onStart, onViewDemo }: LandingProps) {
             Un análisis profundo de tu estilo personal basado en colores,
             siluetas y tendencias que te hacen brillar. 5 minutos que cambiarán tu armario.
           </p>
-          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
-            <button
-              className="landing-cta"
-              onClick={onStart}
-              style={{ opacity: loaded ? 1 : 0, transform: loaded ? 'translateY(0)' : 'translateY(20px)', transition: 'all 1s cubic-bezier(0.16,1,0.3,1) 1.4s' }}
-            >
-              Comenzar Análisis
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M5 12h14M12 5l7 7-7 7"/>
-              </svg>
-            </button>
-            <button
-              onClick={onViewDemo}
-              style={{
-                opacity: loaded ? 1 : 0,
-                transform: loaded ? 'translateY(0)' : 'translateY(20px)',
-                transition: 'all 1s cubic-bezier(0.16,1,0.3,1) 1.5s, color 0.3s ease, border-color 0.3s ease',
-                padding: '20px 32px',
-                fontFamily: 'var(--sans)',
-                fontSize: '10px',
-                fontWeight: 400,
-                letterSpacing: '0.3em',
-                textTransform: 'uppercase',
-                color: 'rgba(255,255,255,0.7)',
-                border: '1px solid rgba(255,255,255,0.2)',
-                background: 'transparent',
-                cursor: 'pointer'
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.color = '#fff';
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.4)';
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.color = 'rgba(255,255,255,0.7)';
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
-              }}
-            >
-              Ver reporte completo
-            </button>
-          </div>
+          <button
+            className="landing-cta"
+            onClick={onStart}
+            style={{ opacity: loaded ? 1 : 0, transform: loaded ? 'translateY(0)' : 'translateY(20px)', transition: 'all 1s cubic-bezier(0.16,1,0.3,1) 1.4s' }}
+          >
+            Comenzar Análisis
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </button>
         </div>
       </div>
       <div className="landing-footer" style={{ opacity: loaded ? 1 : 0, transition: 'all 1s cubic-bezier(0.16,1,0.3,1) 1.6s' }}>

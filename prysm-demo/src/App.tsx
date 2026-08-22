@@ -7,7 +7,6 @@ import Report from './components/Report';
 import Paywall from './components/Paywall';
 import Share from './components/Share';
 import { AnalysisResponse, QuizAnswers } from './services/api';
-import { DEV_MODE, DEV_MODE_SAMPLE_PDF } from './config';
 
 export type Screen = 'landing' | 'quiz' | 'analyzing' | 'result' | 'report' | 'paywall' | 'share';
 
@@ -21,34 +20,6 @@ export interface UserData {
   email: string;
   photos: string[];
 }
-
-// Demo analysis data
-const demoAnalysis: AnalysisResponse = {
-  success: true,
-  reportId: 'demo-report-' + Date.now(),
-  pdfUrl: DEV_MODE_SAMPLE_PDF, // Use local sample PDF in DEV_MODE
-  analysis: {
-    season: {
-      id: 'autumn-deep',
-      name: 'Otoño Profundo',
-      temperature: 'warm',
-      depth: 'deep'
-    },
-    prysmScore: 8.7,
-    bodyType: {
-      id: 'hourglass',
-      name: 'Reloj de Arena'
-    },
-    palette: {
-      protagonist: ['#C45A3B', '#8B4513', '#A0522D'],
-      secondary: ['#D4A574', '#6B4423'],
-      accent: ['#E07B39', '#C68642'],
-      neutral: ['#4A2810', '#7B3F00'],
-      avoid: ['#ADD8E6', '#87CEEB']
-    },
-    analysisMethod: 'quiz_answers'
-  }
-};
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('landing');
@@ -113,21 +84,11 @@ function App() {
   }, []);
 
   const handleViewReport = useCallback(() => {
-    // DEV_MODE: Go directly to report, bypassing payment
-    if (DEV_MODE) {
-      setCurrentScreen('report');
-    } else {
-      setCurrentScreen('paywall');
-    }
+    setCurrentScreen('paywall');
   }, []);
 
   const handlePaywall = useCallback(() => {
-    // DEV_MODE: Never go to paywall, go directly to report
-    if (DEV_MODE) {
-      setCurrentScreen('report');
-    } else {
-      setCurrentScreen('paywall');
-    }
+    setCurrentScreen('paywall');
   }, []);
 
   const handleShare = useCallback(() => {
@@ -151,29 +112,16 @@ function App() {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
-    }
+    };
     return () => {
       document.body.style.overflow = 'auto';
     };
   }, [currentScreen]);
 
-  // Handle demo mode from landing page - DIRECT FUNCTION
-  const handleViewDemo = useCallback(() => {
-    // Store demo analysis in localStorage
-    localStorage.setItem('prysm_analysis', JSON.stringify(demoAnalysis));
-    // Store PDF URL for demo
-    localStorage.setItem('prysm_pdf_url', demoAnalysis.pdfUrl || '');
-    // Set user name for demo
-    setUserName('Valentina Demo');
-    // Go DIRECTLY to report (bypass paywall)
-    setAnalysisResult(demoAnalysis);
-    setCurrentScreen('report');
-  }, []);
-
   return (
     <div id="app">
       {currentScreen === 'landing' && (
-        <Landing onStart={handleStartQuiz} onViewDemo={handleViewDemo} />
+        <Landing onStart={handleStartQuiz} />
       )}
       {currentScreen === 'quiz' && (
         <Quiz
