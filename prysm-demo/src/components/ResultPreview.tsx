@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { AnalysisResponse } from '../services/api';
+import { DEV_MODE } from '../config';
 
 interface ResultPreviewProps {
   userName: string;
@@ -88,11 +89,21 @@ export default function ResultPreview({
   }, []);
 
   const handleVerifyClick = () => {
-    onPaywall();
+    // DEV_MODE: Go directly to report, bypass paywall
+    if (DEV_MODE) {
+      onViewReport();
+    } else {
+      onPaywall();
+    }
   };
 
   const handleBuyClick = () => {
-    window.open('https://link.mercadopago.com.mx/prysm', '_blank');
+    // DEV_MODE: Go directly to report, don't open MercadoPago
+    if (DEV_MODE) {
+      onViewReport();
+    } else {
+      window.open('https://link.mercadopago.com.mx/prysm', '_blank');
+    }
   };
 
   // Demo mode: bypass paywall and show report directly

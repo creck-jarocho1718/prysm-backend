@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { DEV_MODE } from '../config';
 
 interface PaywallProps {
   onBack: () => void;
@@ -37,6 +38,14 @@ const includes = [
 
 export default function Paywall({ onBack }: PaywallProps) {
   const [submitted, setSubmitted] = useState(false);
+
+  // DEV_MODE: Auto-redirect to report, never show paywall
+  useEffect(() => {
+    if (DEV_MODE) {
+      // Redirect to report instead of showing paywall
+      onBack();
+    }
+  }, [onBack]);
 
   if (submitted) {
     return (

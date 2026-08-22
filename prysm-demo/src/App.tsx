@@ -7,6 +7,7 @@ import Report from './components/Report';
 import Paywall from './components/Paywall';
 import Share from './components/Share';
 import { AnalysisResponse, QuizAnswers } from './services/api';
+import { DEV_MODE } from './config';
 
 export type Screen = 'landing' | 'quiz' | 'analyzing' | 'result' | 'report' | 'paywall' | 'share';
 
@@ -110,11 +111,21 @@ function App() {
   }, []);
 
   const handleViewReport = useCallback(() => {
-    setCurrentScreen('report');
+    // DEV_MODE: Go directly to report, bypassing payment
+    if (DEV_MODE) {
+      setCurrentScreen('report');
+    } else {
+      setCurrentScreen('paywall');
+    }
   }, []);
 
   const handlePaywall = useCallback(() => {
-    setCurrentScreen('paywall');
+    // DEV_MODE: Never go to paywall, go directly to report
+    if (DEV_MODE) {
+      setCurrentScreen('report');
+    } else {
+      setCurrentScreen('paywall');
+    }
   }, []);
 
   const handleShare = useCallback(() => {
