@@ -151,9 +151,9 @@ function App() {
       localStorage.setItem('prysm_analysis', JSON.stringify(demoAnalysis));
       // Set user name for demo
       setUserName('Valentina Demo');
-      // Go directly to result preview with demo data
+      // Go DIRECTLY to report (bypass paywall)
       setAnalysisResult(demoAnalysis);
-      setCurrentScreen('result');
+      setCurrentScreen('report');
     };
 
     window.addEventListener('prysm_demo_mode', handleDemoMode);

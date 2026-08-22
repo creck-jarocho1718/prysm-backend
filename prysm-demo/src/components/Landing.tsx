@@ -74,7 +74,7 @@ export default function Landing({ onStart }: LandingProps) {
                 e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
               }}
             >
-              Ver ejemplo de reporte
+              Ver reporte completo
             </button>
           </div>
         </div>
