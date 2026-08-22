@@ -160,10 +160,21 @@ export async function checkHealth(): Promise<boolean> {
 
 /**
  * Get PDF URL
+ * Handles both backend URLs and local DEV_MODE sample PDFs
  */
 export function getPdfUrl(pdfPath: string): string {
+  if (!pdfPath) return '';
+
+  // If it's an absolute URL, return as-is
   if (pdfPath.startsWith('http')) {
     return pdfPath;
   }
+
+  // If it's a local DEV_MODE sample PDF, use window.location.origin
+  if (pdfPath.startsWith('/sample-report.pdf')) {
+    return pdfPath; // Will be served from frontend public folder
+  }
+
+  // Otherwise, prepend backend URL for real PDF generation
   return `${API_BASE_URL}${pdfPath}`;
 }

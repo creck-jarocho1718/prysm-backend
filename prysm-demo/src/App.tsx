@@ -7,7 +7,7 @@ import Report from './components/Report';
 import Paywall from './components/Paywall';
 import Share from './components/Share';
 import { AnalysisResponse, QuizAnswers } from './services/api';
-import { DEV_MODE } from './config';
+import { DEV_MODE, DEV_MODE_SAMPLE_PDF } from './config';
 
 export type Screen = 'landing' | 'quiz' | 'analyzing' | 'result' | 'report' | 'paywall' | 'share';
 
@@ -25,6 +25,8 @@ export interface UserData {
 // Demo analysis data
 const demoAnalysis: AnalysisResponse = {
   success: true,
+  reportId: 'demo-report-' + Date.now(),
+  pdfUrl: DEV_MODE_SAMPLE_PDF, // Use local sample PDF in DEV_MODE
   analysis: {
     season: {
       id: 'autumn-deep',
@@ -159,6 +161,8 @@ function App() {
   const handleViewDemo = useCallback(() => {
     // Store demo analysis in localStorage
     localStorage.setItem('prysm_analysis', JSON.stringify(demoAnalysis));
+    // Store PDF URL for demo
+    localStorage.setItem('prysm_pdf_url', demoAnalysis.pdfUrl || '');
     // Set user name for demo
     setUserName('Valentina Demo');
     // Go DIRECTLY to report (bypass paywall)
