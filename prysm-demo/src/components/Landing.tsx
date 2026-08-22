@@ -2,16 +2,11 @@ import { useEffect, useState } from 'react';
 
 interface LandingProps {
   onStart: () => void;
+  onViewDemo: () => void;
 }
 
-export default function Landing({ onStart }: LandingProps) {
+export default function Landing({ onStart, onViewDemo }: LandingProps) {
   const [loaded, setLoaded] = useState(false);
-
-  // Demo mode: trigger event to go to demo result
-  const handleViewDemo = () => {
-    const event = new CustomEvent('prysm_demo_mode');
-    window.dispatchEvent(event);
-  };
 
   useEffect(() => {
     const timer = setTimeout(() => setLoaded(true), 100);
@@ -49,7 +44,7 @@ export default function Landing({ onStart }: LandingProps) {
               </svg>
             </button>
             <button
-              onClick={handleViewDemo}
+              onClick={onViewDemo}
               style={{
                 opacity: loaded ? 1 : 0,
                 transform: loaded ? 'translateY(0)' : 'translateY(20px)',

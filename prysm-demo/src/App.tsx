@@ -144,37 +144,21 @@ function App() {
     };
   }, [currentScreen]);
 
-  // Handle demo mode from landing page
-  useEffect(() => {
-    const handleDemoMode = () => {
-      // Store demo analysis in localStorage
-      localStorage.setItem('prysm_analysis', JSON.stringify(demoAnalysis));
-      // Set user name for demo
-      setUserName('Valentina Demo');
-      // Go DIRECTLY to report (bypass paywall)
-      setAnalysisResult(demoAnalysis);
-      setCurrentScreen('report');
-    };
-
-    window.addEventListener('prysm_demo_mode', handleDemoMode);
-
-    // Check if coming from demo mode URL
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('demo') === 'true') {
-      handleDemoMode();
-      // Clean URL
-      window.history.replaceState({}, '', '/');
-    }
-
-    return () => {
-      window.removeEventListener('prysm_demo_mode', handleDemoMode);
-    };
+  // Handle demo mode from landing page - DIRECT FUNCTION
+  const handleViewDemo = useCallback(() => {
+    // Store demo analysis in localStorage
+    localStorage.setItem('prysm_analysis', JSON.stringify(demoAnalysis));
+    // Set user name for demo
+    setUserName('Valentina Demo');
+    // Go DIRECTLY to report (bypass paywall)
+    setAnalysisResult(demoAnalysis);
+    setCurrentScreen('report');
   }, []);
 
   return (
     <div id="app">
       {currentScreen === 'landing' && (
-        <Landing onStart={handleStartQuiz} />
+        <Landing onStart={handleStartQuiz} onViewDemo={handleViewDemo} />
       )}
       {currentScreen === 'quiz' && (
         <Quiz
