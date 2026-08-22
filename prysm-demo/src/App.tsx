@@ -21,6 +21,32 @@ export interface UserData {
   photos: string[];
 }
 
+// Demo analysis data
+const demoAnalysis: AnalysisResponse = {
+  success: true,
+  analysis: {
+    season: {
+      id: 'autumn-deep',
+      name: 'Otoño Profundo',
+      temperature: 'warm',
+      depth: 'deep'
+    },
+    prysmScore: 8.7,
+    bodyType: {
+      id: 'hourglass',
+      name: 'Reloj de Arena'
+    },
+    palette: {
+      protagonist: ['#C45A3B', '#8B4513', '#A0522D'],
+      secondary: ['#D4A574', '#6B4423'],
+      accent: ['#E07B39', '#C68642'],
+      neutral: ['#4A2810', '#7B3F00'],
+      avoid: ['#ADD8E6', '#87CEEB']
+    },
+    analysisMethod: 'quiz_answers'
+  }
+};
+
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('landing');
   const [answers, setAnswers] = useState<QuizAnswer[]>([]);
@@ -117,6 +143,33 @@ function App() {
       document.body.style.overflow = 'auto';
     };
   }, [currentScreen]);
+
+  // Handle demo mode from landing page
+  useEffect(() => {
+    const handleDemoMode = () => {
+      // Store demo analysis in localStorage
+      localStorage.setItem('prysm_analysis', JSON.stringify(demoAnalysis));
+      // Set user name for demo
+      setUserName('Valentina Demo');
+      // Go directly to result preview with demo data
+      setAnalysisResult(demoAnalysis);
+      setCurrentScreen('result');
+    };
+
+    window.addEventListener('prysm_demo_mode', handleDemoMode);
+
+    // Check if coming from demo mode URL
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('demo') === 'true') {
+      handleDemoMode();
+      // Clean URL
+      window.history.replaceState({}, '', '/');
+    }
+
+    return () => {
+      window.removeEventListener('prysm_demo_mode', handleDemoMode);
+    };
+  }, []);
 
   return (
     <div id="app">
