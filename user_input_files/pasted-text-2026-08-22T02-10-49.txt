@@ -1,0 +1,285 @@
+ANTES DE HACER CUALQUIER CAMBIO EN EL CÓDIGO, QUIERO QUE ANALICES COMPLETAMENTE LA APLICACIÓN Y ME EXPLIQUES CÓMO FUNCIONA ACTUALMENTE.
+
+NO MODIFIQUES NINGÚN ARCHIVO.
+NO CREES ARCHIVOS NUEVOS.
+NO CAMBIES EL DISEÑO.
+NO CAMBIES EL TEST.
+NO CAMBIES EL SISTEMA DE PAGO.
+NO CAMBIES EL PDF.
+NO IMPLEMENTES NADA TODAVÍA.
+
+ÚNICAMENTE QUIERO QUE INVESTIGUES Y ME EXPLIQUES EL FLUJO ACTUAL.
+
+Quiero que traces el recorrido completo de un usuario desde que entra a la aplicación hasta que recibe el resultado final.
+
+### 1. FLUJO GENERAL
+
+Explícame paso por paso:
+
+1. ¿Qué ve el usuario cuando entra?
+2. ¿Cómo comienza el test?
+3. ¿Cuántas preguntas tiene actualmente?
+4. ¿Qué información obtiene cada grupo de preguntas?
+5. ¿Dónde se guardan las respuestas?
+6. ¿En qué momento el usuario sube su fotografía?
+7. ¿Dónde se almacena esa fotografía?
+8. ¿Qué ocurre cuando termina el test?
+9. ¿Qué función procesa las respuestas?
+10. ¿Qué función analiza la fotografía?
+11. ¿Qué IA/modelo realiza el análisis?
+12. ¿Qué información produce ese análisis?
+13. ¿Dónde se guarda el resultado?
+14. ¿Qué pantalla ve el usuario después del análisis?
+15. ¿Qué información se muestra ANTES del pago?
+16. ¿En qué momento aparece el área de pago?
+17. ¿Qué sistema de pago utiliza la aplicación?
+18. ¿Cómo se confirma que el pago fue realizado?
+19. ¿Qué ocurre inmediatamente después del pago?
+20. ¿Cómo se genera el reporte?
+21. ¿Qué función genera el PDF?
+22. ¿Dónde se genera físicamente el PDF?
+23. ¿Cómo llega el PDF al frontend?
+24. ¿Dónde se muestra el reporte?
+25. ¿Cómo se descarga el PDF?
+
+### 2. MAPA DEL FLUJO
+
+Quiero que me presentes el flujo actual exactamente como existe en el código.
+
+Por ejemplo:
+
+LANDING
+↓
+TEST
+↓
+PREGUNTAS
+↓
+FOTOGRAFÍA
+↓
+ANÁLISIS
+↓
+RESULTADO
+↓
+VISTA PREVIA
+↓
+PAGO
+↓
+CONFIRMACIÓN DE PAGO
+↓
+GENERACIÓN DEL REPORTE
+↓
+REPORTE FINAL
+↓
+DESCARGA PDF
+
+Pero NO asumas que ese es el flujo.
+
+Investiga el código y escribe el flujo REAL que actualmente existe.
+
+### 3. PREGUNTAS DEL TEST
+
+Quiero que me enumeres TODAS las preguntas actuales del test.
+
+Para cada pregunta dime:
+
+* Pregunta exacta.
+* Tipo de respuesta.
+* Opciones disponibles, si existen.
+* Qué información pretende obtener.
+* En qué parte del análisis se utiliza esa respuesta.
+
+NO inventes preguntas.
+
+NO propongas preguntas nuevas todavía.
+
+Quiero saber primero exactamente qué preguntas existen actualmente.
+
+### 4. FOTOGRAFÍA
+
+Explícame exactamente qué hace actualmente la aplicación con la fotografía.
+
+Quiero saber:
+
+* En qué pantalla se sube.
+* Qué formato acepta.
+* Dónde se guarda.
+* Qué función recibe la fotografía.
+* Si la fotografía realmente llega al backend.
+* Si actualmente se analiza con IA.
+* Qué información se obtiene de ella.
+* Si actualmente se utiliza para generar el PDF.
+* Si actualmente aparece en el PDF.
+* En qué página aparece, si aparece.
+
+### 5. ANÁLISIS
+
+Explícame cómo se obtiene actualmente el resultado de colorimetría.
+
+Quiero saber:
+
+* Qué datos utiliza.
+* Qué función calcula el resultado.
+* Qué modelo de IA participa.
+* Qué información devuelve.
+* Qué temporada determina.
+* Cómo determina subtono.
+* Cómo determina profundidad.
+* Cómo determina contraste.
+* Cómo determina temperatura.
+* Cómo determina colores recomendados.
+* Qué información utiliza para generar las recomendaciones de estilo.
+
+Si algo de esto NO existe actualmente, dime claramente:
+
+"Esto actualmente NO existe."
+
+NO lo implementes todavía.
+
+### 6. VISTA PREVIA ANTES DEL PAGO
+
+Quiero que me expliques exactamente qué ve actualmente el cliente ANTES de pagar.
+
+Muéstrame:
+
+* Qué pantalla es.
+* Qué información contiene.
+* Qué elementos están bloqueados.
+* Qué elementos están disponibles.
+* Qué botón lleva al pago.
+* Qué información se revela antes del pago.
+* Qué información permanece oculta.
+
+Quiero distinguir claramente entre:
+
+VISTA PREVIA ANTES DEL PAGO
+
+y
+
+REPORTE COMPLETO DESPUÉS DEL PAGO.
+
+### 7. PAGO
+
+Explícame exactamente cómo funciona actualmente el pago.
+
+* Qué proveedor utiliza.
+* Qué pantalla aparece.
+* Qué función inicia el pago.
+* Cómo se confirma.
+* Qué ocurre si el pago es exitoso.
+* Qué ocurre si el pago falla.
+* Qué ocurre si el usuario abandona el pago.
+
+NO cambies nada.
+
+### 8. REPORTE FINAL
+
+Explícame exactamente cómo se genera actualmente el reporte final.
+
+Revisa:
+
+`prysm-backend/services/pdfGenerator.js`
+
+y dime:
+
+* Qué función genera el PDF.
+* Qué datos recibe.
+* De dónde vienen esos datos.
+* Cómo genera las 7 páginas.
+* Qué información aparece en cada página.
+* Cómo se incorpora la información del usuario.
+* Cómo se incorpora la fotografía.
+* Cómo se generan los colores.
+* Cómo se generan las recomendaciones.
+* Cómo se generan los looks.
+* Cómo se crea el archivo PDF.
+* Cómo se entrega al usuario.
+
+### 9. PDF DE REFERENCIA
+
+También revisa el `sample-report.pdf` existente.
+
+NO lo modifiques.
+
+Quiero que me digas qué representa dentro de la aplicación:
+
+* ¿Es un PDF real?
+* ¿Es un PDF de ejemplo?
+* ¿Es una plantilla?
+* ¿Se utiliza actualmente para usuarios?
+* ¿Se genera dinámicamente?
+* ¿Tiene datos fijos?
+* ¿Qué partes son dinámicas?
+* ¿Qué partes son estáticas?
+
+### 10. DEV_MODE
+
+Explícame cómo funciona actualmente `DEV_MODE`.
+
+Quiero saber:
+
+* Dónde está definido.
+* Qué partes del flujo modifica.
+* Qué validaciones omite.
+* Si actualmente evita el pago.
+* Si actualmente evita la generación del reporte.
+* Si actualmente utiliza `sample-report.pdf`.
+* Qué ocurre cuando `DEV_MODE = true`.
+* Qué ocurre cuando `DEV_MODE = false`.
+
+NO MODIFIQUES DEV_MODE.
+
+### 11. ARCHIVOS INVOLUCRADOS
+
+Hazme una lista de los archivos importantes que participan en todo este flujo.
+
+Para cada archivo indica:
+
+ARCHIVO:
+FUNCIÓN:
+QUÉ HACE:
+EN QUÉ PARTE DEL FLUJO PARTICIPA:
+
+### 12. PROBLEMAS ACTUALES
+
+Después de investigar todo, dime cuáles son los problemas que encuentras actualmente.
+
+NO los soluciones todavía.
+
+Solo quiero que los enumeres.
+
+Por ejemplo:
+
+PROBLEMA 1:
+...
+
+PROBLEMA 2:
+...
+
+PROBLEMA 3:
+...
+
+### 13. LO MÁS IMPORTANTE
+
+NO HAGAS NINGÚN CAMBIO.
+
+NO MODIFIQUES CÓDIGO.
+
+NO REFACTORES.
+
+NO CREES ARCHIVOS.
+
+NO BORRES NADA.
+
+NO CAMBIES EL DISEÑO.
+
+NO CAMBIES EL TEST.
+
+NO CAMBIES EL PAGO.
+
+NO CAMBIES EL PDF.
+
+Primero quiero solamente un diagnóstico completo del sistema actual.
+
+Al final dame un resumen del flujo REAL actual en una sola línea y después espera mis instrucciones.
+
+NO IMPLEMENTES NADA HASTA QUE YO TE LO AUTORICE.
