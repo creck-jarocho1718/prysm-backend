@@ -1,0 +1,518 @@
+IMPORTANTE: NO QUIERO QUE MODIFIQUES EL CÓDIGO TODAVÍA.
+
+Ya realizaste una auditoría completa del proyecto PRYSM y ahora sabemos cómo funciona actualmente.
+
+Quiero que diseñes la NUEVA LÓGICA DE ANÁLISIS PERSONALIZADO que utilizará PRYSM.
+
+Pero antes de programarla, quiero que me presentes el diseño técnico y funcional completo.
+
+NO MODIFIQUES NINGÚN ARCHIVO TODAVÍA.
+
+==================================================
+REGLA PRINCIPAL
+===============
+
+QUIERO CONSERVAR TODO LO QUE YA EXISTE.
+
+NO CAMBIES:
+
+* El diseño visual de la aplicación.
+* La estructura visual del test.
+* Las 12 preguntas actuales.
+* El diseño del PDF de 7 páginas.
+* Los componentes visuales existentes.
+* Los colores actuales de la aplicación.
+* La navegación actual, salvo que posteriormente sea necesario conectar el nuevo análisis.
+* MercadoPago.
+* La pantalla de preview.
+* La pantalla Report.
+* La estructura visual del producto.
+
+NO ELIMINES FUNCIONALIDADES.
+
+NO HAGAS UN REDISEÑO.
+
+NO CREES UNA APLICACIÓN NUEVA.
+
+La intención es MEJORAR EL MOTOR INTERNO DE ANÁLISIS utilizando la aplicación que ya existe.
+
+==================================================
+OBJETIVO DE PRYSM
+=================
+
+Quiero que PRYSM pueda analizar de manera personalizada a cada cliente utilizando:
+
+1. Las respuestas de las 12 preguntas actuales.
+2. Las 3 fotografías que actualmente solicita el test.
+3. El análisis de color que actualmente obtiene `colorAnalysis.ts`.
+4. Las preferencias personales del cliente.
+5. Sus objetivos de imagen.
+6. Sus ocasiones de uso.
+7. Su presupuesto.
+8. Las prendas que ya tiene.
+9. Los colores que utiliza actualmente.
+10. Su estilo personal.
+11. Su silueta indicada en el test.
+12. Cualquier otra información que YA exista en el proyecto.
+
+La idea es que todos esos datos se combinen para construir un PERFIL PERSONALIZADO DEL CLIENTE.
+
+==================================================
+LAS 12 PREGUNTAS ACTUALES
+=========================
+
+NO CAMBIES ESTAS PREGUNTAS.
+
+Actualmente existen:
+
+1. ¿Cómo te gustaría sentirte?
+
+   * sofisticada
+   * segura
+   * imponente
+   * vibrante
+   * serena
+   * poderosa
+   * natural
+   * glamurosa
+
+2. ¿Cuál es tu tono de piel?
+
+   * muy-clara
+   * clara
+   * media
+   * morena-clara
+   * morena
+   * morena-oscura
+
+3. ¿Cuál es tu tipo de silueta?
+
+   * reloj-arena
+   * triangulo
+   * triangulo-inv
+   * rectangulo
+   * ovalada
+   * diamante
+
+4. ¿Presupuesto mensual?
+
+   * menos-1000
+   * 1000-3000
+   * 3000-5000
+   * 5000-10000
+   * mas-10000
+
+5. ¿Qué colores hay en tu clóset?
+
+   * negro
+   * blanco
+   * gris
+   * azul
+   * cafe
+   * beige
+   * rojo
+   * verde
+   * morado
+   * rosa
+   * amarillo
+   * naranja
+
+6. ¿Qué hay en tu clóset?
+
+   * jeans
+   * blusas
+   * vestidos
+   * faldas
+   * shorts
+   * blazers
+   * sweaters
+   * zapatos
+   * bolsas
+   * accesorios
+   * sudaderas
+   * camisas
+
+7. ¿Dorado o plateado?
+
+   * dorado
+   * plateado
+   * ambos
+
+8. ¿Cómo describirías tu estilo?
+
+   * clásico
+   * casual
+   * bohemio
+   * glamuroso
+   * minimalista
+   * deportivo
+   * romántico
+   * edgy
+   * vintage
+   * streetwear
+   * profesional
+   * chic
+
+9. ¿Para qué ocasiones vistes?
+
+   * oficina
+   * citas
+   * eventos
+   * fin-semana
+   * ejercicio
+   * viajes
+   * fiestas
+   * familia
+   * coworking
+   * casa
+
+10. ¿Cuál es tu look de referencia?
+
+* natural
+* dramática
+* romántica
+* ingenua
+* arquitectónica
+* glamurosa
+
+11. Sube 3 fotos tuyas:
+
+* frontal
+* perfil
+* cuerpo completo
+
+12. Tus datos:
+
+* nombre
+* email
+
+NO agregues ni elimines preguntas en esta etapa.
+
+==================================================
+LO QUE YA EXISTE PARA ANALIZAR FOTOS
+====================================
+
+Actualmente `src/services/colorAnalysis.ts` obtiene:
+
+* skinColor
+* undertone
+* depth
+* saturation
+* contrast
+* confidence
+* RGB
+* HSL
+
+El análisis actual utiliza Canvas API y fórmulas RGB/HSL.
+
+NO elimines este sistema.
+
+Quiero que determines cómo podemos utilizar estos datos dentro del nuevo perfil personalizado.
+
+==================================================
+NUEVO PERFIL PERSONALIZADO
+==========================
+
+Quiero que diseñes una estructura interna llamada, por ejemplo:
+
+`PersonalStyleProfile`
+
+o un nombre equivalente si consideras que existe una estructura mejor.
+
+Ese perfil debe reunir toda la información disponible del cliente.
+
+Debe contemplar como mínimo:
+
+### COLORIMETRÍA
+
+* temporada
+* subtono
+* temperatura
+* profundidad
+* contraste
+* saturación
+* color de piel detectado
+* confianza del análisis
+* paleta recomendada
+* colores a evitar
+
+### CUERPO
+
+* silueta
+* características relevantes obtenidas del test
+
+### ESTILO
+
+* estilos seleccionados
+* look de referencia
+* cómo quiere sentirse
+* estilo dominante
+* estilos secundarios
+
+### VIDA REAL
+
+* ocasiones
+* presupuesto
+* prendas que ya posee
+* colores que ya utiliza
+
+### PREFERENCIAS
+
+* colores preferidos
+* metal preferido
+* prendas disponibles
+* estilos deseados
+
+### OBJETIVOS
+
+Interpretar la respuesta de "¿Cómo te gustaría sentirte?" como objetivo de imagen.
+
+Por ejemplo, si selecciona "sofisticada" y "segura", las recomendaciones deberían reflejar esos objetivos.
+
+NO quiero que esto sea solamente una lista de datos.
+
+Quiero que el sistema pueda utilizar estos datos para tomar decisiones.
+
+==================================================
+MOTOR DE RECOMENDACIONES
+========================
+
+Quiero que diseñes cómo PRYSM va a cruzar la información.
+
+Por ejemplo:
+
+COLORIMETRÍA
++
+SILUETA
++
+ESTILO
++
+OBJETIVO
++
+OCASIONES
++
+PRESUPUESTO
++
+ARMARIO ACTUAL
+
+=
+
+RECOMENDACIONES PERSONALIZADAS
+
+Las recomendaciones deben responder a la persona.
+
+Por ejemplo, dos personas pueden tener la misma temporada de color pero diferentes estilos, presupuestos y necesidades.
+
+NO deberían recibir exactamente el mismo reporte.
+
+El sistema debe poder mantener la misma base de colorimetría pero cambiar las recomendaciones de:
+
+* prendas
+* combinaciones
+* looks
+* ocasiones
+* accesorios
+* materiales
+* estilo
+
+según el perfil individual.
+
+==================================================
+OUTFITS
+=======
+
+Actualmente los outfits del PDF son fijos.
+
+NO cambies el diseño del PDF.
+
+Quiero que diseñes cómo reemplazar el CONTENIDO FIJO por contenido personalizado manteniendo exactamente el mismo espacio y estructura visual.
+
+Por ejemplo, si el cliente selecciona:
+
+OFICINA + ESTILO PROFESIONAL + PRESUPUESTO MEDIO
+
+los outfits deben responder a esas condiciones.
+
+Si otro cliente selecciona:
+
+VIAJES + CASUAL + PRESUPUESTO BAJO
+
+sus outfits deben ser diferentes.
+
+El diseño visual sigue siendo el mismo.
+
+Solo cambia el contenido.
+
+==================================================
+CABELLO Y ROSTRO
+================
+
+Actualmente parte de esta información es fija.
+
+Quiero que analices qué información disponible tenemos actualmente para personalizar esta sección.
+
+NO inventes capacidades que el sistema todavía no tiene.
+
+Si las fotografías actuales no permiten determinar alguna característica con suficiente confianza, indícalo.
+
+Quiero que separemos:
+
+DATOS QUE PODEMOS DETERMINAR CON CONFIANZA
+
+de
+
+DATOS QUE NECESITARÍAN INFORMACIÓN ADICIONAL.
+
+NO programes todavía.
+
+==================================================
+PDF DE 7 PÁGINAS
+================
+
+El diseño actual del PDF de 7 páginas debe mantenerse.
+
+NO rediseñarlo.
+
+La estructura actual es:
+
+PÁGINA 1
+Portada.
+
+PÁGINA 2
+Análisis de temporada de color.
+
+PÁGINA 3
+Colores que favorecen + colores a evitar.
+
+PÁGINA 4
+Silueta + guía de estilo + materiales.
+
+PÁGINA 5
+Cabello + rostro.
+
+PÁGINA 6
+Looks por ocasión.
+
+PÁGINA 7
+Resumen + accesorios.
+
+Quiero que diseñes QUÉ DATOS PERSONALIZADOS debe alimentar cada página.
+
+==================================================
+VISTA PREVIA
+============
+
+La vista previa ANTES DEL PAGO debe seguir existiendo.
+
+No quiero entregar el reporte completo antes del pago.
+
+Quiero que diseñes qué información puede mostrarse en la preview para demostrar el valor del análisis sin revelar todo el producto.
+
+NO cambies todavía la pantalla.
+
+Solo dime qué información debería recibir desde el nuevo perfil.
+
+==================================================
+DESPUÉS DEL PAGO
+================
+
+Después del pago real:
+
+PersonalStyleProfile
+↓
+Generación de contenido personalizado
+↓
+PDF personalizado
+↓
+Reporte completo
+
+El PDF debe utilizar los datos del cliente.
+
+NO debe utilizar `sample-report.pdf` como reporte final.
+
+`sample-report.pdf` solamente debe considerarse una referencia/demostración.
+
+==================================================
+DEV_MODE
+========
+
+NO MODIFIQUES DEV_MODE TODAVÍA.
+
+Más adelante necesitaremos que DEV_MODE permita probar:
+
+TEST REAL
+→ FOTO REAL
+→ ANÁLISIS REAL
+→ PREVIEW
+→ SALTAR PAGO
+→ REPORTE PERSONALIZADO
+
+Pero en esta etapa NO IMPLEMENTES NADA.
+
+==================================================
+LO QUE QUIERO QUE ME ENTREGUES AHORA
+====================================
+
+Solamente quiero un DISEÑO DEL NUEVO SISTEMA.
+
+Entrégame:
+
+1. Arquitectura propuesta del nuevo análisis.
+
+2. Estructura de `PersonalStyleProfile`.
+
+3. Qué datos vienen de cada pregunta.
+
+4. Qué datos vienen de las fotografías.
+
+5. Cómo se combinan.
+
+6. Cómo se determina la colorimetría.
+
+7. Cómo se generan las recomendaciones.
+
+8. Cómo se personalizan los outfits.
+
+9. Cómo se personaliza cabello/rostro sin inventar información.
+
+10. Qué información alimentará cada una de las 7 páginas.
+
+11. Qué información se muestra antes del pago.
+
+12. Qué información se desbloquea después del pago.
+
+13. Qué partes actuales del código pueden reutilizarse.
+
+14. Qué partes necesitarían modificarse posteriormente.
+
+15. Qué datos actualmente NO tenemos y serían necesarios para lograr un análisis más preciso.
+
+16. Riesgos o limitaciones del sistema actual.
+
+17. Un diagrama final del flujo.
+
+==================================================
+REGLA ABSOLUTA
+==============
+
+NO MODIFIQUES NINGÚN ARCHIVO.
+
+NO ESCRIBAS CÓDIGO DE IMPLEMENTACIÓN.
+
+NO CAMBIES EL DISEÑO.
+
+NO CAMBIES LAS PREGUNTAS.
+
+NO CAMBIES EL PDF.
+
+NO CAMBIES MERCADOPAGO.
+
+NO CAMBIES DEV_MODE.
+
+NO CAMBIES LA NAVEGACIÓN.
+
+Primero quiero aprobar la arquitectura del nuevo cerebro de PRYSM.
+
+Después de que yo revise tu propuesta y te dé autorización, entonces podremos implementar los cambios uno por uno.
+
+DETENTE después de entregar el diseño.
