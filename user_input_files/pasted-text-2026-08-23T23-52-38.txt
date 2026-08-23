@@ -1,0 +1,502 @@
+El modo de prueba ya está funcionando y visualmente me gusta cómo quedó.
+
+NO QUIERO QUE REDISEÑES LA APLICACIÓN.
+
+NO CAMBIES EL DISEÑO QUE YA ESTÁ FUNCIONANDO.
+
+NO CAMBIES LAS 12 PREGUNTAS.
+
+NO CAMBIES LA ESTRUCTURA DE LAS 7 PÁGINAS DEL PDF.
+
+Quiero que revises el resultado actual porque encontré varios problemas importantes de PERSONALIZACIÓN.
+
+Antes de modificar nada, quiero que investigues por qué ocurre cada problema.
+
+==================================================
+PROBLEMA 1 — FOTO DEL CLIENTE
+==================================================
+
+El cliente sube 3 fotografías durante el test:
+
+- frontal
+- perfil
+- cuerpo completo
+
+Pero en el REPORTE FINAL no aparece la fotografía del cliente en la portada.
+
+Esto es obligatorio.
+
+Quiero que investigues:
+
+1. ¿La foto se guarda correctamente después del test?
+2. ¿La foto llega al PersonalStyleProfile?
+3. ¿La foto llega al backend?
+4. ¿La foto llega a generateReport()?
+5. ¿El pdf-template.html tiene actualmente un espacio preparado para la foto?
+6. ¿Por qué la foto no aparece actualmente en la portada?
+
+NO quiero una foto genérica.
+
+Quiero que aparezca la fotografía REAL que el cliente subió durante ese análisis.
+
+Debe aparecer en la PÁGINA 1 del reporte final.
+
+Si actualmente la foto no está llegando al generador del PDF, corrige el flujo para que llegue.
+
+NO cambies el diseño de la portada.
+
+Utiliza el espacio/composición existente y coloca ahí la fotografía del cliente.
+
+==================================================
+PROBLEMA 2 — DESCARGAR PDF
+==================================================
+
+En el reporte final no estoy viendo claramente el área para descargar el PDF.
+
+Quiero que exista un botón claramente visible:
+
+"DESCARGAR PDF"
+
+El botón debe descargar EL MISMO REPORTE PERSONALIZADO que estoy viendo.
+
+NO debe descargar:
+
+- sample-report.pdf
+- un PDF genérico
+- otro archivo
+- un PDF de prueba diferente
+
+Debe descargar el PDF generado para ese usuario.
+
+Investiga por qué actualmente no aparece el botón o por qué no está funcionando.
+
+NO cambies el diseño general de Report.tsx.
+
+Solo agrega o recupera el área de descarga necesaria.
+
+==================================================
+PROBLEMA 3 — EL TEST NO ESTÁ TENIENDO SUFICIENTE PESO EN EL RESULTADO
+==================================================
+
+Este es probablemente el problema MÁS IMPORTANTE.
+
+Quiero que revises si las respuestas del test realmente están llegando al motor de análisis y al generador de recomendaciones.
+
+El test pregunta:
+
+Q1:
+"¿Cómo te gustaría sentirte?"
+
+Q2:
+"¿Cuál es tu tono de piel?"
+
+Q3:
+"¿Cuál es tu tipo de silueta?"
+
+Q4:
+"¿Cuál es tu presupuesto mensual?"
+
+Q5:
+"¿Qué colores tienes en tu clóset?"
+
+Q6:
+"¿Qué hay en tu clóset?"
+
+Q7:
+"¿Dorado o plateado?"
+
+Q8:
+"¿Cómo describirías tu estilo?"
+
+Q9:
+"¿Para qué ocasiones vistes?"
+
+Q10:
+"¿Cuál es tu look de referencia?"
+
+Q11:
+3 fotografías.
+
+Q12:
+Nombre/email.
+
+NO quiero que estas preguntas solamente se guarden.
+
+Quiero que tengan una función real dentro del análisis.
+
+==================================================
+Q1 — CÓMO QUIERE SENTIRSE
+==================================================
+
+Esta respuesta debe convertirse en un OBJETIVO DE IMAGEN.
+
+Por ejemplo:
+
+Si selecciona:
+
+- sofisticada
+- segura
+
+el sistema debe generar recomendaciones que transmitan esas características.
+
+Si selecciona:
+
+- natural
+- serena
+
+las recomendaciones deben tener otro enfoque.
+
+La respuesta NO debe cambiar la colorimetría.
+
+Debe cambiar la manera en que aplicamos la colorimetría al estilo.
+
+IMPORTANTE:
+
+Q1 NO determina la temporada de color.
+
+Determina el objetivo de imagen.
+
+==================================================
+Q2 — TONO DE PIEL
+==================================================
+
+Esta respuesta debe utilizarse como información complementaria del análisis.
+
+Debe cruzarse con el análisis de las fotografías.
+
+NO quiero que se ignore.
+
+Pero tampoco quiero que sustituya automáticamente el análisis de color de la fotografía.
+
+Si existe contradicción entre Q2 y el análisis fotográfico, quiero que el sistema lo detecte y utilice una lógica de validación.
+
+Explícame qué ocurre actualmente cuando hay contradicción.
+
+==================================================
+Q3 — TIPO DE CUERPO / SILUETA
+==================================================
+
+Esta respuesta es MUY IMPORTANTE.
+
+El cliente está indicando explícitamente su tipo de silueta.
+
+Quiero que esta información se utilice para las recomendaciones de ropa.
+
+Debe afectar:
+
+- cortes
+- proporciones
+- prendas recomendadas
+- prendas que conviene evitar
+- escotes
+- largos
+- volumen
+- distribución visual
+- materiales
+- combinaciones
+
+NO quiero que Q3 simplemente aparezca como texto:
+
+"Tu silueta es reloj de arena."
+
+Quiero que produzca recomendaciones reales basadas en esa silueta.
+
+==================================================
+Q4 — PRESUPUESTO
+==================================================
+
+Actualmente tenemos:
+
+- menos de 1000
+- 1000–3000
+- 3000–5000
+- 5000–10000
+- más de 10000
+
+Quiero que esto tenga una función REAL.
+
+No quiero simplemente mostrar:
+
+"Tu presupuesto es $3,000."
+
+Quiero que el reporte diga QUÉ PUEDE HACER EL CLIENTE CON ESE PRESUPUESTO.
+
+Por ejemplo:
+
+- prioridades de compra;
+- qué prendas comprar primero;
+- qué prendas vale la pena invertir más;
+- qué prendas puede comprar a menor precio;
+- cómo construir looks con su presupuesto;
+- qué piezas son versátiles;
+- qué piezas debe evitar comprar innecesariamente.
+
+Si el presupuesto es bajo, las recomendaciones deben priorizar versatilidad.
+
+Si el presupuesto es alto, puede recomendar piezas de mayor inversión cuando tenga sentido.
+
+NO inventes precios específicos de tiendas si no tenemos datos reales de productos.
+
+Trabaja con niveles de presupuesto y prioridades de compra.
+
+==================================================
+Q5 — COLORES QUE YA TIENE
+==================================================
+
+Esta respuesta debe ser MUCHO más útil.
+
+El cliente está diciendo qué colores ya tiene en su clóset.
+
+Quiero que el análisis cruce:
+
+COLORES DEL CLÓSET
++
+COLORIMETRÍA DEL CLIENTE
+
+Y produzca:
+
+### COLORES QUE SÍ LE SIRVEN
+
+Por ejemplo:
+
+"De los colores que ya tienes, estos son los que mejor funcionan con tu paleta."
+
+### COLORES QUE PUEDE UTILIZAR COMO NEUTROS
+
+### COLORES QUE DEBERÍA COMBINAR CON OTROS
+
+### COLORES QUE NO SON LOS MÁS FAVORABLES
+
+Y:
+
+### QUÉ HACER CON ELLOS
+
+No quiero necesariamente decirle que tire ropa.
+
+Puede decir:
+
+- úsalo lejos del rostro;
+- úsalo como pantalón;
+- úsalo como accesorio;
+- combínalo con X;
+- no lo priorices para prendas superiores;
+- sustitúyelo progresivamente.
+
+Quiero recomendaciones prácticas.
+
+==================================================
+Q6 — PRENDAS QUE YA TIENE
+==================================================
+
+No quiero que el sistema simplemente liste:
+
+"tienes jeans, blazers y vestidos."
+
+Quiero que analice:
+
+PRENDAS EXISTENTES
++
+SILUETA
++
+COLORIMETRÍA
++
+ESTILO
++
+OCASIONES
++
+PRESUPUESTO
+
+y determine:
+
+### QUÉ PRENDAS DE SU CLÓSET YA LE FUNCIONAN
+
+### QUÉ PRENDAS PUEDE COMBINAR
+
+### QUÉ PRENDAS LE FALTAN
+
+### QUÉ DEBERÍA COMPRAR PRIMERO
+
+### QUÉ NO NECESITA COMPRAR
+
+Esto es MUY importante porque quiero que el reporte sea útil en la vida real.
+
+==================================================
+Q7 — DORADO / PLATEADO
+==================================================
+
+Utilízalo principalmente como PREFERENCIA DE ACCESORIOS.
+
+NO lo uses como prueba definitiva de temperatura.
+
+La colorimetría debe determinarse principalmente por el análisis de color.
+
+Q7 debe influir en:
+
+- joyería;
+- accesorios;
+- metales recomendados;
+- combinaciones.
+
+==================================================
+Q8 — ESTILO
+==================================================
+
+Debe determinar la dirección estética de las recomendaciones.
+
+Por ejemplo:
+
+clásico + profesional
+
+debe producir recomendaciones diferentes a:
+
+bohemio + romántico
+
+o:
+
+streetwear + edgy.
+
+==================================================
+Q9 — OCASIONES
+==================================================
+
+Esto debe tener MUCHO peso en los looks.
+
+Si el cliente selecciona:
+
+OFICINA
+
+debe recibir recomendaciones de oficina.
+
+Si selecciona:
+
+CITAS
+
+debe recibir recomendaciones para citas.
+
+Si selecciona:
+
+VIAJES
+
+debe recibir recomendaciones para viajes.
+
+Si selecciona varias ocasiones, asigna prioridades según sus respuestas.
+
+==================================================
+Q10 — LOOK DE REFERENCIA
+==================================================
+
+Debe funcionar como referencia estética.
+
+Debe influir en la dirección visual de las recomendaciones.
+
+NO debe modificar la colorimetría.
+
+==================================================
+Q11 — FOTOGRAFÍAS
+==================================================
+
+Las fotografías deben utilizarse para:
+
+- análisis de color;
+- información visual disponible;
+- validar datos cuando sea posible;
+- fotografía de portada del reporte final.
+
+NO inventes características que no puedan determinarse.
+
+==================================================
+REGLA CENTRAL DEL NUEVO MOTOR
+==================================================
+
+Quiero que el resultado sea producto de:
+
+FOTOGRAFÍAS
++
+COLORIMETRÍA
++
+Q1 OBJETIVO
++
+Q2 PIEL
++
+Q3 SILUETA
++
+Q4 PRESUPUESTO
++
+Q5 COLORES DEL CLÓSET
++
+Q6 PRENDAS
++
+Q7 METALES
++
+Q8 ESTILO
++
+Q9 OCASIONES
++
+Q10 REFERENCIA
+
+=
+
+PERFIL PERSONALIZADO
+
+Y después:
+
+PERFIL PERSONALIZADO
+
+=
+
+RECOMENDACIONES PERSONALIZADAS
+
+=
+
+REPORTE PERSONALIZADO
+
+==================================================
+MUY IMPORTANTE
+==================================================
+
+NO quiero que todas las personas reciban el mismo reporte con algunos textos cambiados.
+
+Quiero que cambien realmente:
+
+- colores recomendados;
+- prendas;
+- cortes;
+- combinaciones;
+- compras prioritarias;
+- looks;
+- ocasiones;
+- accesorios;
+- recomendaciones de armario.
+
+El DISEÑO sigue siendo el mismo.
+
+El CONTENIDO cambia según el cliente.
+
+==================================================
+ANTES DE MODIFICAR
+==================================================
+
+Primero haz una auditoría de estos problemas.
+
+Para cada uno dime:
+
+PROBLEMA:
+CAUSA:
+ARCHIVO/FUNCIÓN RESPONSABLE:
+SOLUCIÓN PROPUESTA:
+
+NO modifiques nada todavía.
+
+Quiero ver primero por qué:
+
+1. La foto no aparece en portada.
+2. No aparece el botón de descargar PDF.
+3. Las respuestas del test no están teniendo suficiente impacto en el resultado.
+4. El presupuesto no está generando recomendaciones específicas.
+5. Los colores del clóset no están produciendo recomendaciones suficientemente específicas.
+6. Las prendas del clóset no están siendo utilizadas suficientemente.
+7. La silueta no está afectando realmente las recomendaciones.
+
+Después de mostrarme la auditoría, DETENTE.
+
+NO IMPLEMENTES LOS CAMBIOS HASTA QUE YO LOS APRUEBE.
