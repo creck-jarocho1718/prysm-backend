@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { AnalysisResponse } from '../services/api';
+import { TEST_MODE } from '../config';
 
 interface ResultPreviewProps {
   userName: string;
@@ -92,6 +93,12 @@ export default function ResultPreview({
   };
 
   const handleBuyClick = () => {
+    // In TEST_MODE: Go directly to PDF generation
+    if (TEST_MODE) {
+      onViewReport();
+      return;
+    }
+    // In production: Open MercadoPago
     window.open('https://link.mercadopago.com.mx/prysm', '_blank');
   };
 
@@ -354,41 +361,100 @@ export default function ResultPreview({
         {/* PRICE CTA */}
         <div className="rp-price-section">
           <div className="rp-divider" />
-          <div className="rp-price-card">
-            <div className="rp-price-tag">Acceso completo · Pago único</div>
-            <div className="rp-price-amount">$299 <small>MXN</small></div>
-            <div className="rp-price-note">Sin suscripción · Acceso de por vida</div>
-            <button className="rp-buy-btn" onClick={handleBuyClick}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="3" y="11" width="18" height="11" rx="2" />
-                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-              </svg>
-              Obtener mi informe ahora
-            </button>
-            <div className="rp-guarantee">✓ Acceso inmediato · ✓ PDF premium · ✓ Sin límite de tiempo</div>
-            <div className="rp-verify" onClick={handleVerifyClick}>¿Ya pagaste? Verificar mi pago</div>
-          </div>
-          <div className="rp-trust-row">
-            <div className="rp-trust-item">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              </svg>
-              Pago seguro
+          {TEST_MODE ? (
+            /* TEST MODE: Show direct access button */
+            <div className="rp-price-card" style={{ textAlign: 'center', padding: '40px' }}>
+              <div style={{
+                display: 'inline-block',
+                background: '#10b981',
+                color: '#fff',
+                padding: '8px 20px',
+                borderRadius: '20px',
+                fontSize: '11px',
+                fontWeight: '500',
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                marginBottom: '24px'
+              }}>
+                🧪 MODO PRUEBA
+              </div>
+              <h3 style={{
+                fontFamily: 'var(--serif)',
+                fontSize: 'clamp(20px, 3vw, 28px)',
+                marginBottom: '16px',
+                color: '#fff'
+              }}>
+                Tu informe está listo para generar
+              </h3>
+              <p style={{
+                color: 'rgba(255,255,255,0.6)',
+                marginBottom: '32px',
+                fontSize: '14px'
+              }}>
+                Haz clic para generar tu PDF con tus datos reales
+              </p>
+              <button className="rp-buy-btn" onClick={handleBuyClick} style={{
+                background: '#10b981',
+                fontSize: '13px',
+                padding: '18px 40px'
+              }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                  <line x1="16" y1="17" x2="8" y2="17"/>
+                  <polyline points="10 9 9 9 8 9"/>
+                </svg>
+                Ver mi reporte completo — MODO PRUEBA
+              </button>
+              <p style={{
+                color: 'rgba(255,255,255,0.4)',
+                marginTop: '16px',
+                fontSize: '12px'
+              }}>
+                Se generará un PDF personalizado con tus respuestas
+              </p>
             </div>
-            <div className="rp-trust-item">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="3" y="11" width="18" height="11" rx="2" />
-                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-              </svg>
-              MercadoPago
-            </div>
-            <div className="rp-trust-item">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="20 6 9 17 4 12" />
-              </svg>
-              Sin suscripción
-            </div>
-          </div>
+          ) : (
+            /* PRODUCTION: Show normal payment flow */
+            <>
+              <div className="rp-price-card">
+                <div className="rp-price-tag">Acceso completo · Pago único</div>
+                <div className="rp-price-amount">$299 <small>MXN</small></div>
+                <div className="rp-price-note">Sin suscripción · Acceso de por vida</div>
+                <button className="rp-buy-btn" onClick={handleBuyClick}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                  Obtener mi informe ahora
+                </button>
+                <div className="rp-guarantee">✓ Acceso inmediato · ✓ PDF premium · ✓ Sin límite de tiempo</div>
+                <div className="rp-verify" onClick={handleVerifyClick}>¿Ya pagaste? Verificar mi pago</div>
+              </div>
+              <div className="rp-trust-row">
+                <div className="rp-trust-item">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  </svg>
+                  Pago seguro
+                </div>
+                <div className="rp-trust-item">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                  MercadoPago
+                </div>
+                <div className="rp-trust-item">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  Sin suscripción
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         {/* CAROUSEL */}

@@ -8,8 +8,10 @@ import Paywall from './components/Paywall';
 import Share from './components/Share';
 import { AnalysisResponse, QuizAnswers } from './services/api';
 import { TEST_MODE, testLog } from './config';
+import { generatePdfHtml } from './services/pdfGenerator';
+import { PersonalStyleProfile } from './services/styleGenome';
 
-export type Screen = 'landing' | 'quiz' | 'analyzing' | 'result' | 'report' | 'paywall' | 'share';
+export type Screen = 'landing' | 'quiz' | 'analyzing' | 'result' | 'report' | 'paywall' | 'share' | 'processing';
 
 export interface QuizAnswer {
   questionId: string;
@@ -86,16 +88,10 @@ function App() {
   }, []);
 
   const handleViewReport = useCallback(() => {
-    // In TEST_MODE, check if payment was simulated
+    // In TEST_MODE: Execute full PDF generation flow
     if (TEST_MODE) {
-      const paymentVerified = localStorage.getItem('prysm_payment_verified');
-      const testPdf = localStorage.getItem('prysm_test_pdf_data');
-
-      if (paymentVerified === 'true' && testPdf) {
-        testLog.info('TEST MODE: Direct access to report allowed');
-        setCurrentScreen('report');
-        return;
-      }
+      setCurrentScreen('processing');
+      return;
     }
 
     // In normal mode, always go to paywall first
@@ -137,6 +133,129 @@ function App() {
       setCurrentScreen('report');
     }, 100);
   }, []);
+
+  // Generate PDF in TEST_MODE
+  const generateTestPdf = useCallback(async () => {
+    testLog.info('TEST MODE: Starting PDF generation...');
+
+    try {
+      // Get stored analysis data
+      const storedAnalysis = localStorage.getItem('prysm_analysis');
+      const storedSkinAnalysis = localStorage.getItem('prysm_skin_analysis');
+
+      if (!storedAnalysis) {
+        throw new Error('No se encontró datos de análisis. Por favor completa el quiz primero.');
+      }
+
+      const analysis = JSON.parse(storedAnalysis);
+      const skinAnalysis = storedSkinAnalysis ? JSON.parse(storedSkinAnalysis) : null;
+
+      testLog.profile('Analysis data retrieved from localStorage');
+
+      // Build PersonalStyleProfile from analysis data
+      const profile: PersonalStyleProfile = {
+        profileId: `test-${Date.now()}`,
+        createdAt: new Date().toISOString(),
+        userName: analysis.analysis?.userName || userName || 'Usuario Test',
+        userEmail: analysis.analysis?.userEmail || userEmail || 'test@test.com',
+        colorimetry: {
+          season: {
+            primary: analysis.analysis?.season?.id || 'deep_autumn',
+            name: analysis.analysis?.season?.name || 'Otoño Profundo',
+            subtitle: 'Deep Autumn · Warm · Rich',
+            temperature: 'warm',
+            depth: 'medium',
+            contrast: 'medium',
+            saturation: 'medium'
+          },
+          palette: analysis.analysis?.palette || {
+            protagonist: ['#8B4513', '#D2691E', '#CD853F'],
+            secondary: ['#556B2F', '#6B4423', '#704214'],
+            accent: ['#DAA520', '#B8860B', '#D2691E'],
+            neutral: ['#4A3728', '#5D4E37', '#3D2914'],
+            avoid: ['#ADD8E6', '#87CEEB', '#98FB98']
+          },
+          skinAnalysis: skinAnalysis || {
+            undertone: 'warm',
+            depth: 'medium',
+            saturation: 'medium',
+            contrast: 'medium',
+            confidence: 0.8
+          }
+        },
+        silhouette: {
+          type: 'hourglass',
+          name: analysis.analysis?.bodyType?.name || 'Reloj de Arena',
+          bodyShape: 'Curvilínea',
+          recommendations: {
+            favor: ['Cintura definida', 'Tejidos que marcan curva', 'Piezas que realzan proporción'],
+            avoid: ['Líneas rectas sin forma', 'Ropa oversize'],
+            necklines: ['V', 'Redondeada', 'Sweetheart'],
+            silhouettes: ['Ajustado en cintura', 'Evaseado en falda']
+          }
+        },
+        lifestyle: {
+          occasions: [
+            { type: 'office', priority: 5 },
+            { type: 'casual', priority: 4 },
+            { type: 'date', priority: 3 },
+            { type: 'travel', priority: 2 }
+          ],
+          budget: 'medium',
+          wardrobeStatus: {
+            existingPieces: ['Blusas', 'Jeans'],
+            existingColors: ['Negro', 'Blanco'],
+            gaps: ['Blazer', 'Vestido']
+          }
+        },
+        style: {
+          primary: 'classic',
+          secondary: ['elegant', 'professional'],
+          desiredFeeling: 'Segura',
+          referenceLooks: []
+        },
+        preferences: {
+          metal: 'gold',
+          styleAdjectives: ['Clásico', 'Elegante']
+        },
+        goals: {
+          primary: 'Verse bien',
+          blockers: []
+        },
+        prysmScore: analysis.analysis?.prysmScore || 8.5,
+        analysisConfidence: 0.8
+      };
+
+      testLog.profile('PersonalStyleProfile built successfully');
+
+      // Generate PDF
+      const pdfData = await generatePdfHtml(profile);
+
+      testLog.pdf({ action: 'PDF generated successfully', pageCount: pdfData.pageCount });
+
+      // Store payment verified flag
+      localStorage.setItem('prysm_payment_verified', 'true');
+      localStorage.setItem('prysm_test_pdf_data', JSON.stringify(pdfData));
+
+      // Store PDF data in state
+      setTestPdfData(pdfData);
+
+      // Transition to report
+      setCurrentScreen('report');
+
+    } catch (error) {
+      testLog.info('Error generating PDF:', error);
+      alert('Error al generar el informe. Por favor intenta de nuevo.');
+      setCurrentScreen('result');
+    }
+  }, [userName, userEmail]);
+
+  // Execute PDF generation when entering processing screen (TEST_MODE only)
+  useEffect(() => {
+    if (currentScreen === 'processing' && TEST_MODE) {
+      generateTestPdf();
+    }
+  }, [currentScreen, TEST_MODE, generateTestPdf]);
 
   useEffect(() => {
     if (currentScreen === 'landing') {
@@ -237,6 +356,101 @@ function App() {
       )}
       {currentScreen === 'share' && (
         <Share onBack={() => setCurrentScreen('report')} />
+      )}
+      {currentScreen === 'processing' && (
+        <div className="screen" style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)',
+          minHeight: '100vh'
+        }}>
+          <div style={{ textAlign: 'center', color: '#fff', maxWidth: '500px', padding: '20px' }}>
+            {/* Test Mode Badge */}
+            <div style={{
+              display: 'inline-block',
+              background: '#10b981',
+              color: '#fff',
+              padding: '8px 20px',
+              borderRadius: '20px',
+              fontSize: '11px',
+              fontWeight: '500',
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              marginBottom: '32px'
+            }}>
+              🧪 MODO PRUEBA — PAGO SIMULADO
+            </div>
+
+            <div style={{ fontSize: '64px', marginBottom: '24px' }}>
+              ⚙️
+            </div>
+            <h2 style={{
+              fontFamily: 'var(--serif)',
+              fontSize: 'clamp(24px, 4vw, 32px)',
+              marginBottom: '16px'
+            }}>
+              Generando tu informe personalizado...
+            </h2>
+            <p style={{
+              color: 'rgba(255,255,255,0.6)',
+              marginBottom: '40px',
+              fontSize: '14px'
+            }}>
+              Ejecutando motores de recomendación con tus datos reales
+            </p>
+
+            {/* Progress Steps */}
+            <div style={{
+              textAlign: 'left',
+              background: 'rgba(255,255,255,0.05)',
+              borderRadius: '12px',
+              padding: '24px'
+            }}>
+              {[
+                { step: 1, text: 'Confirmando pago simulado', status: 'done' },
+                { step: 2, text: 'Construyendo PersonalStyleProfile', status: 'done' },
+                { step: 3, text: 'Ejecutando motores de recomendación', status: 'active' },
+                { step: 4, text: 'Generando contenido personalizado', status: 'pending' },
+                { step: 5, text: 'Creando PDF de 7 páginas', status: 'pending' }
+              ].map((item) => (
+                <div
+                  key={item.step}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    marginBottom: '16px',
+                    opacity: item.status === 'pending' ? 0.4 : 1
+                  }}
+                >
+                  <div style={{
+                    width: '28px',
+                    height: '28px',
+                    borderRadius: '50%',
+                    background: item.status === 'done' ? '#10b981' : item.status === 'active' ? '#3b82f6' : 'rgba(255,255,255,0.2)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '12px',
+                    fontWeight: '600'
+                  }}>
+                    {item.status === 'done' ? '✓' : item.step}
+                  </div>
+                  <span style={{ fontSize: '14px' }}>{item.text}</span>
+                </div>
+              ))}
+            </div>
+
+            <p style={{
+              color: 'rgba(255,255,255,0.3)',
+              marginTop: '24px',
+              fontSize: '12px'
+            }}>
+              No cierres esta ventana...
+            </p>
+          </div>
+        </div>
       )}
     </div>
   );
