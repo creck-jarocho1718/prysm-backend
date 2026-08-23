@@ -1,0 +1,243 @@
+Vamos con la opción 2: DISEÑAR LA NUEVA LÓGICA DE ANÁLISIS PERSONALIZADO.
+
+Pero por ahora NO quiero que implementes nada.
+
+Quiero que primero diseñes cómo debe funcionar el nuevo "cerebro" de PRYSM utilizando la aplicación que ya existe.
+
+IMPORTANTE:
+
+NO MODIFIQUES NINGÚN ARCHIVO.
+
+NO ESCRIBAS CÓDIGO DE IMPLEMENTACIÓN.
+
+NO CAMBIES EL DISEÑO.
+
+NO CAMBIES LAS 12 PREGUNTAS.
+
+NO CAMBIES EL PDF DE 7 PÁGINAS.
+
+NO CAMBIES MERCADOPAGO.
+
+NO CAMBIES DEV_MODE.
+
+NO CAMBIES LA NAVEGACIÓN.
+
+NO ELIMINES NINGUNA FUNCIÓN EXISTENTE.
+
+Quiero conservar la aplicación tal como está visualmente.
+
+Lo que vamos a mejorar es únicamente la lógica interna que convierte la información del cliente en un análisis personalizado.
+
+### INFORMACIÓN QUE DEBES UTILIZAR
+
+Actualmente el test tiene 12 preguntas:
+
+1. Cómo quiere sentirse.
+2. Tono de piel.
+3. Tipo de silueta.
+4. Presupuesto mensual.
+5. Colores que tiene en su clóset.
+6. Prendas que tiene.
+7. Dorado o plateado.
+8. Cómo describe su estilo.
+9. Para qué ocasiones viste.
+10. Look de referencia.
+11. Tres fotografías: frontal, perfil y cuerpo completo.
+12. Nombre y email.
+
+También existe el análisis actual de fotografía mediante Canvas API que obtiene:
+
+* skinColor
+* undertone
+* depth
+* saturation
+* contrast
+* confidence
+* RGB
+* HSL
+
+Quiero que diseñes cómo combinar TODOS estos datos para construir un perfil personalizado del cliente.
+
+### QUIERO CREAR UN PERFIL COMO ESTE
+
+Diseña una estructura conceptual llamada `PersonalStyleProfile` o un nombre mejor si consideras que existe una opción superior.
+
+Debe reunir:
+
+COLORIMETRÍA
+
+* temporada
+* subtono
+* temperatura
+* profundidad
+* contraste
+* saturación
+* paleta
+* colores a evitar
+* nivel de confianza
+
+SILUETA
+
+* tipo de silueta
+* recomendaciones relacionadas
+
+ESTILO
+
+* estilo principal
+* estilos secundarios
+* look de referencia
+* cómo quiere sentirse
+
+VIDA REAL
+
+* ocasiones
+* presupuesto
+* prendas disponibles
+* colores existentes en su clóset
+
+PREFERENCIAS
+
+* metal
+* colores
+* prendas
+* estilos
+
+OBJETIVOS
+
+* qué quiere conseguir con su imagen
+
+### PERO NO QUIERO UN SIMPLE FORMULARIO
+
+El objetivo es que PRYSM CRUCE la información.
+
+Ejemplo:
+
+COLORIMETRÍA
++
+SILUETA
++
+ESTILO
++
+OBJETIVO
++
+OCASIONES
++
+PRESUPUESTO
++
+ARMARIO ACTUAL
+
+=
+
+RECOMENDACIONES PERSONALIZADAS.
+
+Dos personas con la misma temporada de color NO deberían recibir necesariamente los mismos looks.
+
+Una persona puede necesitar oficina y tener estilo profesional.
+
+Otra puede necesitar citas y preferir un estilo romántico.
+
+Otra puede viajar mucho y tener un estilo casual.
+
+La colorimetría puede ser similar, pero el contenido recomendado debe cambiar.
+
+### FOTOGRAFÍAS
+
+Analiza qué podemos obtener realmente de las tres fotografías actuales:
+
+* frontal
+* perfil
+* cuerpo completo
+
+No inventes capacidades.
+
+Quiero que distingas entre:
+
+DATOS QUE PODEMOS OBTENER CON CONFIANZA
+
+y
+
+DATOS QUE ACTUALMENTE NO PODEMOS DETERMINAR CON SUFICIENTE CONFIANZA.
+
+El análisis actual de Canvas debe conservarse y debes explicar cómo podría integrarse en el nuevo perfil.
+
+### PDF
+
+El PDF existente de 7 páginas NO se debe rediseñar.
+
+Quiero que determines qué información personalizada alimentará cada página.
+
+La estructura actual es:
+
+1. Portada.
+2. Temporada y análisis de color.
+3. Colores que favorecen y colores a evitar.
+4. Silueta, guía de estilo y materiales.
+5. Cabello y rostro.
+6. Looks por ocasión.
+7. Resumen y accesorios.
+
+Quiero mantener esa estructura visual.
+
+Lo que debe cambiar posteriormente es el CONTENIDO personalizado.
+
+Por ejemplo, la página de looks actualmente tiene contenido fijo. Quiero que diseñes cómo el nuevo motor decidiría qué looks colocar ahí basándose en las respuestas reales del cliente.
+
+### VISTA PREVIA
+
+La aplicación actualmente tiene `ResultPreview`.
+
+Quiero que diseñes qué información debe mostrar esa pantalla antes del pago y qué información debe permanecer bloqueada.
+
+NO quiero entregar las 7 páginas completas antes de pagar.
+
+La preview debe demostrar el valor del análisis sin entregar el producto completo.
+
+### DESPUÉS DEL PAGO
+
+Después de que el pago sea confirmado:
+
+PersonalStyleProfile
+↓
+Generación del contenido personalizado
+↓
+Reporte completo
+↓
+PDF personalizado de 7 páginas
+
+Cada cliente debe recibir información basada en SUS respuestas y SUS fotografías.
+
+### IMPORTANTE SOBRE sample-report.pdf
+
+`sample-report.pdf` NO debe convertirse en el reporte final de todos los usuarios.
+
+Debe utilizarse únicamente como referencia del diseño y estructura del producto.
+
+### LO QUE QUIERO QUE ME ENTREGUES AHORA
+
+No programes.
+
+Quiero solamente un documento de diseño que contenga:
+
+1. Arquitectura propuesta del nuevo cerebro.
+2. Estructura de PersonalStyleProfile.
+3. Qué información aporta cada una de las 12 preguntas.
+4. Qué información aporta cada fotografía.
+5. Cómo se combina toda la información.
+6. Cómo se determina la colorimetría.
+7. Cómo se generan las recomendaciones personalizadas.
+8. Cómo se personalizan los looks.
+9. Cómo se personaliza cabello y rostro sin inventar información.
+10. Qué datos alimentan cada una de las 7 páginas.
+11. Qué aparece antes del pago.
+12. Qué se desbloquea después del pago.
+13. Qué código actual podemos reutilizar.
+14. Qué código tendría que modificarse posteriormente.
+15. Qué información nos falta actualmente.
+16. Limitaciones y riesgos del análisis actual.
+17. Flujo completo final propuesto.
+
+Al terminar, DETENTE.
+
+No implementes absolutamente nada.
+
+Esperaré tu propuesta para revisarla antes de autorizar cualquier cambio.
