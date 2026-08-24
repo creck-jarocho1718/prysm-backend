@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PRYSM PDF Test - Mínimo</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <title>PRYSM PDF Test - Debug html2canvas</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -14,7 +15,7 @@
       min-height: 100vh;
       padding: 40px;
     }
-    .container { max-width: 600px; margin: 0 auto; }
+    .container { max-width: 1200px; margin: 0 auto; }
     h1 {
       font-size: 28px;
       margin-bottom: 8px;
@@ -46,9 +47,8 @@
     }
     .btn:hover { opacity: 0.9; }
     .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .btn-secondary {
-      background: #444;
-    }
+    .btn-secondary { background: #444; }
+    .btn-danger { background: #c00; }
 
     .log-container {
       background: #111;
@@ -66,28 +66,10 @@
     .log-warn { color: #ff0; }
     .log-success { color: #0f0; }
 
-    .stats {
+    .grid-2 {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-top: 16px;
-    }
-    .stat {
-      background: #1a1a1a;
-      padding: 12px;
-      border-radius: 8px;
-      text-align: center;
-    }
-    .stat-label { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.1em; }
-    .stat-value { font-size: 16px; font-weight: bold; color: #D4A473; margin-top: 4px; word-break: break-all; }
-
-    .pdf-preview {
-      width: 100%;
-      height: 200px;
-      border: 1px solid #333;
-      border-radius: 8px;
-      margin-top: 16px;
-      background: #fff;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
     }
 
     .info-box {
@@ -99,146 +81,167 @@
       color: #888;
     }
     .info-box strong { color: #D4A473; }
+
+    /* ELEMENTO VISIBLE PARA CAPTURAR */
+    #pdf-test {
+      background: #ffffff;
+      padding: 40px;
+      width: 595px; /* A4 width in pixels at 72dpi */
+      min-height: 842px;
+      margin: 0 auto;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .visible-element-info {
+      background: #004400;
+      border: 2px solid #0f0;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .canvas-container {
+      background: #fff;
+      border: 2px solid #333;
+      padding: 16px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+
+    .canvas-container img {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid #ccc;
+    }
+
+    .canvas-result {
+      display: inline-block;
+      margin: 10px;
+      vertical-align: top;
+    }
+
+    .canvas-result canvas {
+      border: 2px solid #D4A473;
+      max-width: 100%;
+    }
+
+    .canvas-result p {
+      text-align: center;
+      font-size: 12px;
+      color: #888;
+      margin-top: 8px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .stat {
+      background: #1a1a1a;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .stat-label { font-size: 10px; color: #888; text-transform: uppercase; }
+    .stat-value { font-size: 14px; font-weight: bold; color: #D4A473; margin-top: 4px; word-break: break-all; }
+
+    .warning-box {
+      background: #4a3000;
+      border: 2px solid #ff0;
+      padding: 16px;
+      border-radius: 8px;
+      margin: 16px 0;
+    }
+
+    .success-box {
+      background: #004400;
+      border: 2px solid #0f0;
+      padding: 16px;
+      border-radius: 8px;
+      margin: 16px 0;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>PRYSM PDF Test - Mínimo</h1>
-    <p class="subtitle">Prueba básica de html2pdf.js</p>
+    <h1>PRYSM PDF Test - Debug html2canvas</h1>
+    <p class="subtitle">PRUEBA MÍNIMA: Verificar si html2canvas captura el contenido</p>
 
-    <!-- Prueba 1: Generar HTML mínimo -->
+    <!-- Paso 1: Elemento visible -->
     <div class="test-section">
-      <h2>1. HTML Mínimo</h2>
-      <p style="color: #888; font-size: 13px; margin-bottom: 16px;">
-        Este HTML se usa para la prueba:
-      </p>
-      <div style="background: #111; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px; color: #6cf;">
-        &lt;div&gt;PRYSM PDF TEST&lt;/div&gt;<br>
-        &lt;div&gt;Este es un PDF de prueba.&lt;/div&gt;<br>
-        &lt;div&gt;123456789&lt;/div&gt;<br>
-        &lt;div&gt;[rectángulo visual]&lt;/div&gt;
+      <h2>Paso 1: Elemento HTML VISIBLE</h2>
+      <div class="visible-element-info">
+        <strong>Este elemento debe verse claramente en la página:</strong><br>
+        - Fondo blanco<br>
+        - Texto "PRYSM PDF TEST"<br>
+        - Texto "ESTE TEXTO DEBE APARECER EN EL PDF"<br>
+        - Número "123456789"
+      </div>
+
+      <!-- ELEMENTO VISIBLE PARA CAPTURAR -->
+      <div id="pdf-test">
+        <h1 style="font-size: 32px; font-weight: bold; color: #D4A473; margin-bottom: 20px; background: linear-gradient(135deg, #D4A473, #205E53); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">PRYSM PDF TEST</h1>
+        <p style="font-size: 18px; color: #333; margin-bottom: 30px;">ESTE TEXTO DEBE APARECER EN EL PDF</p>
+        <div style="font-size: 48px; font-weight: bold; color: #D4A473; margin-bottom: 40px;">123456789</div>
+        <div style="width: 200px; height: 100px; background: linear-gradient(135deg, #D4A473, #205E53); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">RECTÁNGULO</div>
       </div>
     </div>
 
-    <!-- Prueba 2: Generar PDF -->
+    <!-- Paso 2: Capturar con html2canvas -->
     <div class="test-section">
-      <h2>2. Generar PDF</h2>
-      <button class="btn" onclick="generatePDF()" id="btnGenerate">GENERAR PDF</button>
-      <button class="btn btn-secondary" onclick="downloadPDF()" id="btnDownload" disabled>DESCARGAR</button>
-      <button class="btn btn-secondary" onclick="clearLog()">LIMPIAR</button>
+      <h2>Paso 2: Capturar con html2canvas</h2>
+      <button class="btn" onclick="testHtml2Canvas()" id="btnCapture">CAPTURAR CON HTML2CANVAS</button>
+      <button class="btn btn-secondary" onclick="generatePDFFromCanvas()" id="btnGeneratePDF" disabled>GENERAR PDF DEL CANVAS</button>
+      <button class="btn btn-danger" onclick="testJsPDFDirect()" id="btnJspdfDirect">TEST JSPDF DIRECTO</button>
+      <button class="btn btn-secondary" onclick="clearLog()">LIMPIAR LOG</button>
 
-      <div class="stats" id="stats" style="display: none;">
+      <div class="stats-grid" id="stats" style="display: none;">
         <div class="stat">
-          <div class="stat-label">MIME Type</div>
-          <div class="stat-value" id="mimeType">-</div>
+          <div class="stat-label">Canvas Width</div>
+          <div class="stat-value" id="canvasWidth">-</div>
         </div>
         <div class="stat">
-          <div class="stat-label">Tamaño</div>
-          <div class="stat-value" id="blobSize">-</div>
+          <div class="stat-label">Canvas Height</div>
+          <div class="stat-value" id="canvasHeight">-</div>
         </div>
         <div class="stat">
-          <div class="stat-label">Primeros bytes</div>
-          <div class="stat-value" id="headerBytes">-</div>
+          <div class="stat-label">Image Size</div>
+          <div class="stat-value" id="imageSize">-</div>
         </div>
         <div class="stat">
-          <div class="stat-label">¿PDF válido?</div>
-          <div class="stat-value" id="isValidPDF">-</div>
+          <div class="stat-label">¿Canvas tiene contenido?</div>
+          <div class="stat-value" id="hasContent">-</div>
         </div>
+      </div>
+    </div>
+
+    <!-- Paso 3: Resultado del Canvas -->
+    <div class="test-section" id="canvasResultSection" style="display: none;">
+      <h2>Paso 3: Resultado del Canvas</h2>
+      <div class="canvas-container">
+        <div id="canvasPreview"></div>
       </div>
     </div>
 
     <!-- Log de resultados -->
     <div class="test-section">
-      <h2>3. Log de Resultados</h2>
-      <div class="log-container" id="log">Listo para generar PDF...</div>
+      <h2>Log de Resultados</h2>
+      <div class="log-container" id="log">Listo. Haz clic en "CAPTURAR CON HTML2CANVAS" para comenzar...</div>
     </div>
 
-    <!-- Preview del HTML -->
-    <div class="test-section">
-      <h2>4. Preview del HTML</h2>
-      <iframe id="htmlPreview" class="pdf-preview"></iframe>
-    </div>
-
-    <!-- Info de versiones -->
-    <div class="info-box">
-      <strong>Versiones detectadas:</strong><br>
-      html2pdf.js: <span id="html2pdfVersion">detecting...</span><br>
-      jsPDF: <span id="jspdfVersion">detecting...</span><br>
-      html2canvas: <span id="html2canvasVersion">detecting...</span>
+    <!-- Diagnóstico -->
+    <div class="test-section" id="diagnosisSection" style="display: none;">
+      <h2>Diagnóstico</h2>
+      <div id="diagnosisContent"></div>
     </div>
   </div>
 
   <script>
     // Variables globales
-    let generatedPDFBlob = null;
-
-    // HTML mínimo de prueba
-    const SIMPLE_HTML = `
-      <div style="
-        width: 100%;
-        min-height: 100vh;
-        padding: 60px 50px;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        background: #ffffff;
-        color: #1a1a1a;
-        box-sizing: border-box;
-      ">
-        <div style="
-          font-size: 32px;
-          font-weight: bold;
-          color: #D4A473;
-          margin-bottom: 20px;
-          background: linear-gradient(135deg, #D4A473, #205E53);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-        ">PRYSM PDF TEST</div>
-
-        <div style="font-size: 18px; color: #333; margin-bottom: 30px;">
-          Este es un PDF de prueba.
-        </div>
-
-        <div style="font-size: 48px; font-weight: bold; color: #D4A473; margin-bottom: 40px;">
-          123456789
-        </div>
-
-        <div style="
-          width: 200px;
-          height: 100px;
-          background: linear-gradient(135deg, #D4A473, #205E53);
-          border-radius: 12px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: white;
-          font-weight: bold;
-        ">RECTÁNGULO</div>
-      </div>
-    `;
-
-    // Detectar versiones
-    function detectVersions() {
-      try {
-        // html2pdf.js
-        const html2pdfEl = document.querySelector('script[src*="html2pdf"]');
-        if (html2pdfEl) {
-          const src = html2pdfEl.src;
-          const match = src.match(/([\d.]+)/);
-          document.getElementById('html2pdfVersion').textContent = match ? match[1] : '0.10.1 (CDN)';
-        }
-
-        // Intentar detectar jsPDF y html2canvas desde window
-        if (window.jspdf) {
-          document.getElementById('jspdfVersion').textContent = 'detectado';
-        }
-        if (window.html2canvas) {
-          document.getElementById('html2canvasVersion').textContent = 'detectado';
-        }
-
-        log('Versiones detectadas correctamente', 'info');
-      } catch (e) {
-        log('Error detectando versiones: ' + e.message, 'error');
-      }
-    }
+    let capturedCanvas = null;
+    let capturedImageData = null;
 
     // Logging
     function log(message, type = 'info') {
@@ -255,7 +258,6 @@
       line.textContent = `${prefix} ${new Date().toLocaleTimeString()} - ${message}`;
       logEl.appendChild(line);
       logEl.scrollTop = logEl.scrollHeight;
-
       console.log(`[PDF Test] ${message}`);
     }
 
@@ -263,177 +265,332 @@
       document.getElementById('log').innerHTML = 'Log limpiado.\n';
     }
 
-    // Mostrar preview del HTML
-    function showPreview() {
-      document.getElementById('htmlPreview').srcdoc = SIMPLE_HTML;
-      log('Preview del HTML actualizado', 'info');
-    }
+    // Función principal: Test html2canvas
+    async function testHtml2Canvas() {
+      log('===== TEST HTML2CANVAS =====', 'info');
+      log('Obteniendo elemento #pdf-test...', 'info');
 
-    // Generar PDF
-    async function generatePDF() {
-      log('===== INICIANDO GENERACIÓN DE PDF =====', 'info');
+      const element = document.getElementById('pdf-test');
+      if (!element) {
+        log('ERROR: No se encontró el elemento #pdf-test', 'error');
+        return;
+      }
+
+      log('Elemento encontrado. Verificando estilos...', 'info');
+
+      // Verificar estilos del elemento
+      const styles = window.getComputedStyle(element);
+      log(`  - display: ${styles.display}`, 'info');
+      log(`  - visibility: ${styles.visibility}`, 'info');
+      log(`  - opacity: ${styles.opacity}`, 'info');
+      log(`  - width: ${element.offsetWidth}px`, 'info');
+      log(`  - height: ${element.offsetHeight}px`, 'info');
+
+      // Verificar que el elemento es visible
+      const rect = element.getBoundingClientRect();
+      log(`  - getBoundingClientRect: ${rect.width}x${rect.height}`, 'info');
+      log(`  - top: ${rect.top}, left: ${rect.left}`, 'info');
+
+      if (rect.width === 0 || rect.height === 0) {
+        log('ALERTA: El elemento tiene tamaño 0. Puede no ser visible.', 'warn');
+      }
+
+      if (rect.top < 0 || rect.left < 0) {
+        log(`ALERTA: El elemento está fuera del viewport. top=${rect.top}, left=${rect.left}`, 'warn');
+      }
+
+      log('Llamando a html2canvas...', 'info');
 
       try {
-        // 1. Crear contenedor temporal
-        log('1. Creando contenedor temporal...', 'info');
-        const container = document.createElement('div');
-        container.innerHTML = SIMPLE_HTML;
-        container.style.position = 'absolute';
-        container.style.left = '-9999px';
-        container.style.top = '0';
-        container.style.width = '210mm';
-        container.style.background = '#ffffff';
-        document.body.appendChild(container);
-
-        // 2. Generar PDF con html2pdf.js
-        log('2. Llamando a html2pdf.js...', 'info');
-        log('   Opciones: format=a4, scale=2, margin=0', 'info');
-
-        const startTime = Date.now();
-
-        html2pdf()
-          .set({
-            margin: 0,
-            filename: 'prysm-test.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: {
-              scale: 2,
-              useCORS: true,
-              allowTaint: true,
-              letterRendering: true,
-              logging: true
-            },
-            jsPDF: {
-              unit: 'mm',
-              format: 'a4',
-              orientation: 'portrait'
-            },
-            pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-          })
-          .from(container)
-          .outputPdf('blob')
-          .then(blob => {
-            const duration = Date.now() - startTime;
-
-            // Limpiar contenedor
-            document.body.removeChild(container);
-
-            // Guardar blob
-            generatedPDFBlob = blob;
-
-            // 3. Mostrar información del Blob
-            log('===== PDF GENERADO =====', 'success');
-            log(`3. Blob recibido:`, 'info');
-            log(`   - size: ${blob.size} bytes`, 'info');
-            log(`   - type: ${blob.type || 'no especificado'}`, 'info');
-
-            // 4. Verificar header del PDF
-            const reader = new FileReader();
-            reader.onload = function() {
-              const bytes = new Uint8Array(reader.result.slice(0, 8));
-              const header = Array.from(bytes).map(b => String.fromCharCode(b)).join('');
-              const isPDF = header.startsWith('%PDF');
-
-              log(`   - primeros 8 bytes: "${header.replace(/\n/g, '\\n')}"`, 'info');
-              log(`   - ¿PDF válido?: ${isPDF ? 'SÍ ✅' : 'NO ❌'}`, isPDF ? 'success' : 'error');
-
-              // Actualizar stats
-              document.getElementById('stats').style.display = 'grid';
-              document.getElementById('mimeType').textContent = blob.type || 'application/pdf';
-              document.getElementById('blobSize').textContent = formatBytes(blob.size);
-              document.getElementById('headerBytes').textContent = header.replace(/\n/g, '\\n');
-              document.getElementById('isValidPDF').textContent = isPDF ? 'SÍ ✅' : 'NO ❌';
-              document.getElementById('isValidPDF').style.color = isPDF ? '#0f0' : '#f66';
-
-              if (isPDF) {
-                log(`4. Blob PDF válido - listo para descargar`, 'success');
-                document.getElementById('btnDownload').disabled = false;
-              } else {
-                log(`4. ERROR: El blob NO es un PDF válido`, 'error');
-                document.getElementById('btnDownload').disabled = true;
-              }
-            };
-            reader.readAsArrayBuffer(blob.slice(0, 100));
-
-            log(`Tiempo de generación: ${duration}ms`, 'info');
-
-          })
-          .catch(error => {
-            // Limpiar contenedor en caso de error
-            if (document.body.contains(container)) {
-              document.body.removeChild(container);
+        const canvas = await html2canvas(element, {
+          backgroundColor: '#ffffff',
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          logging: true,
+          onclone: (clonedDoc) => {
+            log('  - onclone llamado', 'info');
+            const clonedElement = clonedDoc.getElementById('pdf-test');
+            if (clonedElement) {
+              log('  - Elemento clonado encontrado en documento clonado', 'info');
+              log(`  - Cloned element display: ${window.getComputedStyle(clonedElement).display}`, 'info');
             }
+          }
+        });
 
-            log(`ERROR en html2pdf.js: ${error.message}`, 'error');
-            log(`Stack: ${error.stack}`, 'error');
+        capturedCanvas = canvas;
+        log('===== CANVAS GENERADO =====', 'success');
 
-            document.getElementById('btnDownload').disabled = true;
-          });
+        // Mostrar dimensiones del canvas
+        log(`Canvas dimensions: ${canvas.width} x ${canvas.height}`, 'info');
+
+        // Actualizar stats
+        document.getElementById('stats').style.display = 'grid';
+        document.getElementById('canvasWidth').textContent = `${canvas.width}px`;
+        document.getElementById('canvasHeight').textContent = `${canvas.height}px`;
+
+        // Convertir a imagen
+        log('Convirtiendo canvas a imagen...', 'info');
+        const imageData = canvas.toDataURL('image/png');
+        capturedImageData = imageData;
+
+        log(`Image data length: ${imageData.length} caracteres`, 'info');
+
+        // Analizar si la imagen tiene contenido
+        const imageSizeKB = Math.round(imageData.length / 1024);
+        document.getElementById('imageSize').textContent = `${imageSizeKB} KB`;
+
+        // Verificar si la imagen parece tener contenido (no es solo blanco)
+        const hasContent = checkIfImageHasContent(canvas);
+        document.getElementById('hasContent').textContent = hasContent ? 'SÍ ✅' : 'NO ❌';
+        document.getElementById('hasContent').style.color = hasContent ? '#0f0' : '#f66';
+
+        if (hasContent) {
+          log('El canvas CONTIENE contenido visible', 'success');
+        } else {
+          log('ALERTA: El canvas parece estar en BLANCO', 'error');
+        }
+
+        // Mostrar preview del canvas
+        showCanvasPreview(canvas);
+
+        // Habilitar botón de generar PDF
+        document.getElementById('btnGeneratePDF').disabled = false;
+
+        // Mostrar diagnóstico
+        showDiagnosis(hasContent, canvas.width, canvas.height);
 
       } catch (error) {
-        log(`ERROR GENERAL: ${error.message}`, 'error');
+        log(`ERROR en html2canvas: ${error.message}`, 'error');
         log(`Stack: ${error.stack}`, 'error');
       }
     }
 
-    // Descargar PDF
-    function downloadPDF() {
-      if (!generatedPDFBlob) {
-        log('ERROR: No hay PDF generado. Ejecuta "GENERAR PDF" primero.', 'error');
-        return;
-      }
-
-      log('===== DESCARGANDO PDF =====', 'info');
-      log(`Blob a descargar:`, 'info');
-      log(`   - size: ${generatedPDFBlob.size} bytes`, 'info');
-      log(`   - type: ${generatedPDFBlob.type}`, 'info');
-
+    // Verificar si la imagen tiene contenido (no es solo blanco)
+    function checkIfImageHasContent(canvas) {
       try {
-        // Crear Object URL
-        const url = URL.createObjectURL(generatedPDFBlob);
-        log(`   - Object URL creada: ${url.substring(0, 50)}...`, 'info');
+        const ctx = canvas.getContext('2d');
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
 
-        // Crear link de descarga
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'prysm-test.pdf';
-        link.style.display = 'none';
-        document.body.appendChild(link);
+        let nonWhitePixels = 0;
+        const totalPixels = data.length / 4;
 
-        log('   - Link de descarga creado', 'info');
+        // Contar píxeles que no son blancos
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i];
+          const g = data[i + 1];
+          const b = data[i + 2];
 
-        // Trigger click
-        link.click();
+          // Consideramos "no blanco" si no es mayor a 250 en todos los canales
+          if (!(r > 250 && g > 250 && b > 250)) {
+            nonWhitePixels++;
+          }
+        }
 
-        log('   - Click ejecutado', 'info');
+        const percentage = (nonWhitePixels / totalPixels) * 100;
+        log(`Píxeles no blancos: ${nonWhitePixels} de ${totalPixels} (${percentage.toFixed(2)}%)`, 'info');
 
-        // Limpiar
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-
-        log('===== PDF DESCARGADO =====', 'success');
-        log('Archivo: prysm-test.pdf', 'success');
-        log('Por favor verifica que se descargó y se puede abrir.', 'warn');
-
+        // Si más del 1% de los píxeles no son blancos, hay contenido
+        return percentage > 1;
       } catch (error) {
-        log(`ERROR al descargar: ${error.message}`, 'error');
+        log(`Error checking image content: ${error.message}`, 'warn');
+        return true; // Asumimos que hay contenido si no podemos verificar
       }
     }
 
-    // Formatear bytes
-    function formatBytes(bytes) {
-      if (bytes === 0) return '0 Bytes';
-      const k = 1024;
-      const sizes = ['Bytes', 'KB', 'MB'];
-      const i = Math.floor(Math.log(bytes) / Math.log(k));
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    // Mostrar preview del canvas
+    function showCanvasPreview(canvas) {
+      const container = document.getElementById('canvasPreview');
+      container.innerHTML = '';
+
+      // Canvas original
+      const canvasDiv = document.createElement('div');
+      canvasDiv.className = 'canvas-result';
+      canvasDiv.innerHTML = `
+        <canvas id="previewCanvas" style="max-width: 400px;"></canvas>
+        <p>Canvas Capturado<br>(${canvas.width}x${canvas.height})</p>
+      `;
+      container.appendChild(canvasDiv);
+
+      // Copiar canvas al preview
+      const previewCanvas = document.getElementById('previewCanvas');
+      previewCanvas.width = Math.min(canvas.width, 400);
+      previewCanvas.height = canvas.height * (Math.min(canvas.width, 400) / canvas.width);
+      const ctx = previewCanvas.getContext('2d');
+      ctx.drawImage(canvas, 0, 0, previewCanvas.width, previewCanvas.height);
+
+      // Imagen
+      const imgDiv = document.createElement('div');
+      imgDiv.className = 'canvas-result';
+      imgDiv.innerHTML = `
+        <img src="${canvas.toDataURL('image/png')}" alt="Canvas Image">
+        <p>Imagen PNG<br>(${Math.round(canvas.toDataURL('image/png').length / 1024)} KB)</p>
+      `;
+      container.appendChild(imgDiv);
+
+      document.getElementById('canvasResultSection').style.display = 'block';
+    }
+
+    // Mostrar diagnóstico
+    function showDiagnosis(hasContent, width, height) {
+      const section = document.getElementById('diagnosisSection');
+      const content = document.getElementById('diagnosisContent');
+
+      section.style.display = 'block';
+
+      if (hasContent) {
+        content.innerHTML = `
+          <div class="success-box">
+            <strong>✅ html2canvas ESTÁ CAPTURANDO EL CONTENIDO</strong><br><br>
+            El canvas tiene ${width}x${height} píxeles y contiene contenido visible.<br>
+            El problema NO está en html2canvas.<br><br>
+            <strong>Próximo paso:</strong> Haz clic en "GENERAR PDF DEL CANVAS" para probar jsPDF directamente.
+          </div>
+        `;
+      } else {
+        content.innerHTML = `
+          <div class="warning-box">
+            <strong>❌ html2canvas ESTÁ DEVOLVIENDO UN CANVAS EN BLANCO</strong><br><br>
+            El problema ESTÁ en html2canvas o en los estilos CSS del elemento.<br><br>
+            <strong>Verifica:</strong>
+            <ul style="margin: 10px 0; padding-left: 20px;">
+              <li>display: ¿el elemento está visible?</li>
+              <li>visibility: ¿el elemento es visible?</li>
+              <li>opacity: ¿el elemento tiene opacidad 0?</li>
+              <li>position: ¿el elemento está posicionado correctamente?</li>
+              <li>overflow: ¿hay contenido que se sale del contenedor?</li>
+              <li>width/height: ¿el elemento tiene dimensiones definidas?</li>
+              <li>¿El elemento está dentro del viewport?</li>
+            </ul>
+          </div>
+        `;
+      }
+    }
+
+    // Generar PDF directamente desde el canvas usando jsPDF
+    function generatePDFFromCanvas() {
+      if (!capturedCanvas) {
+        log('ERROR: No hay canvas capturado. Ejecuta "CAPTURAR CON HTML2CANVAS" primero.', 'error');
+        return;
+      }
+
+      log('===== GENERANDO PDF DESDE CANVAS =====', 'info');
+
+      try {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({
+          orientation: 'portrait',
+          unit: 'mm',
+          format: 'a4'
+        });
+
+        log('jsPDF creado', 'info');
+
+        // Obtener imagen del canvas
+        const imgData = capturedCanvas.toDataURL('image/png');
+        log(`Imagen del canvas: ${imgData.length} caracteres`, 'info');
+
+        // Dimensiones A4 en mm
+        const pageWidth = 210;
+        const pageHeight = 297;
+
+        // Calcular dimensiones para ajustar la imagen
+        const imgWidth = pageWidth;
+        const imgHeight = (capturedCanvas.height * pageWidth) / capturedCanvas.width;
+
+        log(`Dimensiones imagen en PDF: ${imgWidth}mm x ${imgHeight.toFixed(2)}mm`, 'info');
+
+        // Si la imagen es más alta que la página, usar múltiples páginas
+        if (imgHeight > pageHeight) {
+          log('Imagen más alta que una página, dividiendo en múltiples páginas...', 'info');
+
+          const ratio = capturedCanvas.width / pageWidth;
+          const pageHeightPx = pageHeight * ratio;
+          let yPos = 0;
+          let pageNum = 1;
+
+          while (yPos < capturedCanvas.height) {
+            if (pageNum > 1) {
+              pdf.addPage();
+            }
+
+            // Crear canvas temporal para esta página
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = capturedCanvas.width;
+            tempCanvas.height = Math.min(pageHeightPx, capturedCanvas.height - yPos);
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCtx.drawImage(capturedCanvas, 0, yPos, capturedCanvas.width, tempCanvas.height, 0, 0, capturedCanvas.width, tempCanvas.height);
+
+            const pageImg = tempCanvas.toDataURL('image/png');
+            const pageImgHeight = (tempCanvas.height * pageWidth) / capturedCanvas.width;
+
+            pdf.addImage(pageImg, 'PNG', 0, 0, pageWidth, pageImgHeight);
+            log(`Página ${pageNum} agregada (${tempCanvas.height}px de altura)`, 'info');
+
+            yPos += pageHeightPx;
+            pageNum++;
+          }
+        } else {
+          // Imagen cabe en una página
+          pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        }
+
+        log('PDF generado correctamente', 'success');
+
+        // Guardar PDF
+        pdf.save('prysm-test-from-canvas.pdf');
+        log('PDF descargado: prysm-test-from-canvas.pdf', 'success');
+
+      } catch (error) {
+        log(`ERROR generando PDF: ${error.message}`, 'error');
+        log(`Stack: ${error.stack}`, 'error');
+      }
+    }
+
+    // Test jsPDF directo sin html2canvas
+    function testJsPDFDirect() {
+      log('===== TEST JSPDF DIRECTO =====', 'info');
+      log('Creando PDF directamente sin html2canvas...', 'info');
+
+      try {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF();
+
+        // Agregar texto directamente
+        pdf.setFontSize(32);
+        pdf.setTextColor(212, 164, 115); // #D4A473
+        pdf.text('PRYSM PDF TEST', 20, 40);
+
+        pdf.setFontSize(18);
+        pdf.setTextColor(51, 51, 51); // #333
+        pdf.text('ESTE TEXTO DEBE APARECER EN EL PDF', 20, 60);
+
+        pdf.setFontSize(48);
+        pdf.setTextColor(212, 164, 115);
+        pdf.text('123456789', 20, 90);
+
+        // Agregar rectángulo
+        pdf.setFillColor(212, 164, 115);
+        pdf.rect(20, 100, 60, 30, 'F');
+
+        pdf.setTextColor(255, 255, 255);
+        pdf.setFontSize(14);
+        pdf.text('RECTÁNGULO', 35, 118);
+
+        log('PDF con texto directo generado', 'success');
+        pdf.save('prysm-test-direct.pdf');
+        log('PDF descargado: prysm-test-direct.pdf', 'success');
+
+      } catch (error) {
+        log(`ERROR: ${error.message}`, 'error');
+      }
     }
 
     // Inicialización
     document.addEventListener('DOMContentLoaded', function() {
-      detectVersions();
-      showPreview();
-      log('Página cargada. Listo para generar PDF.', 'info');
+      log('Página cargada. Listo para pruebas.', 'info');
+      log('PASO 1: Haz clic en "CAPTURAR CON HTML2CANVAS"', 'info');
     });
   </script>
 

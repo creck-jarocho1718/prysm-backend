@@ -1,0 +1,258 @@
+YA TENEMOS EL DIAGNÓSTICO DEFINITIVO.
+
+La prueba mínima SÍ genera un PDF técnicamente válido:
+
+- Blob size: 3058 bytes
+- MIME: application/pdf
+- primeros bytes: %PDF-1.3
+- PDF válido: SÍ
+- descarga: SÍ
+
+PERO EL PDF ABIERTO APARECE COMPLETAMENTE EN BLANCO.
+
+Por lo tanto:
+
+NO es un problema de descarga.
+NO es un problema de Blob.
+NO es un problema de MIME.
+NO es un problema de localStorage.
+NO es todavía un problema del PDF de PRYSM.
+
+El problema está en la CAPTURA/RENDERIZADO DEL HTML antes de convertirlo a PDF.
+
+==================================================
+NO TOCAR PRYSM TODAVÍA
+==================================================
+
+NO modifiques todavía la aplicación PRYSM.
+
+NO modifiques:
+
+- App.tsx
+- Quiz
+- PersonalStyleProfile
+- colorimetría
+- recommendationEngine
+- pdfGenerator de PRYSM
+- diseño del reporte
+- MercadoPago
+
+Primero arregla EXCLUSIVAMENTE la prueba mínima.
+
+==================================================
+OBJETIVO
+==================================================
+
+Quiero que el siguiente PDF:
+
+PRYSM PDF TEST
+
+tenga texto y elementos visibles al abrirlo.
+
+Actualmente:
+
+HTML
+↓
+html2pdf
+↓
+PDF válido
+↓
+PDF EN BLANCO
+
+Necesitamos:
+
+HTML
+↓
+RENDERIZADO CORRECTO
+↓
+html2canvas
+↓
+jsPDF
+↓
+PDF CON CONTENIDO VISIBLE
+
+==================================================
+INVESTIGAR HTML2CANVAS
+==================================================
+
+Quiero que inspecciones específicamente qué está devolviendo html2canvas.
+
+Antes de generar el PDF:
+
+1. Renderiza el HTML con html2canvas directamente.
+2. Obtén el Canvas resultante.
+3. Comprueba:
+
+canvas.width
+canvas.height
+
+4. Convierte el canvas a imagen:
+
+canvas.toDataURL('image/png')
+
+5. Comprueba que la imagen tenga contenido.
+
+Si es posible, muéstrala temporalmente en la página de prueba.
+
+Quiero comprobar:
+
+¿html2canvas está capturando el contenido?
+
+Si el Canvas también sale blanco:
+
+→ el problema está en html2canvas/renderizado del elemento.
+
+Si el Canvas contiene correctamente el texto:
+
+→ el problema está en la conversión Canvas → jsPDF/html2pdf.
+
+==================================================
+PRUEBA VISUAL
+==================================================
+
+Haz una prueba aún más sencilla.
+
+En pantalla debe existir un elemento visible:
+
+<div id="pdf-test">
+  <h1>PRYSM PDF TEST</h1>
+  <p>ESTE TEXTO DEBE APARECER EN EL PDF</p>
+  <div>123456789</div>
+</div>
+
+Haz que el usuario pueda ver ese elemento claramente en la página.
+
+Después:
+
+html2canvas(#pdf-test)
+
+y muestra el Canvas debajo.
+
+Quiero poder ver si el Canvas contiene:
+
+"PRYSM PDF TEST"
+
+y
+
+"ESTE TEXTO DEBE APARECER EN EL PDF"
+
+==================================================
+SI EL CANVAS SALE BLANCO
+==================================================
+
+Investiga:
+
+- CSS del elemento;
+- display;
+- visibility;
+- opacity;
+- position;
+- overflow;
+- z-index;
+- width;
+- height;
+- transform;
+- elementos fuera del viewport;
+- contenedor temporal;
+- estilos heredados;
+- si el elemento se elimina antes de terminar html2canvas;
+- si se está capturando un elemento con `display:none`;
+- si existe algún problema con `document.body.appendChild`;
+- si el navegador termina el renderizado antes de capturar.
+
+IMPORTANTE:
+
+No quiero que simplemente agregues:
+
+background: white
+
+o
+
+color: black
+
+sin identificar la causa.
+
+==================================================
+SI EL CANVAS TIENE CONTENIDO
+==================================================
+
+Entonces prueba directamente:
+
+Canvas
+↓
+jsPDF
+↓
+PDF
+
+sin html2pdf.js.
+
+Por ejemplo, conceptualmente:
+
+const canvas = await html2canvas(element);
+
+const image = canvas.toDataURL('image/png');
+
+const pdf = new jsPDF(...);
+
+pdf.addImage(...);
+
+pdf.save(...);
+
+No necesito que uses exactamente este código; es una prueba para aislar el problema.
+
+Si esto genera un PDF visible:
+
+ENTONCES SABEMOS QUE EL PROBLEMA ESTÁ EN HTML2PDF.
+
+==================================================
+PRUEBA FINAL DE ESTA ETAPA
+==================================================
+
+No continúes hasta conseguir:
+
+PDF abierto:
+
+--------------------------------
+PRYSM PDF TEST
+
+ESTE TEXTO DEBE APARECER EN EL PDF
+
+123456789
+--------------------------------
+
+El PDF puede seguir siendo de UNA página.
+
+Eso es suficiente.
+
+==================================================
+NO QUIERO TODAVÍA
+==================================================
+
+No integres esto en PRYSM todavía.
+
+No generes el PDF de 7 páginas todavía.
+
+No metas las fotos todavía.
+
+No metas PersonalStyleProfile todavía.
+
+Primero quiero demostrar:
+
+HTML simple
+→ Canvas visible
+→ PDF visible
+→ descarga correcta.
+
+==================================================
+AL TERMINAR
+
+Dime exactamente:
+
+1. ¿html2canvas estaba generando un Canvas blanco?
+2. ¿Qué tamaño tenía el Canvas?
+3. ¿El Canvas mostraba el texto?
+4. ¿El problema estaba en html2canvas o html2pdf/jsPDF?
+5. ¿Qué cambio hiciste?
+6. ¿El PDF descargado ahora muestra el texto?
+
+DETENTE después de conseguir el PDF mínimo visible.
