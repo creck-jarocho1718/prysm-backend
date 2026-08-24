@@ -479,10 +479,10 @@ function App() {
     setUploadedPhotos([]);
     setAnalysisResult(null);
     setTestPdfData(null);
+    // Clean up localStorage (but NOT the PDF data since we don't store it there anymore)
     localStorage.removeItem('prysm_analysis');
     localStorage.removeItem('prysm_pdf_url');
     localStorage.removeItem('prysm_payment_verified');
-    localStorage.removeItem('prysm_test_pdf_data');
     localStorage.removeItem('prysm_skin_analysis');
   }, []);
 
@@ -546,11 +546,11 @@ function App() {
 
       testLog.pdf({ action: 'PDF generated successfully', pageCount: pdfData.pageCount });
 
-      // Store payment verified flag
+      // Store payment verified flag (small data only)
       localStorage.setItem('prysm_payment_verified', 'true');
-      localStorage.setItem('prysm_test_pdf_data', JSON.stringify(pdfData));
 
-      // Store PDF data in state
+      // Store PDF data in React state ONLY (NOT in localStorage to avoid quota exceeded)
+      // The PDF contains base64 images which are too large for localStorage
       setTestPdfData(pdfData);
 
       // Transition to report

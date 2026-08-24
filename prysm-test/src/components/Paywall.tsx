@@ -155,14 +155,13 @@ export default function Paywall({ onBack, onPaymentComplete, profile }: PaywallP
 
       testLog.payment('PDF generated successfully');
 
-      // Store PDF data
-      localStorage.setItem('prysm_test_pdf_data', JSON.stringify(pdfData));
+      // Store only small payment flag in localStorage (NOT the PDF data which is too large)
       localStorage.setItem('prysm_payment_verified', 'true');
 
       setIsProcessing(false);
       setSubmitted(true);
 
-      // Notify parent component
+      // Notify parent component with PDF data (kept in React state, not localStorage)
       onPaymentComplete(pdfData);
 
       testLog.payment('Payment simulation complete - transitioning to report');
