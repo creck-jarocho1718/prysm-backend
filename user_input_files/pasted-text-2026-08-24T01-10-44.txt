@@ -1,0 +1,412 @@
+El diseño actual me gusta. NO quiero que cambies el diseño.
+
+Pero ahora encontramos un problema GRAVE de funcionamiento:
+
+EL REPORTE NO ESTÁ SIENDO PERSONALIZADO.
+
+Problemas actuales:
+
+1. El PDF se genera pero aparece completamente en blanco.
+2. La temporada prácticamente siempre aparece como la misma.
+3. Los colores recomendados prácticamente siempre son los mismos.
+4. Cambiar las respuestas del test NO cambia suficientemente el resultado.
+5. El reporte no parece estar utilizando realmente las respuestas del cliente.
+6. El análisis parece seguir dependiendo de datos fijos/demo/hardcodeados.
+
+NO quiero que sigas haciendo pequeños parches.
+
+Quiero que hagas una AUDITORÍA DEL FLUJO COMPLETO DE DATOS.
+
+==================================================
+OBJETIVO
+==================================================
+
+Quiero demostrar que:
+
+DOS CLIENTES CON RESPUESTAS DIFERENTES
+
+→ producen perfiles diferentes
+
+→ producen recomendaciones diferentes
+
+→ producen looks diferentes
+
+→ producen un PDF diferente.
+
+El diseño puede ser exactamente el mismo.
+
+LO QUE DEBE CAMBIAR ES EL CONTENIDO.
+
+==================================================
+PROBLEMA 1 — PDF EN BLANCO
+==================================================
+
+Investiga por qué el PDF generado aparece en blanco.
+
+NO asumas que es un problema visual.
+
+Revisa todo el flujo:
+
+PersonalStyleProfile
+↓
+datos del análisis
+↓
+buildPdfHtml / generatePdfHtml
+↓
+HTML generado
+↓
+generador PDF
+↓
+Blob/archivo
+↓
+Report
+↓
+Descarga
+
+Quiero que identifiques exactamente dónde se pierde el contenido.
+
+Comprueba:
+
+- ¿El HTML generado contiene texto?
+- ¿El HTML generado contiene las 7 páginas?
+- ¿Los datos tienen valores?
+- ¿El generador PDF recibe HTML válido?
+- ¿El PDF realmente contiene páginas con contenido?
+- ¿El Blob está correcto?
+- ¿El archivo descargado es realmente un PDF válido?
+- ¿La URL/blob utilizada por Report corresponde al PDF generado?
+
+NO quiero que simplemente agregues texto de prueba.
+
+Quiero corregir la causa.
+
+==================================================
+PROBLEMA 2 — SIEMPRE APARECE LA MISMA TEMPORADA
+==================================================
+
+Este problema es MUY importante.
+
+Actualmente el sistema sigue mostrando prácticamente siempre la misma temporada.
+
+Quiero que investigues exactamente:
+
+1. ¿Qué función determina la temporada?
+2. ¿Qué valores recibe?
+3. ¿De dónde obtiene undertone?
+4. ¿De dónde obtiene depth?
+5. ¿Está utilizando realmente el análisis de las fotografías?
+6. ¿Está utilizando datos demo?
+7. ¿Existe algún valor hardcodeado?
+8. ¿Existe un fallback que esté forzando una temporada?
+9. ¿El frontend está sobrescribiendo el resultado del backend?
+10. ¿`seasonMapper` está recibiendo siempre los mismos valores?
+
+Quiero que muestres el flujo real:
+
+FOTO
+→ skinAnalysis
+→ undertone
+→ depth
+→ seasonMapper
+→ season
+
+y me digas qué valores está recibiendo realmente.
+
+NO cambies la temporada artificialmente para que varíe.
+
+Debe variar solamente cuando los datos reales indiquen que corresponde.
+
+==================================================
+PROBLEMA 3 — SIEMPRE LOS MISMOS COLORES
+==================================================
+
+Quiero investigar por qué la paleta siempre es prácticamente la misma.
+
+La paleta debe depender de la colorimetría REAL.
+
+Pero también quiero que el sistema utilice el test para decidir cómo aplicar esos colores.
+
+Debe existir una separación clara:
+
+COLORIMETRÍA
+→ determina qué colores favorecen.
+
+TEST
+→ determina cómo utilizar esos colores.
+
+Por ejemplo:
+
+Cliente A:
+- temporada X
+- estilo profesional
+- oficina
+- sofisticada
+- presupuesto bajo
+
+Cliente B:
+- misma temporada X
+- estilo romántico
+- citas
+- natural
+- presupuesto alto
+
+Pueden compartir la misma paleta base de colorimetría.
+
+PERO NO deben recibir el mismo reporte.
+
+Deben cambiar:
+
+- combinaciones;
+- prendas;
+- looks;
+- prioridades;
+- accesorios;
+- compras;
+- ocasiones;
+- aplicación de la paleta.
+
+==================================================
+PROBLEMA 4 — EL TEST NO ESTÁ SIENDO UTILIZADO
+==================================================
+
+Quiero que traces cada respuesta desde que el usuario la selecciona hasta que aparece en el resultado.
+
+Haz una tabla:
+
+Pregunta
+↓
+Estado `answers`
+↓
+PersonalStyleProfile
+↓
+RecommendationEngine
+↓
+PDF
+↓
+Resultado visible
+
+Para cada pregunta Q1-Q10 indica:
+
+- valor real recibido;
+- campo donde se guarda;
+- función que lo consume;
+- recomendación que modifica;
+- página del PDF donde aparece.
+
+Si alguna respuesta se guarda pero no llega al resultado, quiero que lo señales.
+
+NO quiero campos "conectados" solamente para que aparezcan en consola.
+
+Quiero que tengan efecto real.
+
+==================================================
+PRUEBA DEFINITIVA
+==================================================
+
+Quiero que hagas DOS perfiles de prueba completamente diferentes.
+
+PERFIL A:
+
+Q1:
+sofisticada + segura
+
+Q2:
+tono de piel claro
+
+Q3:
+reloj de arena
+
+Q4:
+menos de 1000
+
+Q5:
+negro + blanco + beige
+
+Q6:
+jeans + blusas + blazer
+
+Q7:
+dorado
+
+Q8:
+profesional + clásico
+
+Q9:
+oficina + coworking
+
+Q10:
+arquitectónica
+
+PERFIL B:
+
+Q1:
+natural + serena
+
+Q2:
+tono de piel morena
+
+Q3:
+rectángulo
+
+Q4:
+más de 10000
+
+Q5:
+rosa + verde + morado
+
+Q6:
+vestidos + faldas + accesorios
+
+Q7:
+plateado
+
+Q8:
+romántico + bohemio
+
+Q9:
+citas + fiestas + viajes
+
+Q10:
+romántica
+
+IMPORTANTE:
+
+NO quiero que simplemente cambie el texto "perfil A/perfil B".
+
+Quiero que los datos produzcan cambios reales.
+
+Compara:
+
+- temporada;
+- paleta;
+- colores recomendados;
+- silueta;
+- prendas;
+- compras;
+- presupuesto;
+- ocasiones;
+- estilo;
+- accesorios;
+- looks;
+- recomendaciones.
+
+Si alguna cosa NO debe cambiar porque depende exclusivamente de la colorimetría, explícalo.
+
+==================================================
+REGLA DE COLORIMETRÍA
+==================================================
+
+NO fuerces temporadas diferentes solamente para demostrar que funciona.
+
+Si ambos perfiles tienen una colorimetría que produce la misma temporada, está bien.
+
+Lo que quiero comprobar es que el resto del reporte sí cambie.
+
+Pero si el análisis fotográfico de dos personas realmente produce diferentes:
+
+undertone/depth
+
+entonces la temporada debe cambiar de acuerdo con esos datos.
+
+==================================================
+REGLA CONTRA DATOS FIJOS
+==================================================
+
+Busca cualquier:
+
+hardcoded
+
+fallback
+
+default
+
+demo
+
+sample
+
+mock
+
+static
+
+"Segura"
+
+"hourglass"
+
+"medium"
+
+"gold"
+
+"classic"
+
+"office"
+
+"autumn"
+
+o cualquier valor predeterminado que pueda estar sobrescribiendo las respuestas reales.
+
+NO elimines fallbacks legítimos sin analizar primero para qué existen.
+
+Pero quiero saber exactamente cuáles están afectando el resultado.
+
+==================================================
+BACKEND
+==================================================
+
+También sigue pendiente:
+
+localhost:3001/api/analyze
+ERR_CONNECTION_REFUSED
+
+NO quiero que esto se oculte con datos demo.
+
+Si TEST_MODE no puede conectarse al backend, indícalo claramente.
+
+Quiero saber si actualmente estamos probando:
+
+A) análisis real del backend
+
+o
+
+B) análisis client-side/fallback.
+
+No mezcles ambos sin indicarlo.
+
+==================================================
+NO MODIFIQUES TODAVÍA
+==================================================
+
+Primero haz esta auditoría.
+
+NO cambies:
+
+- diseño;
+- colores;
+- tipografías;
+- estructura;
+- 12 preguntas;
+- PDF visual;
+- MercadoPago;
+- navegación.
+
+NO implementes correcciones todavía.
+
+==================================================
+ENTREGA
+==================================================
+
+Quiero que me entregues:
+
+1. Causa exacta del PDF blanco.
+2. Causa exacta de la temporada repetida.
+3. Causa exacta de la paleta repetida.
+4. Dónde se pierden las respuestas del test.
+5. Qué datos están hardcodeados.
+6. Qué datos están llegando realmente al PersonalStyleProfile.
+7. Qué datos están llegando al RecommendationEngine.
+8. Qué datos llegan al generador PDF.
+9. Comparación Perfil A vs Perfil B.
+10. Lista exacta de archivos y funciones que tendrían que corregirse.
+
+Y DETENTE.
+
+NO IMPLEMENTES NADA HASTA QUE YO APRUEBE EL DIAGNÓSTICO.
