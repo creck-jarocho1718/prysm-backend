@@ -1,0 +1,305 @@
+EL PDF SIGUE SIN CREARSE.
+
+Vamos a detener temporalmente todos los demás cambios.
+
+NO quiero que modifiques:
+
+- colorimetría
+- temporada
+- recommendationEngine
+- respuestas del test
+- diseño
+- las 12 preguntas
+- MercadoPago
+- Report visualmente
+
+PRIMERO NECESITO QUE EL PDF FUNCIONE.
+
+==================================================
+OBJETIVO ÚNICO
+==================================================
+
+Quiero que al terminar el flujo TEST_MODE:
+
+Quiz
+→ Fotos
+→ Analyzing
+→ Preview
+→ Simular pago
+→ Report
+→ DESCARGAR PDF
+
+se genere un ARCHIVO PDF REAL que pueda descargar.
+
+No HTML.
+No una vista previa HTML.
+No sample-report.pdf.
+No "Imprimir → Guardar como PDF".
+
+Un archivo real:
+
+`PRYSM-Reporte-[nombre].pdf`
+
+==================================================
+PROBLEMA CONOCIDO
+==================================================
+
+Anteriormente apareció:
+
+DOMException:
+Failed to execute 'setItem' on 'Storage':
+Setting the value of 'prysm_test_pdf_data' exceeded the quota.
+
+Y antes apareció:
+
+[TEST MODE] PDF HTML generated
+pageCount: 7
+hasUserPhoto: true
+
+[TEST MODE] PDF generated successfully
+pageCount: 7
+
+Por lo tanto, NO quiero que vuelvas a guardar el PDF completo en:
+
+localStorage
+
+No guardes el PDF ni el HTML completo en localStorage.
+
+==================================================
+PRIMER PASO — AUDITORÍA
+==================================================
+
+Antes de cambiar código, localiza exactamente:
+
+1. Dónde se genera el PDF.
+2. Qué función lo genera.
+3. Qué devuelve esa función.
+4. Dónde se guarda el resultado.
+5. Dónde se crea `prysm_test_pdf_data`.
+6. Qué tamaño tiene ese dato.
+7. Dónde Report intenta obtenerlo.
+8. Dónde está implementado actualmente "DESCARGAR PDF".
+
+Quiero que me muestres el flujo actual:
+
+generatePdf()
+↓
+?
+↓
+?
+↓
+Report
+↓
+Download
+
+Y dime exactamente dónde se rompe.
+
+==================================================
+SEGUNDO PASO — GENERACIÓN REAL
+==================================================
+
+Si el navegador está generando el PDF, utiliza:
+
+HTML
+↓
+html2canvas / html2pdf / mecanismo actual
+↓
+Blob PDF
+↓
+Object URL
+↓
+Download
+
+El resultado debe ser un Blob/File PDF real.
+
+NO conviertas el PDF completo a una cadena para localStorage.
+
+NO uses base64 del PDF en localStorage.
+
+Si el generador actual ya devuelve un Blob, reutilízalo.
+
+==================================================
+TERCER PASO — SI HTML2PDF ESTÁ FALLANDO
+==================================================
+
+Si descubres que html2pdf.js está generando un PDF inválido, blanco o incompatible:
+
+NO sigas intentando parcharlo indefinidamente.
+
+Evalúa la alternativa de generar el PDF en backend con Playwright/Puppeteer u otro método que YA exista en el proyecto.
+
+Pero antes de agregar una nueva dependencia, revisa qué herramientas de PDF ya existen.
+
+==================================================
+FOTOGRAFÍAS
+==================================================
+
+La foto del usuario NO debe almacenarse en localStorage como parte del PDF.
+
+La foto sí debe aparecer en el PDF.
+
+Si la imagen está en base64:
+
+- úsala durante la generación;
+- espera a que la imagen cargue;
+- genera el PDF;
+- libera el objeto después.
+
+No guardes el PDF completo en localStorage.
+
+==================================================
+REPORT
+==================================================
+
+Report debe recibir una referencia al PDF generado.
+
+Puede ser:
+
+- Blob
+- Object URL
+- URL del backend
+
+pero NO un PDF gigante almacenado en localStorage.
+
+El botón:
+
+"DESCARGAR PDF"
+
+debe ejecutar directamente la descarga del archivo.
+
+Ejemplo conceptual:
+
+`<a download="PRYSM-Reporte.pdf">`
+
+o equivalente.
+
+==================================================
+PRUEBA MÍNIMA
+==================================================
+
+Antes de integrar todo el reporte personalizado, haz una prueba mínima.
+
+Genera un PDF de 7 páginas usando EL MISMO TEMPLATE ACTUAL.
+
+El PDF debe contener solamente:
+
+Página 1:
+PRYSM
+Nombre de prueba
+
+Página 2:
+Análisis de color
+
+Página 3:
+Paleta
+
+Página 4:
+Silueta
+
+Página 5:
+Cabello
+
+Página 6:
+Looks
+
+Página 7:
+Resumen
+
+Si este PDF mínimo NO se descarga correctamente, NO avances.
+
+Primero arregla la infraestructura de PDF.
+
+==================================================
+PRUEBA CON FOTO
+==================================================
+
+Después de que el PDF mínimo funcione:
+
+agrega la fotografía real del usuario en la portada.
+
+Comprueba que el PDF sigue descargándose correctamente.
+
+==================================================
+PRUEBA FINAL
+==================================================
+
+Después:
+
+1. Completa el test.
+2. Sube las 3 fotos.
+3. Simula pago.
+4. Genera reporte.
+5. Presiona DESCARGAR PDF.
+
+Debe aparecer un archivo:
+
+`.pdf`
+
+Comprueba:
+
+- que el archivo existe;
+- que el MIME type es `application/pdf`;
+- que el archivo puede abrirse;
+- que tiene 7 páginas;
+- que no está vacío;
+- que contiene texto;
+- que contiene la fotografía.
+
+==================================================
+NO ME DES POR BUENO
+==================================================
+
+NO acepto como solución:
+
+"Se generaron 7 páginas"
+
+si el archivo no puede descargarse.
+
+NO acepto:
+
+"PDF HTML generado"
+
+si no existe un PDF real.
+
+NO acepto:
+
+"Puedes imprimirlo como PDF".
+
+NO acepto:
+
+"Usamos sample-report.pdf".
+
+Quiero un PDF real generado por PRYSM.
+
+==================================================
+MUY IMPORTANTE
+==================================================
+
+NO TOQUES TODAVÍA:
+
+- temporada
+- colorimetría
+- recommendationEngine
+- test
+- diseño
+- MercadoPago
+
+El único objetivo de esta tarea es:
+
+GENERAR → ENTREGAR → DESCARGAR → ABRIR
+
+un PDF real de 7 páginas.
+
+Cuando lo hayas conseguido, dime:
+
+1. Qué estaba fallando.
+2. Qué archivo/función lo causaba.
+3. Qué método utilizas ahora para generar el PDF.
+4. Cómo se entrega a Report.
+5. Cómo se descarga.
+6. Tamaño del PDF.
+7. Número de páginas.
+8. Confirmación de que se puede abrir.
+9. Confirmación de que la foto aparece.
+
+NO continúes con otras mejoras hasta que esto funcione.
