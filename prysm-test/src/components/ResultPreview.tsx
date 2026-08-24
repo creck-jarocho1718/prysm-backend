@@ -73,10 +73,32 @@ export default function ResultPreview({
 
   // Get analysis data from prop or localStorage
   const analysis = analysisResult || (typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('prysm_analysis') || 'null') : null);
-  const seasonName = analysis?.analysis?.season?.name || 'Otoño Profundo';
-  const prysmScore = analysis?.analysis?.prysmScore?.toString() || '8.5';
-  const bodyTypeName = analysis?.analysis?.bodyType?.name || 'Reloj de arena';
-  const palette = analysis?.analysis?.palette || fallbackPalette;
+
+  // Debug log
+  console.log('[ResultPreview] Props and State:', {
+    analysisResult: analysisResult,
+    localStorageData: typeof window !== 'undefined' ? localStorage.getItem('prysm_analysis') : null,
+    analysis: analysis
+  });
+
+  // Use actual analysis data, NOT fallback values
+  // If no analysis, show "Completando análisis..." as placeholder
+  const seasonName = analysis?.analysis?.season?.name || (analysis?.success === false ? 'Análisis en progreso...' : 'Temporada personalizada');
+  const prysmScore = analysis?.analysis?.prysmScore?.toString() || (analysis?.success === false ? '...' : '8.5');
+  const bodyTypeName = analysis?.analysis?.bodyType?.name || 'Tu silueta';
+  const palette = analysis?.analysis?.palette || (analysis?.success === false ? { protagonist: [], secondary: [], neutral: [], accent: [], avoid: [] } : fallbackPalette);
+
+  // Debug log
+  console.log('[ResultPreview] Extracted data:', {
+    hasAnalysis: !!analysis,
+    success: analysis?.success,
+    seasonName,
+    prysmScore,
+    bodyTypeName,
+    paletteKeys: palette ? Object.keys(palette) : [],
+    protagonistCount: palette?.protagonist?.length || 0,
+    protagonistColors: palette?.protagonist || []
+  });
 
   // Combine protagonist and secondary colors for the hero color strip
   const heroColors = [

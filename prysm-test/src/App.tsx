@@ -467,6 +467,9 @@ function App() {
   }, []);
 
   const handleAnalysisComplete = useCallback((result: AnalysisResponse) => {
+    console.log('[App] handleAnalysisComplete received:', JSON.stringify(result, null, 2));
+    console.log('[App] analysis.season:', result?.analysis?.season);
+    console.log('[App] analysis.palette:', result?.analysis?.palette);
     setAnalysisResult(result);
     setCurrentScreen('result');
   }, []);
