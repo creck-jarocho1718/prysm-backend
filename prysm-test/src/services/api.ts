@@ -64,8 +64,10 @@ export interface AnalysisResponse {
     palette: PaletteColors;
     bodyType: BodyTypeInfo;
     prysmScore: number;
-    analysisMethod: 'photo_analysis' | 'quiz_answers';
+    analysisMethod: 'photo_analysis' | 'quiz_answers' | 'client_side_photo_analysis' | 'client_side_no_photos';
+    skinAnalysisData?: SkinAnalysisData;
   };
+  analysisNote?: string;
   error?: string;
   processingTime?: string;
 }

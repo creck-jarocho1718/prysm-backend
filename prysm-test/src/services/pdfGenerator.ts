@@ -3,9 +3,10 @@
  * Generates personalized PDF using profile data
  */
 
-import { PersonalStyleProfile } from './styleGenome';
+import { PersonalStyleProfile, BudgetLevel } from './styleGenome';
 import { generateCompleteRecommendations, PersonalizedLook, HairRecommendation, FabricRecommendation } from './recommendationEngine';
 import { testLog } from '../config';
+import { TEST_MODE } from '../config';
 
 // ============================================================================
 // PDF Generator Function
@@ -17,8 +18,246 @@ export interface GeneratedPdfData {
   hair: HairRecommendation;
   fabrics: FabricRecommendation[];
   recommendations: any;
+  closetAnalysis: ClosetAnalysis;
+  purchasePriorities: PurchasePriority[];
   pdfHtml: string;
   pageCount: number;
+}
+
+/**
+ * Closet color analysis based on Q5 + colorimetry
+ */
+export interface ClosetAnalysis {
+  colorsThatWork: Array<{ color: string; hex: string; reason: string }>;
+  colorsToUseAway: Array<{ color: string; hex: string; reason: string }>;
+  colorsNotToPrioritize: Array<{ color: string; hex: string; reason: string }>;
+  combinations: string[];
+}
+
+/**
+ * Purchase priority based on budget Q4
+ */
+export interface PurchasePriority {
+  priority: number;
+  category: string;
+  description: string;
+  reason: string;
+  budgetNote: string;
+}
+
+/**
+ * Analyze closet colors based on user's existing colors (Q5) + colorimetry
+ */
+export function analyzeClosetColors(
+  existingColors: string[],
+  palette: PersonalStyleProfile['colorimetry']['palette'],
+  seasonTemperature: string
+): ClosetAnalysis {
+  // Map color names to hex
+  const COLOR_HEX: Record<string, string> = {
+    'negro': '#1a1a1a',
+    'blanco': '#ffffff',
+    'gris': '#808080',
+    'azul': '#1e3a5f',
+    'azul claro': '#87ceeb',
+    'cafe': '#6b4423',
+    'beige': '#d4a574',
+    'rojo': '#c0392b',
+    'verde': '#2d5a27',
+    'morado': '#6b3fa0',
+    'rosa': '#ffb6c1',
+    'amarillo': '#f4d03f',
+    'naranja': '#e67e22',
+  };
+
+  const protagonistHex = palette.protagonist || [];
+  const avoidHex = palette.avoid || [];
+  const isWarm = seasonTemperature === 'warm';
+
+  const colorsThatWork: ClosetAnalysis['colorsThatWork'] = [];
+  const colorsToUseAway: ClosetAnalysis['colorsToUseAway'] = [];
+  const colorsNotToPrioritize: ClosetAnalysis['colorsNotToPrioritize'] = [];
+
+  // Analyze each existing color
+  existingColors.forEach(color => {
+    const colorLower = color.toLowerCase();
+    const hex = COLOR_HEX[colorLower] || '#888888';
+
+    // Check if this color is in our protagonist palette (or similar)
+    const matchesProtagonist = protagonistHex.some(pHex => {
+      // Simple color distance check would be better, but for now use simple matching
+      return pHex.toLowerCase() === hex.toLowerCase() ||
+        (isWarm && (colorLower.includes('cafe') || colorLower.includes('beige') || colorLower.includes('rojo'))) ||
+        (!isWarm && (colorLower.includes('azul') || colorLower.includes('gris') || colorLower.includes('negro')));
+    });
+
+    // Check if in avoid list
+    const isAvoid = avoidHex.some(aHex => aHex.toLowerCase() === hex.toLowerCase());
+
+    if (matchesProtagonist || (isWarm && (colorLower.includes('cafe') || colorLower.includes('beige'))) || (!isWarm && (colorLower.includes('azul') || colorLower.includes('gris')))) {
+      colorsThatWork.push({
+        color: color,
+        hex: hex,
+        reason: isWarm
+          ? 'Tono cálido que complementa tu subtono dorado'
+          : 'Tono frío que va bien con tu subtono rosa/azul'
+      });
+    } else if (isAvoid) {
+      colorsToUseAway.push({
+        color: color,
+        hex: hex,
+        reason: 'Este color tiene subtono opuesto a tu paleta y puede apagar tu rostro'
+      });
+    } else {
+      // Neutral colors that are neither great nor terrible
+      if (colorLower.includes('blanco') || colorLower.includes('negro') || colorLower.includes('gris')) {
+        colorsThatWork.push({
+          color: color,
+          hex: hex,
+          reason: 'Color neutral que puedes usar, especialmente en prendas básicas'
+        });
+      } else {
+        colorsNotToPrioritize.push({
+          color: color,
+          hex: hex,
+          reason: 'Este color no está en tu paleta óptima, pero puede funcionar en accesorios'
+        });
+      }
+    }
+  });
+
+  // Generate combination suggestions
+  const combinations: string[] = [];
+  if (colorsThatWork.length >= 2) {
+    const warmColors = colorsThatWork.filter(c => c.reason.includes('cálido'));
+    const coolColors = colorsThatWork.filter(c => c.reason.includes('frío'));
+    const neutralColors = colorsThatWork.filter(c => c.reason.includes('neutral'));
+
+    if (warmColors.length > 0 && neutralColors.length > 0) {
+      combinations.push(`${warmColors[0].color} + ${neutralColors[0].color} = look cohesivo`);
+    }
+    if (coolColors.length > 0 && neutralColors.length > 0) {
+      combinations.push(`${coolColors[0].color} + ${neutralColors[0].color} = combinación elegante`);
+    }
+    if (colorsThatWork.length >= 3) {
+      combinations.push('Combina 2-3 colores de los que te favorecen para máxima armonía');
+    }
+  }
+
+  return {
+    colorsThatWork,
+    colorsToUseAway,
+    colorsNotToPrioritize,
+    combinations
+  };
+}
+
+/**
+ * Generate purchase priorities based on budget Q4
+ */
+export function generatePurchasePriorities(
+  budget: BudgetLevel,
+  existingPieces: string[],
+  silhouetteType: string,
+  stylePrimary: string,
+  occasions: Array<{ type: string; priority: number }>
+): PurchasePriority[] {
+  const priorities: PurchasePriority[] = [];
+  let priority = 1;
+
+  // Base purchase recommendations by budget
+  const BUDGET_GUIDANCE: Record<BudgetLevel, { quality: string; note: string }> = {
+    low: {
+      quality: 'priorizar piezas básicas versátiles y combinables',
+      note: 'Busca fundamentales bien cortados. Menos es más.'
+    },
+    medium: {
+      quality: 'incorporar piezas de buena calidad en categorías clave',
+      note: 'Equilibra basics accesibles con alguna inversión inteligente.'
+    },
+    high: {
+      quality: 'priorizar calidad sobre cantidad, invertir en piezas de impacto',
+      note: 'Fewer, better pieces. Busca materiales premium y cortes impecables.'
+    },
+    luxury: {
+      quality: 'piezas de diseñador que realmente aporten valor a tu guardarropa',
+      note: 'Invierte en clásicos atemporales. El precio refleja calidad y exclusividad.'
+    }
+  };
+
+  const guidance = BUDGET_GUIDANCE[budget];
+
+  // Top occasion to address
+  const topOccasion = occasions.sort((a, b) => b.priority - a.priority)[0];
+
+  // Silhouette-based gaps
+  const silhouetteGaps: Record<string, string[]> = {
+    hourglass: ['Blazer estructurado', 'Vestido elegante', 'Pantalón de calidad'],
+    pear: ['Top con escote', 'Blusa de seda', 'Prenda definida en cintura'],
+    inverted_triangle: ['Falda con volumen', 'Pantalón wide leg', 'Prenda que añada caderas'],
+    rectangle: ['Cinturón o pieza que defina cintura', 'Prenda con drapeado', 'Capa que añada forma'],
+    oval: ['Blazer largo', 'Cardigan estruturado', 'Pantalón con tiro alto'],
+    diamond: ['Prenda que equilibre', 'Top con detalle en hombros', 'Falda evasée'],
+    apple: ['A-line que fluye desde pecho', 'Empire', 'Pantalón con cintura baja']
+  };
+
+  const gaps = silhouetteGaps[silhouetteType] || silhouetteGaps.hourglass;
+
+  // Style-based additions
+  const styleAdditions: Record<string, string[]> = {
+    classic: ['Camisa blanca premium', 'Pantalón de vestir', 'Loafer de cuero'],
+    romantic: ['Blusa con detalles', 'Falda fluida', 'Zapato delicado'],
+    boho: ['Vestido largo', 'Accesorios artesanales', 'Capa o kimono'],
+    glamorous: ['Vestido de fiesta', 'Tacones statement', 'Bolso estructurado'],
+    minimalist: ['Piezas básicas impecables', 'Paleta monocromática', 'Corte limpio'],
+    casual: ['Denim de calidad', 'Sneakers versátil', 'T-shirt premium']
+  };
+
+  const additions = styleAdditions[stylePrimary] || styleAdditions.classic;
+
+  // Check existing pieces to avoid recommending duplicates
+  const existingLower = existingPieces.map(p => p.toLowerCase());
+
+  const addPriority = (category: string, description: string, reason: string) => {
+    // Skip if we already have something similar
+    if (existingLower.some(e => category.toLowerCase().includes(e) || e.includes(category.toLowerCase()))) {
+      return;
+    }
+
+    priorities.push({
+      priority: priority++,
+      category,
+      description,
+      reason,
+      budgetNote: guidance.note
+    });
+  };
+
+  // Add silhouette-critical pieces first
+  gaps.slice(0, 2).forEach(gap => {
+    addPriority('Silueta', gap, `Essential para definir tu silueta ${silhouetteType}`);
+  });
+
+  // Add occasion-based pieces
+  if (topOccasion) {
+    const occasionPieces: Record<string, string[]> = {
+      office: ['Blazer profesional', 'Camisa de calidad', 'Pantalón de vestir'],
+      date: ['Top elegante', 'Accesorio especial', 'Zapato especial'],
+      event: ['Prenda statement', 'Complemento de impacto', 'Look completo'],
+      casual: ['Denim de calidad', 'Basic bien cortado', 'Sneakers versátil'],
+      travel: ['Prenda cómoda y elegante', 'Capa versátil', 'Zapato caminata']
+    };
+    const occPieces = occasionPieces[topOccasion.type] || occasionPieces.casual;
+    addPriority('Ocasión Principal', occPieces[0], `Para tu prioridad: ${topOccasion.type}`);
+  }
+
+  // Add style-based pieces
+  addPriority('Estilo', additions[0], `Define tu estilo ${stylePrimary}`);
+
+  // Add versatile pieces
+  addPriority('Versatilidad', 'Pieza que funcione en múltiples ocasiones', 'Maximiza tu inversión');
+
+  return priorities.slice(0, 5); // Return max 5 priorities
 }
 
 /**
@@ -31,6 +270,22 @@ export async function generatePdfHtml(profile: PersonalStyleProfile): Promise<Ge
   const recommendations = generateCompleteRecommendations(profile);
   const { looks, hair, fabrics } = recommendations;
 
+  // Analyze closet based on Q5 answers + colorimetry
+  const closetAnalysis = analyzeClosetColors(
+    profile.lifestyle.wardrobeStatus?.existingColors || [],
+    profile.colorimetry.palette,
+    profile.colorimetry.season.temperature
+  );
+
+  // Generate purchase priorities based on Q4 budget
+  const purchasePriorities = generatePurchasePriorities(
+    profile.lifestyle.budget,
+    profile.lifestyle.wardrobeStatus?.existingPieces || [],
+    profile.silhouette.type,
+    profile.style.primary,
+    profile.lifestyle.occasions
+  );
+
   // Build complete data for PDF
   const pdfData: GeneratedPdfData = {
     profile,
@@ -38,12 +293,14 @@ export async function generatePdfHtml(profile: PersonalStyleProfile): Promise<Ge
     hair,
     fabrics,
     recommendations,
+    closetAnalysis,
+    purchasePriorities,
     pdfHtml: '',
-    pageCount: 7,
+    pageCount: 8, // Now 8 pages to include closet analysis
   };
 
   // Generate HTML with user photos
-  const html = buildPdfHtml(profile, looks, hair, fabrics);
+  const html = buildPdfHtml(profile, looks, hair, fabrics, closetAnalysis, purchasePriorities);
   pdfData.pdfHtml = html;
 
   testLog.pdf({
@@ -52,6 +309,8 @@ export async function generatePdfHtml(profile: PersonalStyleProfile): Promise<Ge
     looksCount: looks.length,
     pageCount: pdfData.pageCount,
     hasUserPhoto: !!profile.userPhotos?.length,
+    closetColors: closetAnalysis.colorsThatWork.length,
+    purchasePriorities: purchasePriorities.length,
   });
 
   return pdfData;
@@ -65,7 +324,9 @@ function buildPdfHtml(
   profile: PersonalStyleProfile,
   looks: PersonalizedLook[],
   hair: HairRecommendation,
-  fabrics: FabricRecommendation[]
+  fabrics: FabricRecommendation[],
+  closetAnalysis: ClosetAnalysis,
+  purchasePriorities: PurchasePriority[]
 ): string {
   const { userName, colorimetry, silhouette, lifestyle, userPhotos } = profile;
 
@@ -80,6 +341,15 @@ function buildPdfHtml(
   // Get user's first photo or empty string
   const userPhoto = userPhotos && userPhotos.length > 0 ? userPhotos[0] : '';
   const hasPhoto = !!userPhoto;
+
+  // Budget label
+  const BUDGET_LABELS: Record<string, string> = {
+    low: 'Presupuesto Bajo',
+    medium: 'Presupuesto Medio',
+    high: 'Presupuesto Alto',
+    luxury: 'Lujo'
+  };
+  const budgetLabel = BUDGET_LABELS[profile.lifestyle.budget] || 'Presupuesto Medio';
 
   return `<!DOCTYPE html>
 <html lang="es">
@@ -198,7 +468,27 @@ function buildPdfHtml(
     .outfit-color-row { display: flex; gap: 6px; }
     .outfit-color-dot { width: 20px; height: 20px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); }
 
-    /* Page 7: Close */
+    /* Page 7: Closet Analysis - NEW */
+    .closet-page { padding: 40px 50px; }
+    .closet-title { font-size: 28pt; margin-bottom: 30px; }
+    .closet-title em { font-style: italic; color: #d4a473; }
+    .closet-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .closet-card { padding: 20px; border-radius: 12px; }
+    .closet-card.work { background: #f0f9f4; border: 1px solid #c6e6d0; }
+    .closet-card.away { background: #fef5f5; border: 1px solid #f5c6c6; }
+    .closet-card.avoid { background: #fff8e6; border: 1px solid #f5e6c6; }
+    .closet-card-title { font-size: 12pt; font-weight: 600; margin-bottom: 10px; }
+    .closet-card-title.work { color: #2d7a4f; }
+    .closet-card-title.away { color: #c0392b; }
+    .closet-card-title.avoid { color: #b07d2d; }
+    .closet-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .closet-dot { width: 24px; height: 24px; border-radius: 6px; }
+    .closet-item-name { font-size: 10pt; font-weight: 500; flex: 1; }
+    .closet-item-reason { font-size: 8pt; opacity: 0.7; }
+    .combination-item { font-size: 10pt; padding: 10px 0; border-bottom: 1px solid #eee; }
+    .combination-item:last-child { border-bottom: none; }
+
+    /* Page 8: Close */
     .close-page { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
     .close-title { font-size: 24pt; margin-bottom: 25px; }
     .summary-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
@@ -212,11 +502,24 @@ function buildPdfHtml(
     .brand-tag { font-size: 9pt; letter-spacing: 0.2em; opacity: 0.3; text-align: center; margin: 30px 0; }
     .footer-brand { font-size: 14pt; letter-spacing: 0.3em; opacity: 0.6; margin-bottom: 5px; }
     .footer-url { font-size: 8pt; opacity: 0.4; }
+
+    /* Purchase priorities - NEW */
+    .priority-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 15px; padding: 12px; background: #f8f8f8; border-radius: 8px; }
+    .priority-number { width: 24px; height: 24px; background: #d4a473; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10pt; font-weight: 600; flex-shrink: 0; }
+    .priority-content { flex: 1; }
+    .priority-category { font-size: 8pt; text-transform: uppercase; letter-spacing: 0.1em; color: #d4a473; margin-bottom: 2px; }
+    .priority-desc { font-size: 10pt; font-weight: 500; }
+    .priority-reason { font-size: 8pt; opacity: 0.7; }
+    .budget-note { font-size: 9pt; font-style: italic; color: #666; margin-top: 8px; padding: 8px; background: #fafafa; border-left: 3px solid #d4a473; }
+
+    /* Test mode banner */
+    .test-banner { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; padding: 12px 20px; text-align: center; font-size: 10pt; font-weight: 500; }
   </style>
 </head>
 <body>
 
 <!-- PAGE 1: COVER -->
+${TEST_MODE ? '<div class="test-banner">ANÁLISIS CLIENT-SIDE DE PRUEBA · Los datos son aproximados</div>' : ''}
 <div class="page cover">
   <div>
     <div class="cover-brand">PRYSM</div>
@@ -430,7 +733,97 @@ function buildPdfHtml(
   </div>
 </div>
 
-<!-- PAGE 7: CLOSE -->
+<!-- PAGE 7: CLOSET ANALYSIS (NEW) -->
+<div class="page closet-page">
+  <div class="label">Tu guardarropa · Basado en tus respuestas</div>
+  <h2 class="closet-title serif">Análisis de<br><em>tu clóset</em></h2>
+
+  ${closetAnalysis.colorsThatWork.length > 0 || closetAnalysis.colorsToUseAway.length > 0 || closetAnalysis.colorsNotToPrioritize.length > 0 ? `
+  <div class="closet-grid">
+    <!-- Colors that work -->
+    <div class="closet-card work">
+      <div class="closet-card-title work">✓ Colores de tu clóset que SÍ te favorecen</div>
+      ${closetAnalysis.colorsThatWork.length > 0 ? closetAnalysis.colorsThatWork.map(c => `
+        <div class="closet-item">
+          <div class="closet-dot" style="background: ${c.hex}"></div>
+          <div>
+            <div class="closet-item-name">${c.color}</div>
+            <div class="closet-item-reason">${c.reason}</div>
+          </div>
+        </div>
+      `).join('') : '<div class="closet-item-reason">Añade colores para ver recomendaciones</div>'}
+    </div>
+
+    <!-- Colors to use away from face -->
+    <div class="closet-card away">
+      <div class="closet-card-title away">△ Colores para usar LEJOS del rostro</div>
+      ${closetAnalysis.colorsToUseAway.length > 0 ? closetAnalysis.colorsToUseAway.map(c => `
+        <div class="closet-item">
+          <div class="closet-dot" style="background: ${c.hex}"></div>
+          <div>
+            <div class="closet-item-name">${c.color}</div>
+            <div class="closet-item-reason">${c.reason}</div>
+          </div>
+        </div>
+      `).join('') : '<div class="closet-item-reason">No hay colores en esta categoría</div>'}
+    </div>
+  </div>
+
+  <div style="margin-top: 20px;">
+    <div class="closet-card avoid">
+      <div class="closet-card-title avoid">○ Colores que NO deberías priorizar al comprar</div>
+      <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+        ${closetAnalysis.colorsNotToPrioritize.length > 0 ? closetAnalysis.colorsNotToPrioritize.map(c => `
+          <div class="closet-item" style="flex-direction: column; align-items: flex-start;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="closet-dot" style="background: ${c.hex}"></div>
+              <div class="closet-item-name">${c.color}</div>
+            </div>
+            <div class="closet-item-reason" style="margin-left: 34px;">${c.reason}</div>
+          </div>
+        `).join('') : '<div class="closet-item-reason">No hay colores en esta categoría</div>'}
+      </div>
+    </div>
+  </div>
+
+  ${closetAnalysis.combinations.length > 0 ? `
+  <div style="margin-top: 20px;">
+    <div class="section-label">Cómo combinarlos</div>
+    ${closetAnalysis.combinations.map(c => `<div class="combination-item">${c}</div>`).join('')}
+  </div>
+  ` : ''}
+  ` : `
+  <div style="padding: 40px; text-align: center; color: #666;">
+    Completa el cuestionario para ver el análisis de tu clóset.
+  </div>
+  `}
+
+  <!-- Purchase Priorities -->
+  <div style="margin-top: 30px;">
+    <div class="label">${budgetLabel}</div>
+    <h3 style="font-size: 18pt; margin-bottom: 15px;">Qué comprar primero</h3>
+
+    ${purchasePriorities.length > 0 ? `
+    ${purchasePriorities.map(p => `
+      <div class="priority-item">
+        <div class="priority-number">${p.priority}</div>
+        <div class="priority-content">
+          <div class="priority-category">${p.category}</div>
+          <div class="priority-desc">${p.description}</div>
+          <div class="priority-reason">${p.reason}</div>
+          ${p.priority === 1 ? `<div class="budget-note">${p.budgetNote}</div>` : ''}
+        </div>
+      </div>
+    `).join('')}
+    ` : `
+    <div style="padding: 20px; text-align: center; color: #666;">
+      Completa el cuestionario para ver prioridades de compra.
+    </div>
+    `}
+  </div>
+</div>
+
+<!-- PAGE 8: CLOSE -->
 <div class="page close-page">
   <div class="close-left">
     <div class="label">Tu resumen</div>
@@ -458,10 +851,15 @@ function buildPdfHtml(
     </div>
     <div class="summary-item">
       <span class="summary-check">✓</span>
+      <span class="summary-text">Análisis de tu clóset + prioridades de compra</span>
+    </div>
+    <div class="summary-item">
+      <span class="summary-check">✓</span>
       <span class="summary-text">Joyería, bolsos y accesorios recomendados</span>
     </div>
 
     <div class="brand-tag">PRYSM · prysmstyle.art</div>
+    ${TEST_MODE ? '<div style="font-size: 9pt; color: #f59e0b; margin-top: 10px;">⚠️ ANÁLISIS CLIENT-SIDE DE PRUEBA</div>' : ''}
   </div>
 
   <div class="close-right">

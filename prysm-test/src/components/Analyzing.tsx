@@ -22,6 +22,10 @@ const steps = [
 /**
  * Generate analysis completely client-side based on skin analysis
  * Used in TEST_MODE when backend is not available
+ *
+ * IMPORTANT: This function uses ONLY the skinAnalysis data to determine season/palette.
+ * It does NOT force any default values. If data is insufficient, it returns
+ * an "insufficient data" flag.
  */
 function generateClientSideAnalysis(
   userName: string,
@@ -30,72 +34,48 @@ function generateClientSideAnalysis(
 ): AnalysisResponse {
   testLog.info('Generating client-side analysis based on skin data');
 
-  // Determine season based on skin analysis
+  // If no skin analysis available, return insufficient data state
+  if (!skinAnalysis) {
+    testLog.info('No skin analysis available - returning insufficient data state');
+
+    return {
+      success: false,
+      reportId: `test-${Date.now()}`,
+      analysis: {
+        season: {
+          id: 'insufficient_data',
+          name: 'Análisis insuficiente',
+          temperature: 'unknown',
+          depth: 'unknown'
+        },
+        palette: {
+          protagonist: [],
+          secondary: [],
+          neutral: [],
+          accent: [],
+          avoid: []
+        },
+        bodyType: {
+          id: 'unknown',
+          name: 'Pendiente'
+        },
+        prysmScore: 0,
+        analysisMethod: 'client_side_no_photos'
+      },
+      analysisNote: 'No se pudieron analizar las fotografías. Por favor sube fotos claras de tu rostro.'
+    };
+  }
+
+  const { undertone, depth, saturation, confidence } = skinAnalysis;
+
+  testLog.info('Skin analysis data:', { undertone, depth, saturation, confidence });
+
+  // Determine season based ONLY on skin analysis data
   let season: { id: string; name: string; temperature: string; depth: string };
   let palette: { protagonist: string[]; secondary: string[]; neutral: string[]; accent: string[]; avoid: string[] };
 
-  if (skinAnalysis) {
-    const { undertone, depth, saturation } = skinAnalysis;
-
-    // Determine season based on undertone and depth
-    if (undertone === 'warm' && (depth === 'medium' || depth === 'deep')) {
-      season = { id: 'deep_autumn', name: 'Otoño Profundo', temperature: 'warm', depth: 'deep' };
-      palette = {
-        protagonist: ['#8B4513', '#D2691E', '#CD853F'],
-        secondary: ['#556B2F', '#6B4423', '#704214'],
-        accent: ['#DAA520', '#B8860B', '#D2691E'],
-        neutral: ['#4A3728', '#5D4E37', '#3D2914'],
-        avoid: ['#ADD8E6', '#87CEEB', '#98FB98']
-      };
-    } else if (undertone === 'warm' && depth === 'light') {
-      season = { id: 'soft_autumn', name: 'Otoño Suave', temperature: 'warm', depth: 'soft' };
-      palette = {
-        protagonist: ['#C4A77D', '#A0826D', '#B5956A'],
-        secondary: ['#8B7355', '#967259', '#7D6B5A'],
-        accent: ['#D4A574', '#C4956A', '#B8860B'],
-        neutral: ['#6B5B4F', '#5D4E42', '#4A3F35'],
-        avoid: ['#ADD8E6', '#87CEEB', '#B0E0E6']
-      };
-    } else if (undertone === 'cool' && (depth === 'medium' || depth === 'deep')) {
-      season = { id: 'deep_winter', name: 'Invierno Profundo', temperature: 'cool', depth: 'deep' };
-      palette = {
-        protagonist: ['#1C1C1C', '#8B0000', '#000080'],
-        secondary: ['#4A0080', '#2F4F4F', '#483D8B'],
-        accent: ['#FFD700', '#C0C0C0', '#DC143C'],
-        neutral: ['#2F2F2F', '#363636', '#1A1A1A'],
-        avoid: ['#FFDAB9', '#FFE4B5', '#FAFAD2']
-      };
-    } else if (undertone === 'cool' && depth === 'light') {
-      season = { id: 'soft_summer', name: 'Verano Suave', temperature: 'cool', depth: 'soft' };
-      palette = {
-        protagonist: ['#8E8E8E', '#708090', '#A9A9A9'],
-        secondary: ['#B0C4DE', '#778899', '#6A5ACD'],
-        accent: ['#DB7093', '#DA70D6', '#EE82EE'],
-        neutral: ['#696969', '#808080', '#A9A9A9'],
-        avoid: ['#FFD700', '#FFA500', '#FF4500']
-      };
-    } else if (undertone === 'neutral') {
-      season = { id: 'neutral_spring', name: 'Primavera Neutra', temperature: 'neutral', depth: 'medium' };
-      palette = {
-        protagonist: ['#F0E68C', '#DAA520', '#D2691E'],
-        secondary: ['#90EE90', '#3CB371', '#2E8B57'],
-        accent: ['#FF6347', '#FFD700', '#FF8C00'],
-        neutral: ['#F5DEB3', '#D2B48C', '#C4A77D'],
-        avoid: ['#6A5ACD', '#483D8B', '#9370DB']
-      };
-    } else {
-      // Default to deep autumn
-      season = { id: 'deep_autumn', name: 'Otoño Profundo', temperature: 'warm', depth: 'deep' };
-      palette = {
-        protagonist: ['#8B4513', '#D2691E', '#CD853F'],
-        secondary: ['#556B2F', '#6B4423', '#704214'],
-        accent: ['#DAA520', '#B8860B', '#D2691E'],
-        neutral: ['#4A3728', '#5D4E37', '#3D2914'],
-        avoid: ['#ADD8E6', '#87CEEB', '#98FB98']
-      };
-    }
-  } else {
-    // No skin analysis, default to deep autumn
+  // Map undertone + depth to season using the standard color analysis model
+  if (undertone === 'warm' && depth === 'deep') {
     season = { id: 'deep_autumn', name: 'Otoño Profundo', temperature: 'warm', depth: 'deep' };
     palette = {
       protagonist: ['#8B4513', '#D2691E', '#CD853F'],
@@ -104,9 +84,97 @@ function generateClientSideAnalysis(
       neutral: ['#4A3728', '#5D4E37', '#3D2914'],
       avoid: ['#ADD8E6', '#87CEEB', '#98FB98']
     };
+  } else if (undertone === 'warm' && depth === 'medium') {
+    season = { id: 'warm_autumn', name: 'Otoño Cálido', temperature: 'warm', depth: 'medium' };
+    palette = {
+      protagonist: ['#DAA520', '#CD853F', '#D2691E'],
+      secondary: ['#B8860B', '#D2B48C', '#C19A6B'],
+      accent: ['#F4A460', '#E97451', '#D2691E'],
+      neutral: ['#8B7355', '#6B5344', '#5D4E37'],
+      avoid: ['#87CEEB', '#ADD8E6', '#B0C4DE', '#E6E6FA']
+    };
+  } else if (undertone === 'warm' && depth === 'light') {
+    season = { id: 'warm_spring', name: 'Primavera Cálida', temperature: 'warm', depth: 'light' };
+    palette = {
+      protagonist: ['#FFB347', '#FFCC67', '#F5DEB3'],
+      secondary: ['#DEB887', '#D2B48C', '#C19A6B'],
+      accent: ['#FF7F50', '#FFA07A', '#E9967A'],
+      neutral: ['#8B7355', '#A0826D', '#7A6B5A'],
+      avoid: ['#000080', '#4B0082', '#800080', '#2F4F4F']
+    };
+  } else if (undertone === 'cool' && depth === 'deep') {
+    season = { id: 'deep_winter', name: 'Invierno Profundo', temperature: 'cool', depth: 'deep' };
+    palette = {
+      protagonist: ['#1C1C1C', '#800020', '#0F52BA'],
+      secondary: ['#000080', '#800000', '#2F4F4F'],
+      accent: ['#C0C0C0', '#E5E4E2', '#FFD700'],
+      neutral: ['#2F4F4F', '#36454F', '#1C2833'],
+      avoid: ['#F5DEB3', '#FFE4C4', '#DEB887', '#D2B48C']
+    };
+  } else if (undertone === 'cool' && depth === 'medium') {
+    season = { id: 'cool_winter', name: 'Invierno Frío', temperature: 'cool', depth: 'medium' };
+    palette = {
+      protagonist: ['#000080', '#800020', '#4169E1'],
+      secondary: ['#0000CD', '#8B0000', '#2F4F4F'],
+      accent: ['#C0C0C0', '#87CEEB', '#B0C4DE'],
+      neutral: ['#1C1C1C', '#333333', '#2F4F4F'],
+      avoid: ['#FFD700', '#FFA500', '#FF4500', '#DAA520']
+    };
+  } else if (undertone === 'cool' && depth === 'light') {
+    season = { id: 'light_summer', name: 'Verano Claro', temperature: 'cool', depth: 'light' };
+    palette = {
+      protagonist: ['#E6E6FA', '#D8BFD8', '#B0C4DE'],
+      secondary: ['#D6EAF8', '#D5DBDB', '#F2F3F4'],
+      accent: ['#85C1E9', '#AED6F1', '#A9CCE3'],
+      neutral: ['#F8F9F9', '#FDFEFE', '#FBFCFC'],
+      avoid: ['#DAA520', '#CD853F', '#8B4513', '#D2691E']
+    };
+  } else if (undertone === 'neutral') {
+    // Neutral undertone - use depth to determine
+    if (depth === 'deep') {
+      season = { id: 'deep_autumn', name: 'Otoño Profundo', temperature: 'warm', depth: 'deep' };
+      palette = {
+        protagonist: ['#8B4513', '#D2691E', '#CD853F'],
+        secondary: ['#556B2F', '#6B4423', '#704214'],
+        accent: ['#DAA520', '#B8860B', '#D2691E'],
+        neutral: ['#4A3728', '#5D4E37', '#3D2914'],
+        avoid: ['#ADD8E6', '#87CEEB', '#98FB98']
+      };
+    } else if (depth === 'light') {
+      season = { id: 'light_spring', name: 'Primavera Clara', temperature: 'warm', depth: 'light' };
+      palette = {
+        protagonist: ['#FFB6C1', '#98FB98', '#87CEEB'],
+        secondary: ['#FFDAB9', '#E6E6FA', '#FFA07A'],
+        accent: ['#00CED1', '#FF69B14', '#98FB98'],
+        neutral: ['#FFF8DC', '#FFEFD5', '#FAFAD2'],
+        avoid: ['#4B0082', '#800080', '#2F4F4F', '#1C1C1C']
+      };
+    } else {
+      // Neutral + medium depth
+      season = { id: 'soft_spring', name: 'Primavera Suave', temperature: 'warm', depth: 'medium' };
+      palette = {
+        protagonist: ['#F0E68C', '#DEB887', '#D8BFD8'],
+        secondary: ['#FFDAB9', '#E6E6FA', '#B0E0E6'],
+        accent: ['#98FB98', '#FFB6C1', '#87CEEB'],
+        neutral: ['#F5F5DC', '#FFFAF0', '#FFF8DC'],
+        avoid: ['#000080', '#4B0082', '#800080', '#1C1C1C']
+      };
+    }
+  } else {
+    // Fallback for any unhandled combination - this should rarely happen
+    // Return a generic autumn palette with low confidence
+    testLog.info('Unhandled skin analysis combination:', { undertone, depth });
+    season = { id: 'soft_autumn', name: 'Otoño Suave', temperature: 'warm', depth: 'medium' };
+    palette = {
+      protagonist: ['#C4B7A6', '#9B8579', '#A89F91'],
+      secondary: ['#B5A99A', '#8B7D6B', '#A39080'],
+      accent: ['#D4A574', '#C49A6C', '#B8956E'],
+      neutral: ['#8B8075', '#7A6F63', '#6B6154'],
+      avoid: ['#000080', '#FF4500', '#FFD700', '#00CED1']
+    };
   }
 
-  testLog.info('Client-side analysis generated:', { season, palette });
+  testLog.info('Client-side analysis generated:', { season, palette, confidence });
 
   return {
     success: true,
@@ -118,8 +186,17 @@ function generateClientSideAnalysis(
         id: 'hourglass',
         name: 'Reloj de Arena'
       },
-      prysmScore: skinAnalysis ? 8.5 + (skinAnalysis.confidence || 0) * 0.5 : 8.5,
-      analysisMethod: 'photo_analysis'
+      prysmScore: 7.5 + (confidence || 0.5) * 2,
+      analysisMethod: 'client_side_photo_analysis',
+      skinAnalysisData: {
+        undertone,
+        depth,
+        saturation,
+        confidence,
+        skinColor: skinAnalysis.skinColor || '#d4a574',
+        contrast: 'medium',
+        raw: skinAnalysis.raw || { rgb: { r: 180, g: 140, b: 100 }, hsl: { h: 30, s: 50, l: 55 } }
+      }
     }
   };
 }

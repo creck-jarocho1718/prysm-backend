@@ -1,0 +1,352 @@
+Sí, apruebo el diagnóstico y autorizo las correcciones.
+
+Pero quiero que las implementes en este orden y respetando estas reglas.
+
+==================================================
+REGLA PRINCIPAL
+==================================================
+
+NO cambies el diseño actual.
+
+El diseño me gusta y quiero conservarlo.
+
+NO cambies:
+
+- Landing
+- Quiz
+- las 12 preguntas
+- tipografías
+- colores de la aplicación
+- estructura visual
+- diseño de Report
+- estructura visual de las 7 páginas del PDF
+- MercadoPago
+- flujo de producción
+
+Solo corrige la lógica de datos, análisis, personalización y generación del PDF.
+
+==================================================
+FASE 1 — CORREGIR PDF EN BLANCO
+==================================================
+
+Primero corrige el PDF.
+
+Quiero un PDF REAL con contenido visible.
+
+Debe conservar:
+
+- 7 páginas
+- diseño actual
+- foto real del cliente
+- nombre
+- temporada
+- paleta
+- recomendaciones
+- looks
+
+No quiero un PDF de prueba con texto inventado.
+
+Investiga y corrige el problema de html2pdf.js y las imágenes base64.
+
+IMPORTANTE:
+
+No elimines la fotografía para solucionar el problema.
+
+Si es necesario convertir la imagen a Blob, Object URL, esperar a que carguen las imágenes o modificar la forma en que html2pdf procesa el contenido, hazlo.
+
+Pero conserva la calidad y el diseño.
+
+Después de corregirlo comprueba que el PDF no esté blanco.
+
+==================================================
+FASE 2 — CORREGIR TEMPORADA
+==================================================
+
+Elimina la dependencia innecesaria de:
+
+deep_autumn
+
+como fallback universal.
+
+NO quiero que simplemente cambies:
+
+deep_autumn
+
+por otra temporada.
+
+Quiero que el sistema determine la temporada a partir de los datos disponibles.
+
+El flujo debe ser:
+
+Fotografía
+↓
+skinAnalysis
+↓
+undertone
+↓
+depth
+↓
+seasonMapper
+↓
+season
+
+Si no existe suficiente información para determinar la temporada con confianza:
+
+NO inventes una temporada.
+
+Devuelve un estado de análisis insuficiente o una advertencia clara.
+
+NO fuerces Otoño Profundo.
+
+==================================================
+MUY IMPORTANTE SOBRE Q2
+==================================================
+
+Q2 = tono de piel del cuestionario.
+
+No quiero que Q2 reemplace automáticamente el análisis fotográfico.
+
+Debe funcionar como dato complementario/validación.
+
+Si Q2 dice "clara" pero la fotografía produce otra profundidad:
+
+NO inventes.
+
+Registra la discrepancia y utiliza la evidencia disponible de forma coherente.
+
+Quiero que me informes cómo resolviste las discrepancias.
+
+==================================================
+FASE 3 — PALETA
+==================================================
+
+La paleta debe provenir de la temporada determinada por el análisis.
+
+Pero quiero separar:
+
+COLORIMETRÍA
+→ qué colores favorecen.
+
+TEST
+→ cómo aplicar esos colores al estilo de vida del cliente.
+
+NO quiero que Q1, Q4, Q8 o cualquier otra respuesta cambie artificialmente la temporada.
+
+Sí quiero que esas respuestas cambien:
+
+- combinaciones
+- prendas
+- looks
+- accesorios
+- compras
+- ocasiones
+- aplicación de la paleta
+
+==================================================
+FASE 4 — Q5 Y Q6
+==================================================
+
+Esta parte es MUY importante.
+
+Q5:
+
+¿Qué colores tienes en tu clóset?
+
+Quiero que el reporte diga específicamente:
+
+### COLORES DE TU CLÓSET QUE SÍ TE FAVORECEN
+
+### COLORES QUE PUEDES SEGUIR USANDO
+
+### COLORES QUE CONVIENE USAR LEJOS DEL ROSTRO
+
+### COLORES QUE NO DEBERÍAS PRIORIZAR AL COMPRAR
+
+No quiero que simplemente diga "negro, blanco y beige".
+
+Quiero una recomendación práctica basada en:
+
+colores del clóset
++
+colorimetría.
+
+Q6:
+
+¿Qué prendas tienes?
+
+Quiero:
+
+### PRENDAS QUE YA TIENES Y TE FUNCIONAN
+
+### CÓMO PUEDES COMBINARLAS
+
+### PRENDAS QUE TE FALTAN
+
+### QUÉ COMPRAR PRIMERO
+
+### QUÉ NO NECESITAS COMPRAR
+
+Esto debe cruzarse con:
+
+- silueta
+- estilo
+- ocasiones
+- presupuesto
+- colorimetría
+
+==================================================
+FASE 5 — PRESUPUESTO
+==================================================
+
+Q4 debe tener un efecto real.
+
+No quiero que solamente aparezca:
+
+"Presupuesto: menos de $1,000."
+
+Quiero recomendaciones de compra basadas en el nivel seleccionado.
+
+Por ejemplo:
+
+PRESUPUESTO BAJO:
+priorizar prendas versátiles y combinables.
+
+PRESUPUESTO MEDIO:
+incorporar algunas piezas de mayor calidad.
+
+PRESUPUESTO ALTO:
+priorizar piezas de inversión cuando realmente aporten valor.
+
+NO inventes precios concretos ni tiendas si no tenemos esa información.
+
+==================================================
+FASE 6 — PERSONALIZACIÓN
+==================================================
+
+Quiero que el RecommendationEngine utilice realmente:
+
+Q1 feeling
+Q3 silhouette
+Q4 budget
+Q5 closet colors
+Q6 closet pieces
+Q7 metal
+Q8 style
+Q9 occasions
+Q10 reference look
+
+La temporada debe venir de la colorimetría.
+
+Las demás respuestas deben decidir cómo se aplica esa colorimetría.
+
+==================================================
+PRUEBA OBLIGATORIA
+==================================================
+
+Después de implementar, crea dos perfiles de prueba.
+
+PERFIL A:
+
+- sofisticada + segura
+- piel clara
+- reloj de arena
+- menos de 1000
+- negro + blanco + beige
+- jeans + blusas + blazer
+- dorado
+- profesional + clásico
+- oficina + coworking
+- arquitectónica
+
+PERFIL B:
+
+- natural + serena
+- piel morena
+- rectángulo
+- más de 10000
+- rosa + verde + morado
+- vestidos + faldas + accesorios
+- plateado
+- romántico + bohemio
+- citas + fiestas + viajes
+- romántica
+
+IMPORTANTE:
+
+NO fuerces temporadas diferentes.
+
+Si ambos perfiles tienen la misma colorimetría, pueden tener la misma temporada.
+
+Lo que debe cambiar es el resto del contenido.
+
+Compara:
+
+- temporada
+- paleta base
+- aplicación de colores
+- silueta
+- prendas
+- presupuesto
+- compras
+- ocasiones
+- estilo
+- accesorios
+- looks
+- recomendaciones del clóset
+
+==================================================
+FASE 7 — BACKEND
+==================================================
+
+El backend sigue mostrando:
+
+localhost:3001/api/analyze
+ERR_CONNECTION_REFUSED
+
+NO lo ocultes.
+
+En TEST_MODE quiero que quede claramente indicado:
+
+"ANÁLISIS CLIENT-SIDE DE PRUEBA"
+
+hasta que exista un backend accesible.
+
+NO afirmes que el backend está haciendo el análisis si no está conectado.
+
+NO uses datos demo silenciosamente.
+
+==================================================
+VERIFICACIÓN FINAL
+==================================================
+
+Antes de decir que terminaste:
+
+1. Genera un reporte real.
+2. Comprueba que el PDF NO está blanco.
+3. Comprueba que tiene 7 páginas.
+4. Comprueba que aparece la foto real.
+5. Comprueba que aparece el nombre real.
+6. Comprueba que la temporada viene del análisis.
+7. Comprueba que Q3 cambia las recomendaciones de silueta.
+8. Comprueba que Q4 cambia las prioridades de compra.
+9. Comprueba que Q5 cambia el análisis del clóset.
+10. Comprueba que Q6 cambia las prendas recomendadas.
+11. Comprueba que Q7 cambia los accesorios.
+12. Comprueba que Q8 cambia el estilo.
+13. Comprueba que Q9 cambia los looks.
+14. Comprueba que Q10 cambia la dirección estética.
+15. Comprueba que el PDF descargado corresponde al usuario actual.
+
+Al terminar, dame una comparación concreta entre Perfil A y Perfil B.
+
+NO me digas solamente "ahora es dinámico".
+
+Quiero ejemplos concretos de qué cambió.
+
+NO hagas cambios de diseño.
+
+NO hagas cambios en producción.
+
+NO cambies MercadoPago.
+
+Procede con estas correcciones.

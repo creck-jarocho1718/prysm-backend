@@ -231,9 +231,11 @@ function buildProfileFromAnswers(
   // Q10: Archetype (reference looks)
   const archetype = getStringAnswer(answers, 'archetype');
 
-  // Get season from analysis (don't override with quiz answers)
-  const seasonId = analysis?.analysis?.season?.id || analysis?.analysis?.season?.primary || 'deep_autumn';
-  const seasonName = analysis?.analysis?.season?.name || 'Otoño Profundo';
+  // Get season from analysis (from photo analysis, NOT from quiz answers)
+  // If no analysis or insufficient data, mark as pending
+  const seasonId = analysis?.analysis?.season?.id || analysis?.analysis?.season?.primary || 'pending';
+  const seasonName = analysis?.analysis?.season?.name || 'Pendiente de análisis';
+  const isAnalysisInsufficient = seasonId === 'pending' || seasonId === 'insufficient_data';
 
   // Determine temperature and depth from season ID
   const isWarm = seasonId.includes('autumn') || seasonId.includes('spring');
@@ -243,22 +245,33 @@ function buildProfileFromAnswers(
   const isBright = seasonId.includes('bright');
   const isSoft = seasonId.includes('soft');
 
+  // Use actual analysis data, not hardcoded defaults
+  const analysisTemperature = analysis?.analysis?.season?.temperature;
+  const analysisDepth = analysis?.analysis?.season?.depth;
+  const analysisContrast = analysis?.analysis?.season?.contrast;
+  const analysisSaturation = analysis?.analysis?.season?.saturation;
+
   const season = {
     primary: seasonId,
     name: seasonName,
-    subtitle: `${seasonName} · ${isWarm ? 'Warm' : isCool ? 'Cool' : 'Neutral'} · ${isDeep ? 'Rich' : isSoft ? 'Soft' : 'Medium'}`,
-    temperature: (isWarm ? 'warm' : isCool ? 'cool' : 'neutral') as 'warm' | 'cool' | 'neutral',
-    depth: (isDeep ? 'deep' : isLight ? 'light' : 'medium') as 'light' | 'medium' | 'deep',
-    contrast: (isBright ? 'high' : isSoft ? 'low' : 'medium') as 'low' | 'medium' | 'high',
-    saturation: (isBright ? 'bright' : isSoft ? 'muted' : 'medium') as 'muted' | 'medium' | 'bright',
+    subtitle: isAnalysisInsufficient
+      ? 'Análisis pendiente'
+      : `${seasonName} · ${analysisTemperature ? (analysisTemperature.charAt(0).toUpperCase() + analysisTemperature.slice(1)) : 'Warm'} · ${isDeep ? 'Rich' : isSoft ? 'Soft' : 'Medium'}`,
+    temperature: (analysisTemperature || (isWarm ? 'warm' : isCool ? 'cool' : 'neutral')) as 'warm' | 'cool' | 'neutral',
+    depth: (analysisDepth || (isDeep ? 'deep' : isLight ? 'light' : 'medium')) as 'light' | 'medium' | 'deep',
+    contrast: (analysisContrast || (isBright ? 'high' : isSoft ? 'low' : 'medium')) as 'low' | 'medium' | 'high',
+    saturation: (analysisSaturation || (isBright ? 'bright' : isSoft ? 'muted' : 'medium')) as 'muted' | 'medium' | 'bright',
+    isPending: isAnalysisInsufficient,
   };
 
+  // Use palette from analysis - NO HARDCODED FALLBACK
   const palette = analysis?.analysis?.palette || {
-    protagonist: ['#8B4513', '#D2691E', '#CD853F'],
-    secondary: ['#556B2F', '#6B4423', '#704214'],
-    accent: ['#DAA520', '#B8860B', '#D2691E'],
-    neutral: ['#4A3728', '#5D4E37', '#3D2914'],
-    avoid: ['#ADD8E6', '#87CEEB', '#98FB98'],
+    protagonist: [] as string[],
+    secondary: [] as string[],
+    accent: [] as string[],
+    neutral: [] as string[],
+    avoid: [] as string[],
+    isPending: true,
   };
 
   // Get silhouette recommendations based on type
@@ -281,13 +294,20 @@ function buildProfileFromAnswers(
         saturation: season.saturation,
       },
       palette,
-      skinAnalysis: skinAnalysis || {
-        undertone: skinToneQuiz?.includes('clara') ? 'warm' : skinToneQuiz?.includes('oscura') ? 'neutral' : 'warm',
-        depth: skinToneQuiz?.includes('clara') ? 'light' : skinToneQuiz?.includes('oscura') ? 'deep' : 'medium',
-        saturation: 'medium',
+      // Use actual skinAnalysis from photos, not quiz answers
+      skinAnalysis: skinAnalysis || (analysis?.analysis?.skinAnalysisData ? {
+        undertone: analysis.analysis.skinAnalysisData.undertone || 'unknown',
+        depth: analysis.analysis.skinAnalysisData.depth || 'unknown',
+        saturation: analysis.analysis.skinAnalysisData.saturation || 'unknown',
         contrast: 'medium',
-        confidence: 0.7,
-      },
+        confidence: analysis.analysis.skinAnalysisData.confidence || 0,
+      } : {
+        undertone: 'unknown',
+        depth: 'unknown',
+        saturation: 'unknown',
+        contrast: 'unknown',
+        confidence: 0,
+      }),
     },
     silhouette: {
       type: silhouetteData.type,
