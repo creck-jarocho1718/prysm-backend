@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { AnalysisResponse } from '../services/api';
 import { TEST_MODE, testLog } from '../config';
+import { downloadPdf } from '../services/pdfDownloader';
 
 interface ReportProps {
   userName: string;
@@ -96,31 +97,32 @@ export default function Report({
     }
   }, [testPdfData, hasUserPhoto]);
 
-  // Download PDF handler
+  // Download PDF handler - generates real PDF file
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+
   const handleDownloadPdf = async () => {
     if (!testPdfData?.pdfHtml) {
       alert('No hay PDF disponible para descargar.');
       return;
     }
 
+    setIsGeneratingPdf(true);
+
     try {
-      // Create a blob from the HTML
-      const blob = new Blob([testPdfData.pdfHtml], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
+      testLog.pdf({ action: 'Starting PDF download', userName });
 
-      // Create download link
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `PRYSM-Informe-${userName || 'Cliente'}-${Date.now()}.html`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      await downloadPdf({
+        htmlContent: testPdfData.pdfHtml,
+        fileName: 'PRYSM-Informe-Personalizado',
+        userName: userName || 'Cliente',
+      });
 
-      // Clean up
-      URL.revokeObjectURL(url);
+      testLog.pdf({ action: 'PDF download completed' });
     } catch (error) {
       console.error('Error downloading PDF:', error);
-      alert('Error al descargar el informe. Por favor intenta de nuevo.');
+      alert('Error al generar el PDF. Por favor intenta de nuevo.');
+    } finally {
+      setIsGeneratingPdf(false);
     }
   };
 
@@ -646,32 +648,52 @@ export default function Report({
       }}>
         <button
           onClick={handleDownloadPdf}
-          disabled={!testPdfData?.pdfHtml}
+          disabled={!testPdfData?.pdfHtml || isGeneratingPdf}
           style={{
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
             padding: '14px 24px',
-            background: 'linear-gradient(135deg, #D4A473 0%, #205E53 100%)',
+            background: isGeneratingPdf
+              ? 'linear-gradient(135deg, #888 0%, #666 100%)'
+              : 'linear-gradient(135deg, #D4A473 0%, #205E53 100%)',
             color: '#fff',
             border: 'none',
             borderRadius: '30px',
             fontSize: '12px',
             fontWeight: '500',
             letterSpacing: '0.1em',
-            cursor: testPdfData?.pdfHtml ? 'pointer' : 'not-allowed',
-            opacity: testPdfData?.pdfHtml ? 1 : 0.5,
+            cursor: (testPdfData?.pdfHtml && !isGeneratingPdf) ? 'pointer' : 'not-allowed',
+            opacity: (testPdfData?.pdfHtml && !isGeneratingPdf) ? 1 : 0.7,
             boxShadow: '0 4px 20px rgba(212, 164, 115, 0.4)',
             transition: 'all 0.3s ease'
           }}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
-            <polyline points="7 10 12 15 17 10"/>
-            <line x1="12" y1="15" x2="12" y2="3"/>
-          </svg>
-          DESCARGAR PDF
+          {isGeneratingPdf ? (
+            <>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation: 'spin 1s linear infinite' }}>
+                <circle cx="12" cy="12" r="10" strokeOpacity="0.3"/>
+                <path d="M12 2a10 10 0 0 1 10 10"/>
+              </svg>
+              GENERANDO PDF...
+            </>
+          ) : (
+            <>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              DESCARGAR PDF
+            </>
+          )}
         </button>
+        <style>{`
+          @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+        `}</style>
         <button
           onClick={onShare}
           style={{
