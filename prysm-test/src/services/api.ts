@@ -3,8 +3,12 @@
  * Handles communication with the backend
  */
 
-// Use environment variable or fallback to localhost for development
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+import { TEST_MODE } from '../config';
+
+// Use TEST_MODE to determine which API URL to use
+const API_BASE_URL = TEST_MODE
+  ? (import.meta.env.VITE_TEST_API_URL || 'http://localhost:3001')
+  : (import.meta.env.VITE_API_URL || 'http://localhost:3001');
 
 export interface QuizAnswers {
   [key: string]: string | string[];

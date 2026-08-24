@@ -232,10 +232,25 @@ function buildProfileFromAnswers(
   const archetype = getStringAnswer(answers, 'archetype');
 
   // Get season from analysis (don't override with quiz answers)
-  const season = analysis?.analysis?.season || {
-    primary: 'deep_autumn',
-    name: 'Otoño Profundo',
-    subtitle: 'Deep Autumn · Warm · Rich',
+  const seasonId = analysis?.analysis?.season?.id || analysis?.analysis?.season?.primary || 'deep_autumn';
+  const seasonName = analysis?.analysis?.season?.name || 'Otoño Profundo';
+
+  // Determine temperature and depth from season ID
+  const isWarm = seasonId.includes('autumn') || seasonId.includes('spring');
+  const isCool = seasonId.includes('winter') || seasonId.includes('summer');
+  const isDeep = seasonId.includes('deep') || seasonId.includes('dark');
+  const isLight = seasonId.includes('light');
+  const isBright = seasonId.includes('bright');
+  const isSoft = seasonId.includes('soft');
+
+  const season = {
+    primary: seasonId,
+    name: seasonName,
+    subtitle: `${seasonName} · ${isWarm ? 'Warm' : isCool ? 'Cool' : 'Neutral'} · ${isDeep ? 'Rich' : isSoft ? 'Soft' : 'Medium'}`,
+    temperature: (isWarm ? 'warm' : isCool ? 'cool' : 'neutral') as 'warm' | 'cool' | 'neutral',
+    depth: (isDeep ? 'deep' : isLight ? 'light' : 'medium') as 'light' | 'medium' | 'deep',
+    contrast: (isBright ? 'high' : isSoft ? 'low' : 'medium') as 'low' | 'medium' | 'high',
+    saturation: (isBright ? 'bright' : isSoft ? 'muted' : 'medium') as 'muted' | 'medium' | 'bright',
   };
 
   const palette = analysis?.analysis?.palette || {
@@ -259,11 +274,11 @@ function buildProfileFromAnswers(
       season: {
         primary: season.primary,
         name: season.name,
-        subtitle: season.subtitle || `${season.name} · ${season.primary.includes('autumn') || season.primary.includes('spring') ? 'Warm' : 'Cool'} · ${season.primary.includes('deep') || season.primary.includes('bright') ? 'Rich' : 'Soft'}`,
-        temperature: season.primary.includes('autumn') || season.primary.includes('spring') ? 'warm' : 'cool',
-        depth: season.primary.includes('deep') ? 'deep' : season.primary.includes('light') ? 'light' : 'medium',
-        contrast: 'medium',
-        saturation: season.primary.includes('bright') ? 'bright' : season.primary.includes('soft') ? 'muted' : 'medium',
+        subtitle: season.subtitle,
+        temperature: season.temperature,
+        depth: season.depth,
+        contrast: season.contrast,
+        saturation: season.saturation,
       },
       palette,
       skinAnalysis: skinAnalysis || {

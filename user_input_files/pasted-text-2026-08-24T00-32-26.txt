@@ -1,0 +1,235 @@
+TENEMOS UN ERROR CRÍTICO EN TEST_MODE. NO QUIERO QUE SIMPLEMENTE OCULTES EL ERROR.
+
+Estos son los errores exactos:
+
+[Analyzing] Sending to backend...
+localhost:3001/api/analyze
+Failed to fetch
+ERR_CONNECTION_REFUSED
+
+Después:
+
+[Analyzing] Backend analysis failed, using demo data
+
+Después:
+
+[TEST MODE] Starting PDF generation...
+
+[TEST MODE] PersonalStyleProfile generated:
+"Analysis data retrieved from localStorage"
+
+Y finalmente:
+
+TypeError: Cannot read properties of undefined (reading 'includes')
+
+at index-CRAtlBJH.js:714...
+
+==================================================
+PROBLEMA 1 — BACKEND
+==================================================
+
+La versión TEST_MODE desplegada está intentando llamar:
+
+localhost:3001/api/analyze
+
+Eso NO es correcto en una aplicación desplegada.
+
+En producción/despliegue, localhost apunta al navegador del usuario, no al backend de PRYSM.
+
+Quiero que revises cómo está configurada actualmente la URL del backend.
+
+Necesito que TEST_MODE utilice un backend accesible desde la URL desplegada.
+
+NO quiero una solución que dependa de tener mi computadora ejecutando localhost:3001.
+
+Primero identifica:
+
+1. Dónde está configurada la URL del backend.
+2. Por qué TEST_MODE está utilizando localhost:3001.
+3. Cuál es la URL real/accesible del backend.
+4. Cómo se configura actualmente la URL en producción.
+5. Cómo debe configurarse en el entorno de prueba.
+
+NO inventes una URL del backend.
+
+Si el backend todavía NO está desplegado, dime claramente:
+
+"El backend no está desplegado."
+
+Y detente antes de modificar la aplicación.
+
+==================================================
+PROBLEMA 2 — FALLBACK A DATOS DEMO
+==================================================
+
+Actualmente cuando falla el backend aparece:
+
+"Backend analysis failed, using demo data"
+
+NO quiero que TEST_MODE haga esto silenciosamente.
+
+Para esta prueba necesito comprobar el análisis REAL.
+
+Por lo tanto, cuando TEST_MODE=true:
+
+SI EL BACKEND NO RESPONDE:
+
+- mostrar un error claro;
+- indicar que el backend de prueba no está disponible;
+- NO utilizar demo data;
+- NO continuar generando el PDF;
+- NO intentar construir un PersonalStyleProfile falso.
+
+Quiero que detectemos errores reales, no que los escondamos con datos demo.
+
+El fallback de demo puede mantenerse para donde ya existía, pero NO debe utilizarse para esta prueba del nuevo motor personalizado.
+
+==================================================
+PROBLEMA 3 — PersonalStyleProfile
+==================================================
+
+El log:
+
+"[TEST MODE] PersonalStyleProfile generated:
+Analysis data retrieved from localStorage"
+
+me indica que posiblemente no se está construyendo el perfil completo desde las respuestas actuales.
+
+Quiero que inspecciones `buildProfileFromAnswers()`.
+
+Verifica que reciba:
+
+- answers
+- photos
+- skinAnalysis
+- analysis result
+
+Y que realmente construya:
+
+Q1 → desiredFeeling
+
+Q2 → skin tone
+
+Q3 → silhouette
+
+Q4 → budget
+
+Q5 → existingColors
+
+Q6 → existingPieces
+
+Q7 → metal
+
+Q8 → style
+
+Q9 → occasions
+
+Q10 → reference look
+
+Q11 → userPhotos
+
+Q12 → name/email
+
+No quiero un perfil basado en un texto como:
+
+"Analysis data retrieved from localStorage"
+
+Quiero un objeto estructurado con todos los datos reales.
+
+==================================================
+PROBLEMA 4 — ERROR `.includes`
+==================================================
+
+NO soluciones esto simplemente agregando optional chaining o valores vacíos.
+
+Primero localiza exactamente qué variable está causando:
+
+Cannot read properties of undefined (reading 'includes')
+
+Necesito saber:
+
+- archivo;
+- función;
+- variable;
+- línea;
+- qué valor debería contener;
+- por qué está llegando como undefined.
+
+Después corrige el origen del dato.
+
+Por ejemplo, si una función espera:
+
+profile.lifestyle.occasions
+
+pero recibe undefined, corrige la construcción del profile para que `occasions` llegue correctamente.
+
+NO escondas el problema.
+
+==================================================
+PRUEBA OBLIGATORIA
+
+Después de corregirlo quiero este flujo:
+
+TEST MODE
+↓
+12 preguntas
+↓
+3 fotografías
+↓
+Analyzing
+↓
+Backend REAL
+↓
+PersonalStyleProfile REAL
+↓
+RecommendationEngine
+↓
+PDF REAL
+↓
+Report
+
+NO:
+
+TEST MODE
+↓
+Backend error
+↓
+Demo data
+↓
+PDF
+
+==================================================
+IMPORTANTE
+
+NO cambies el diseño.
+
+NO cambies las 12 preguntas.
+
+NO cambies el PDF visualmente.
+
+NO cambies MercadoPago.
+
+NO cambies la lógica de producción.
+
+NO uses sample-report.pdf.
+
+NO ocultes errores con fallbacks.
+
+Primero corrige la conexión entre TEST_MODE y el backend real.
+
+Después corrige PersonalStyleProfile.
+
+Después corrige el error `.includes`.
+
+Al finalizar, dime exactamente:
+
+1. Qué estaba causando `ERR_CONNECTION_REFUSED`.
+2. Qué URL de backend está usando ahora TEST_MODE.
+3. Si el backend está realmente accesible desde la URL de prueba.
+4. Qué variable causaba `.includes(undefined)`.
+5. Cómo se corrigió.
+6. Si las 12 respuestas llegan al PersonalStyleProfile.
+7. Si las 3 fotos llegan al análisis.
+8. Si el PDF se genera realmente con esos datos.
+
+NO des por terminado el trabajo hasta ejecutar una prueba completa.
