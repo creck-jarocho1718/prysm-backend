@@ -9,7 +9,7 @@ import Share from './components/Share';
 import { AnalysisResponse, QuizAnswers } from './services/api';
 import { TEST_MODE, testLog } from './config';
 import { generatePdfHtml } from './services/pdfGenerator';
-import { PersonalStyleProfile } from './services/styleGenome';
+import { PersonalStyleProfile, SilhouetteType, BudgetLevel, StyleType, OccasionType, MetalPreference } from './services/styleGenome';
 
 export type Screen = 'landing' | 'quiz' | 'analyzing' | 'result' | 'report' | 'paywall' | 'share' | 'processing';
 
@@ -22,6 +22,355 @@ export interface UserData {
   name: string;
   email: string;
   photos: string[];
+}
+
+// ============================================================================
+// Helper Functions to Extract Quiz Answers
+// ============================================================================
+
+/**
+ * Get a single answer from the answers array
+ */
+function getAnswerValue(answers: QuizAnswer[], questionId: string): string | string[] | undefined {
+  const answer = answers.find(a => a.questionId === questionId);
+  return answer?.value;
+}
+
+/**
+ * Get a single string answer (for single-select questions)
+ */
+function getStringAnswer(answers: QuizAnswer[], questionId: string): string {
+  const value = getAnswerValue(answers, questionId);
+  if (Array.isArray(value)) return value[0] || '';
+  return value || '';
+}
+
+/**
+ * Get an array of strings (for multi-select questions)
+ */
+function getArrayAnswer(answers: QuizAnswer[], questionId: string): string[] {
+  const value = getAnswerValue(answers, questionId);
+  if (Array.isArray(value)) return value;
+  return value ? [value] : [];
+}
+
+// Mapping: Silhouette quiz answer → SilhouetteType
+const SILHOUETTE_MAP: Record<string, { type: SilhouetteType; name: string }> = {
+  'reloj-arena': { type: 'hourglass', name: 'Reloj de Arena' },
+  'triangulo': { type: 'pear', name: 'Triángulo' },
+  'triangulo-inv': { type: 'inverted_triangle', name: 'Triángulo Invertido' },
+  'rectangulo': { type: 'rectangle', name: 'Rectángulo' },
+  'ovalada': { type: 'oval', name: 'Ovalada' },
+  'diamante': { type: 'diamond', name: 'Diamante' },
+};
+
+// Mapping: Budget quiz answer → BudgetLevel
+const BUDGET_MAP: Record<string, BudgetLevel> = {
+  'menos-1000': 'low',
+  '1000-3000': 'medium',
+  '3000-5000': 'medium',
+  '5000-10000': 'high',
+  'mas-10000': 'luxury',
+};
+
+// Mapping: Metal quiz answer → MetalPreference
+const METAL_MAP: Record<string, MetalPreference> = {
+  'dorado': 'gold',
+  'plateado': 'silver',
+  'ambos': 'both',
+};
+
+// Mapping: Style quiz answer → StyleType
+const STYLE_MAP: Record<string, StyleType> = {
+  'clasico': 'classic',
+  'casual': 'casual',
+  'bohemio': 'boho',
+  'glamuroso': 'glamorous',
+  'minimalista': 'minimalist',
+  'deportivo': 'sporty',
+  'romantico': 'romantic',
+  'edgy': 'dramatic',
+  'vintage': 'artistic',
+  'streetwear': 'casual',
+  'profesional': 'professional',
+  'chic': 'elegant',
+};
+
+// Mapping: Occasion quiz answer → OccasionType
+const OCCASION_MAP: Record<string, OccasionType> = {
+  'oficina': 'office',
+  'citas': 'date',
+  'eventos': 'event',
+  'fin-semana': 'casual',
+  'ejercicio': 'sport',
+  'viajes': 'travel',
+  'fiestas': 'event',
+  'familia': 'casual',
+  'coworking': 'casual',
+  'casa': 'casual',
+};
+
+// Color names from quiz to readable format
+const COLOR_NAMES: Record<string, string> = {
+  'negro': 'Negro',
+  'blanco': 'Blanco',
+  'gris': 'Gris',
+  'azul': 'Azul',
+  'cafe': 'Café',
+  'beige': 'Beige',
+  'rojo': 'Rojo',
+  'verde': 'Verde',
+  'morado': 'Morado',
+  'rosa': 'Rosa',
+  'amarillo': 'Amarillo',
+  'naranja': 'Naranja',
+};
+
+// Derive secondary styles based on primary
+const SECONDARY_STYLES: Record<StyleType, StyleType[]> = {
+  classic: ['elegant', 'professional'],
+  romantic: ['elegant', 'glamorous'],
+  dramatic: ['glamorous', 'artistic'],
+  natural: ['casual', 'boho'],
+  glamorous: ['elegant', 'romantic'],
+  minimalist: ['classic', 'elegant'],
+  boho: ['natural', 'casual'],
+  sporty: ['casual', 'natural'],
+  elegant: ['classic', 'glamorous'],
+  casual: ['natural', 'sporty'],
+  artistic: ['dramatic', 'glamorous'],
+  professional: ['classic', 'elegant'],
+};
+
+/**
+ * Build PersonalStyleProfile from real quiz answers
+ */
+function buildProfileFromAnswers(
+  answers: QuizAnswer[],
+  userName: string,
+  userEmail: string,
+  uploadedPhotos: string[],
+  analysis: any,
+  skinAnalysis: any
+): PersonalStyleProfile {
+  // Q1: Desired feeling
+  const desiredFeeling = getStringAnswer(answers, 'feeling') || 'segura';
+
+  // Q2: Skin tone (complement to photo analysis)
+  const skinToneQuiz = getStringAnswer(answers, 'skin-tone');
+
+  // Q3: Silhouette
+  const silhouetteAnswer = getStringAnswer(answers, 'silhouette');
+  const silhouetteData = SILHOUETTE_MAP[silhouetteAnswer] || SILHOUETTE_MAP['reloj-arena'];
+
+  // Q4: Budget
+  const budgetAnswer = getStringAnswer(answers, 'budget');
+  const budget = BUDGET_MAP[budgetAnswer] || 'medium';
+
+  // Q5: Existing colors
+  const existingColorsRaw = getArrayAnswer(answers, 'colors-closet');
+  const existingColors = existingColorsRaw.map(c => COLOR_NAMES[c] || c);
+
+  // Q6: Existing pieces
+  const existingPiecesRaw = getArrayAnswer(answers, 'closet');
+  const existingPieces = existingPiecesRaw.map(p => {
+    const pieceMap: Record<string, string> = {
+      'jeans': 'Jeans',
+      'blusas': 'Blusas',
+      'vestidos': 'Vestidos',
+      'faldas': 'Faldas',
+      'shorts': 'Shorts',
+      'blazers': 'Blazers',
+      'sweaters': 'Sweaters',
+      'zapatos': 'Zapatos',
+      'bolsas': 'Bolsas',
+      'accesorios': 'Accesorios',
+      'sudaderas': 'Sudaderas',
+      'camisas': 'Camisas',
+    };
+    return pieceMap[p] || p.charAt(0).toUpperCase() + p.slice(1);
+  });
+
+  // Detect wardrobe gaps based on existing pieces
+  const gaps: string[] = [];
+  const piecesLower = existingPiecesRaw.map(p => p.toLowerCase());
+  if (!piecesLower.some(p => p.includes('blazer'))) {
+    gaps.push('Blazer o sak de constructor');
+  }
+  if (!piecesLower.some(p => p.includes('vestido'))) {
+    gaps.push('Vestido versátil');
+  }
+  if (!piecesLower.some(p => p.includes('pantalon') || p.includes('jean'))) {
+    gaps.push('Pantalón bien cortado');
+  }
+
+  // Q7: Metal preference
+  const metalAnswer = getStringAnswer(answers, 'metal');
+  const metal = METAL_MAP[metalAnswer] || 'both';
+
+  // Q8: Style
+  const styleAnswers = getArrayAnswer(answers, 'style');
+  const primaryStyle = styleAnswers.length > 0 ?
+    (STYLE_MAP[styleAnswers[0]] || 'classic') : 'classic';
+  const secondaryStyles = styleAnswers.length > 1 ?
+    styleAnswers.slice(1, 3).map(s => STYLE_MAP[s] || 'casual') :
+    SECONDARY_STYLES[primaryStyle];
+
+  // Q9: Occasions with priorities
+  const occasionAnswers = getArrayAnswer(answers, 'occasions');
+  const occasions = occasionAnswers.map((occ, idx) => ({
+    type: OCCASION_MAP[occ] || 'casual',
+    priority: Math.max(1, 5 - idx), // First selected = highest priority
+  }));
+  // Ensure at least some default occasions if none selected
+  if (occasions.length === 0) {
+    occasions.push({ type: 'office', priority: 5 });
+    occasions.push({ type: 'casual', priority: 4 });
+  }
+
+  // Q10: Archetype (reference looks)
+  const archetype = getStringAnswer(answers, 'archetype');
+
+  // Get season from analysis (don't override with quiz answers)
+  const season = analysis?.analysis?.season || {
+    primary: 'deep_autumn',
+    name: 'Otoño Profundo',
+    subtitle: 'Deep Autumn · Warm · Rich',
+  };
+
+  const palette = analysis?.analysis?.palette || {
+    protagonist: ['#8B4513', '#D2691E', '#CD853F'],
+    secondary: ['#556B2F', '#6B4423', '#704214'],
+    accent: ['#DAA520', '#B8860B', '#D2691E'],
+    neutral: ['#4A3728', '#5D4E37', '#3D2914'],
+    avoid: ['#ADD8E6', '#87CEEB', '#98FB98'],
+  };
+
+  // Get silhouette recommendations based on type
+  const silhouetteRecommendations = getSilhouetteRecommendations(silhouetteData.type);
+
+  return {
+    profileId: `test-${Date.now()}`,
+    createdAt: new Date().toISOString(),
+    userName: userName || analysis?.analysis?.userName || 'Usuario Test',
+    userEmail: userEmail || analysis?.analysis?.userEmail || 'test@test.com',
+    userPhotos: uploadedPhotos,
+    colorimetry: {
+      season: {
+        primary: season.primary,
+        name: season.name,
+        subtitle: season.subtitle || `${season.name} · ${season.primary.includes('autumn') || season.primary.includes('spring') ? 'Warm' : 'Cool'} · ${season.primary.includes('deep') || season.primary.includes('bright') ? 'Rich' : 'Soft'}`,
+        temperature: season.primary.includes('autumn') || season.primary.includes('spring') ? 'warm' : 'cool',
+        depth: season.primary.includes('deep') ? 'deep' : season.primary.includes('light') ? 'light' : 'medium',
+        contrast: 'medium',
+        saturation: season.primary.includes('bright') ? 'bright' : season.primary.includes('soft') ? 'muted' : 'medium',
+      },
+      palette,
+      skinAnalysis: skinAnalysis || {
+        undertone: skinToneQuiz?.includes('clara') ? 'warm' : skinToneQuiz?.includes('oscura') ? 'neutral' : 'warm',
+        depth: skinToneQuiz?.includes('clara') ? 'light' : skinToneQuiz?.includes('oscura') ? 'deep' : 'medium',
+        saturation: 'medium',
+        contrast: 'medium',
+        confidence: 0.7,
+      },
+    },
+    silhouette: {
+      type: silhouetteData.type,
+      name: silhouetteData.name,
+      bodyShape: silhouetteData.type === 'hourglass' || silhouetteData.type === 'pear' || silhouetteData.type === 'apple' || silhouetteData.type === 'diamond' || silhouetteData.type === 'oval' ? 'Curvilínea' : 'Lineal',
+      recommendations: silhouetteRecommendations,
+    },
+    lifestyle: {
+      occasions,
+      budget,
+      wardrobeStatus: {
+        existingPieces,
+        existingColors,
+        gaps,
+      },
+    },
+    style: {
+      primary: primaryStyle,
+      secondary: secondaryStyles,
+      desiredFeeling,
+      referenceLooks: archetype ? [archetype] : [],
+    },
+    preferences: {
+      metal,
+      styleAdjectives: styleAnswers.map(s => {
+        const adjMap: Record<string, string> = {
+          'clasico': 'Clásico',
+          'casual': 'Casual',
+          'bohemio': 'Bohemio',
+          'glamuroso': 'Glamuroso',
+          'minimalista': 'Minimalista',
+          'deportivo': 'Deportivo',
+          'romantico': 'Romántico',
+          'edgy': 'Edgy',
+          'vintage': 'Vintage',
+          'streetwear': 'Streetwear',
+          'profesional': 'Profesional',
+          'chic': 'Chic',
+        };
+        return adjMap[s] || s;
+      }),
+    },
+    goals: {
+      primary: desiredFeeling,
+      blockers: [],
+    },
+    prysmScore: analysis?.analysis?.prysmScore || 8.5,
+    analysisConfidence: 0.85,
+  };
+}
+
+function getSilhouetteRecommendations(type: SilhouetteType) {
+  const recommendations: Record<SilhouetteType, { favor: string[]; avoid: string[]; necklines: string[]; silhouettes: string[] }> = {
+    hourglass: {
+      favor: ['Cintura definida', 'Tejidos que marcan curva', 'Piezas que realzan proporción'],
+      avoid: ['Líneas rectas sin forma', 'Ropa oversize que oculta figura', 'Cinturones anchos en cintura'],
+      necklines: ['V', 'Redondeada', 'Sweetheart', 'Halter'],
+      silhouettes: ['Ajustado en cintura', 'Evaseado en falda', 'Bodycon'],
+    },
+    pear: {
+      favor: ['Escotes que equilibran', 'Colores claros arriba', 'Tejidos estructurados en torso'],
+      avoid: ['Ropa ajustada en cadera', 'Estampados grandes abajo', 'Volumen en parte inferior'],
+      necklines: ['V', 'Barco', 'Cuadrado', 'One shoulder'],
+      silhouettes: ['A-line', 'Trapecio', 'Blusas con estructura'],
+    },
+    inverted_triangle: {
+      favor: ['Colores oscuros arriba', 'Piezas simples en torso', 'Falda con volumen'],
+      avoid: ['Hombreras grandes', 'Estampados arriba', 'Capas que add volume arriba'],
+      necklines: ['Barco', 'Redondeada', 'Cuadrado'],
+      silhouettes: ['A-line', 'Pantalones anchos', 'Skirts con volumen'],
+    },
+    rectangle: {
+      favor: ['Cintura definida', 'Capas y volumen', 'Piezas con textura'],
+      avoid: ['Ropa completamente recta', 'Sin diferenciación', 'Tejidos lisos sin forma'],
+      necklines: ['V', 'Redondeada', 'Halter', 'Asimétrica'],
+      silhouettes: ['Entallado en cintura', 'Fit and flare', 'Piezas con drapeado'],
+    },
+    oval: {
+      favor: ['Cintura suelta o alta', 'Piezas con estructura', 'Líneas verticales'],
+      avoid: ['Ropa muy ajustada', 'Estampados grandes', 'Tejidos muy finos'],
+      necklines: ['V', 'Columna', 'Des侄alce alto'],
+      silhouettes: ['Empire', 'Blazers', 'Capas con estructura'],
+    },
+    diamond: {
+      favor: ['Cintura definida', 'Equilibrio arriba y abajo', 'Tejidos fluidos'],
+      avoid: ['Ropa muy ajustada', 'Líneas horizontales', 'Volumen extremo'],
+      necklines: ['V', 'Des侄alce', 'Asimétrica'],
+      silhouettes: ['Fit and flare', 'Trapecio', 'Piezas con movimiento'],
+    },
+    apple: {
+      favor: ['Cintura suelta', 'Piezas que fluyen', 'Escotes que alargan'],
+      avoid: ['Ropa ajustada en medio', 'Cinturones en cintura', 'Tejidos rígidos'],
+      necklines: ['V profundo', 'Des侄alce', 'Columnas verticales'],
+      silhouettes: ['Empire', 'A-line', 'Blazers largos'],
+    },
+  };
+
+  return recommendations[type] || recommendations.hourglass;
 }
 
 function App() {
@@ -152,81 +501,30 @@ function App() {
 
       testLog.profile('Analysis data retrieved from localStorage');
 
-      // Build PersonalStyleProfile from analysis data
-      const profile: PersonalStyleProfile = {
-        profileId: `test-${Date.now()}`,
-        createdAt: new Date().toISOString(),
-        userName: analysis.analysis?.userName || userName || 'Usuario Test',
-        userEmail: analysis.analysis?.userEmail || userEmail || 'test@test.com',
-        colorimetry: {
-          season: {
-            primary: analysis.analysis?.season?.id || 'deep_autumn',
-            name: analysis.analysis?.season?.name || 'Otoño Profundo',
-            subtitle: 'Deep Autumn · Warm · Rich',
-            temperature: 'warm',
-            depth: 'medium',
-            contrast: 'medium',
-            saturation: 'medium'
-          },
-          palette: analysis.analysis?.palette || {
-            protagonist: ['#8B4513', '#D2691E', '#CD853F'],
-            secondary: ['#556B2F', '#6B4423', '#704214'],
-            accent: ['#DAA520', '#B8860B', '#D2691E'],
-            neutral: ['#4A3728', '#5D4E37', '#3D2914'],
-            avoid: ['#ADD8E6', '#87CEEB', '#98FB98']
-          },
-          skinAnalysis: skinAnalysis || {
-            undertone: 'warm',
-            depth: 'medium',
-            saturation: 'medium',
-            contrast: 'medium',
-            confidence: 0.8
-          }
-        },
-        silhouette: {
-          type: 'hourglass',
-          name: analysis.analysis?.bodyType?.name || 'Reloj de Arena',
-          bodyShape: 'Curvilínea',
-          recommendations: {
-            favor: ['Cintura definida', 'Tejidos que marcan curva', 'Piezas que realzan proporción'],
-            avoid: ['Líneas rectas sin forma', 'Ropa oversize'],
-            necklines: ['V', 'Redondeada', 'Sweetheart'],
-            silhouettes: ['Ajustado en cintura', 'Evaseado en falda']
-          }
-        },
-        lifestyle: {
-          occasions: [
-            { type: 'office', priority: 5 },
-            { type: 'casual', priority: 4 },
-            { type: 'date', priority: 3 },
-            { type: 'travel', priority: 2 }
-          ],
-          budget: 'medium',
-          wardrobeStatus: {
-            existingPieces: ['Blusas', 'Jeans'],
-            existingColors: ['Negro', 'Blanco'],
-            gaps: ['Blazer', 'Vestido']
-          }
-        },
-        style: {
-          primary: 'classic',
-          secondary: ['elegant', 'professional'],
-          desiredFeeling: 'Segura',
-          referenceLooks: []
-        },
-        preferences: {
-          metal: 'gold',
-          styleAdjectives: ['Clásico', 'Elegante']
-        },
-        goals: {
-          primary: 'Verse bien',
-          blockers: []
-        },
-        prysmScore: analysis.analysis?.prysmScore || 8.5,
-        analysisConfidence: 0.8
-      };
+      // Build PersonalStyleProfile from REAL quiz answers
+      const profile = buildProfileFromAnswers(
+        answers,
+        userName,
+        userEmail,
+        uploadedPhotos,
+        analysis,
+        skinAnalysis
+      );
 
-      testLog.profile('PersonalStyleProfile built successfully');
+      testLog.profile('PersonalStyleProfile built from quiz answers');
+      testLog.info('Answers used:', {
+        Q1_feeling: getStringAnswer(answers, 'feeling'),
+        Q2_skinTone: getStringAnswer(answers, 'skin-tone'),
+        Q3_silhouette: getStringAnswer(answers, 'silhouette'),
+        Q4_budget: getStringAnswer(answers, 'budget'),
+        Q5_colors: getArrayAnswer(answers, 'colors-closet'),
+        Q6_pieces: getArrayAnswer(answers, 'closet'),
+        Q7_metal: getStringAnswer(answers, 'metal'),
+        Q8_style: getArrayAnswer(answers, 'style'),
+        Q9_occasions: getArrayAnswer(answers, 'occasions'),
+        Q10_archetype: getStringAnswer(answers, 'archetype'),
+        photosCount: uploadedPhotos.length,
+      });
 
       // Generate PDF
       const pdfData = await generatePdfHtml(profile);
@@ -248,7 +546,7 @@ function App() {
       alert('Error al generar el informe. Por favor intenta de nuevo.');
       setCurrentScreen('result');
     }
-  }, [userName, userEmail]);
+  }, [answers, userName, userEmail, uploadedPhotos]);
 
   // Execute PDF generation when entering processing screen (TEST_MODE only)
   useEffect(() => {

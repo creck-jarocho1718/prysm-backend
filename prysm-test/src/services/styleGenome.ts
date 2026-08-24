@@ -38,6 +38,7 @@ export interface PersonalStyleProfile {
   createdAt: string;
   userName: string;
   userEmail: string;
+  userPhotos?: string[];
 
   // Colorimetry
   colorimetry: {

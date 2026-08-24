@@ -84,12 +84,45 @@ export default function Report({
   const [activePage, setActivePage] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Get user's photo from testPdfData
+  const userPhoto = testPdfData?.profile?.userPhotos?.[0] || '';
+  const hasUserPhoto = !!userPhoto;
+
   // Log test mode status
   useEffect(() => {
     if (TEST_MODE) {
       testLog.info('Report component loaded with testPdfData:', testPdfData ? 'AVAILABLE' : 'NOT AVAILABLE');
+      testLog.info('User photo available:', hasUserPhoto);
     }
-  }, [testPdfData]);
+  }, [testPdfData, hasUserPhoto]);
+
+  // Download PDF handler
+  const handleDownloadPdf = async () => {
+    if (!testPdfData?.pdfHtml) {
+      alert('No hay PDF disponible para descargar.');
+      return;
+    }
+
+    try {
+      // Create a blob from the HTML
+      const blob = new Blob([testPdfData.pdfHtml], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+
+      // Create download link
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `PRYSM-Informe-${userName || 'Cliente'}-${Date.now()}.html`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Clean up
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading PDF:', error);
+      alert('Error al descargar el informe. Por favor intenta de nuevo.');
+    }
+  };
 
   // Get data from testPdfData, analysisResult, or fallback
   const getReportData = () => {
@@ -247,7 +280,11 @@ export default function Report({
       <section className="re-page re-cover">
         <div className="re-watermark">PRYSM</div>
         <div className="re-cover-photo">
-          <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600&h=900&q=80&auto=format&fit=crop&crop=top" alt="" />
+          {hasUserPhoto ? (
+            <img src={userPhoto} alt={`Foto de ${userName || 'Cliente'}`} />
+          ) : (
+            <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600&h=900&q=80&auto=format&fit=crop&crop=top" alt="" />
+          )}
           <div className="re-cover-photo-overlay" />
         </div>
         <div className="re-cover-top">
@@ -596,15 +633,87 @@ export default function Report({
       </nav>
 
       {/* Actions */}
-      <div className="re-actions">
-        <button className="re-action-btn" onClick={onShare}>
+      <div className="re-actions" style={{
+        position: 'fixed',
+        bottom: '24px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        display: 'flex',
+        gap: '12px',
+        zIndex: 100,
+        flexWrap: 'wrap',
+        justifyContent: 'center'
+      }}>
+        <button
+          onClick={handleDownloadPdf}
+          disabled={!testPdfData?.pdfHtml}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '14px 24px',
+            background: 'linear-gradient(135deg, #D4A473 0%, #205E53 100%)',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '30px',
+            fontSize: '12px',
+            fontWeight: '500',
+            letterSpacing: '0.1em',
+            cursor: testPdfData?.pdfHtml ? 'pointer' : 'not-allowed',
+            opacity: testPdfData?.pdfHtml ? 1 : 0.5,
+            boxShadow: '0 4px 20px rgba(212, 164, 115, 0.4)',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          DESCARGAR PDF
+        </button>
+        <button
+          onClick={onShare}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '14px 20px',
+            background: 'transparent',
+            color: '#fff',
+            border: '1px solid rgba(255,255,255,0.3)',
+            borderRadius: '30px',
+            fontSize: '12px',
+            fontWeight: '400',
+            letterSpacing: '0.05em',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease'
+          }}
+        >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
             <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
           </svg>
           Compartir
         </button>
-        <button className="re-action-btn primary" onClick={onRestart}>
+        <button
+          onClick={onRestart}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '14px 20px',
+            background: 'rgba(255,255,255,0.1)',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '30px',
+            fontSize: '12px',
+            fontWeight: '400',
+            letterSpacing: '0.05em',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease'
+          }}
+        >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/>
             <path d="M3 3v5h5"/>

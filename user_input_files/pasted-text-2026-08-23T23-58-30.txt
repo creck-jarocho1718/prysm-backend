@@ -1,0 +1,357 @@
+Sí, apruebo el diagnóstico de causas.
+
+Quiero que procedas con la implementación, PERO HAZLO POR ETAPAS Y NO MODIFIQUES EL DISEÑO VISUAL QUE YA ESTÁ FUNCIONANDO.
+
+PRIORIDAD:
+
+1. CONECTAR LAS RESPUESTAS REALES DEL TEST AL PERSONALSTYLEPROFILE.
+2. INTEGRAR LA FOTO REAL DEL CLIENTE EN LA PORTADA Y RECUPERAR EL BOTÓN DE DESCARGA DEL PDF.
+3. HACER QUE LAS RESPUESTAS DEL TEST CAMBIEN REALMENTE LAS RECOMENDACIONES.
+
+==================================================
+REGLA ABSOLUTA DE DISEÑO
+==================================================
+
+NO rediseñes la aplicación.
+
+NO cambies:
+
+- Landing
+- Quiz
+- colores
+- tipografías
+- tarjetas
+- layout
+- navegación visual
+- estructura de las 7 páginas del PDF
+- estilo visual de Report
+
+El diseño actual me gusta.
+
+Solo modifica la lógica y los datos necesarios.
+
+==================================================
+FASE 1 — PERSONALSTYLEPROFILE
+==================================================
+
+Primero corrige `App.tsx` para que PersonalStyleProfile deje de utilizar valores hardcodeados y tome los datos reales de `answers`.
+
+DEBEN CONECTARSE:
+
+Q1 → desiredFeeling / objetivos de imagen
+
+Q2 → skin tone del cuestionario
+
+Q3 → silhouette real
+
+Q4 → budget real
+
+Q5 → existingColors reales
+
+Q6 → existingPieces reales
+
+Q7 → metal real
+
+Q8 → style real
+
+Q9 → occasions reales
+
+Q10 → archetype/look de referencia real
+
+Q11 → userPhotos reales
+
+Q12 → name/email reales
+
+NO quiero valores como:
+
+desiredFeeling: 'Segura'
+
+silhouette: 'hourglass'
+
+budget: 'medium'
+
+existingColors: ['Negro', 'Blanco']
+
+existingPieces: ['Blusas', 'Jeans']
+
+metal: 'gold'
+
+style.primary: 'classic'
+
+occasions: office/casual/date/travel
+
+si esos valores no corresponden a las respuestas reales del usuario.
+
+Todos deben venir del test.
+
+==================================================
+FASE 2 — FOTOGRAFÍA
+==================================================
+
+Integra las fotografías reales del usuario en PersonalStyleProfile.
+
+Utiliza las fotos que el usuario realmente subió:
+
+- frontal
+- perfil
+- cuerpo completo
+
+La fotografía principal debe llegar al generador del reporte.
+
+En la portada del PDF debe aparecer la fotografía REAL del usuario.
+
+NO utilices la foto genérica de Unsplash.
+
+NO utilices sample-report.pdf.
+
+NO cambies el diseño de la portada.
+
+Solo reemplaza la imagen genérica por la fotografía real del cliente dentro del espacio existente.
+
+==================================================
+FASE 3 — DESCARGA PDF
+==================================================
+
+Agrega al Report un botón claramente visible:
+
+"DESCARGAR PDF"
+
+Debe descargar el PDF personalizado generado para ese usuario.
+
+NO debe descargar:
+
+- sample-report.pdf
+- PDF genérico
+- archivo de ejemplo
+
+Debe descargar el reporte correspondiente al análisis actual.
+
+Mantén el diseño actual de Report.
+
+==================================================
+FASE 4 — PERSONALIZACIÓN REAL
+==================================================
+
+Ahora conecta las respuestas al recommendationEngine.
+
+Q1 — CÓMO QUIERE SENTIRSE
+
+Debe funcionar como objetivo de imagen.
+
+NO modifica la temporada de color.
+
+Debe modificar la dirección de estilo y las recomendaciones.
+
+Ejemplo:
+
+"sophisticated + confident"
+
+debe producir recomendaciones diferentes de:
+
+"natural + serene".
+
+Q2 — TONO DE PIEL
+
+Debe utilizarse como dato complementario del análisis fotográfico.
+
+No sustituir automáticamente el análisis de color.
+
+Si existe contradicción, no inventes. Registra la discrepancia y utiliza la información con una lógica coherente.
+
+Q3 — SILUETA
+
+Debe afectar realmente:
+
+- cortes
+- proporciones
+- prendas
+- escotes
+- largos
+- volumen
+- materiales
+- combinaciones
+
+No quiero que simplemente diga el nombre de la silueta.
+
+Q4 — PRESUPUESTO
+
+Debe producir recomendaciones prácticas.
+
+No inventes precios de tiendas.
+
+Utiliza el nivel de presupuesto para determinar:
+
+- prioridades de compra
+- piezas en las que conviene invertir
+- piezas económicas
+- piezas versátiles
+- qué comprar primero
+- qué no necesita comprar
+
+Q5 — COLORES DEL CLÓSET
+
+Cruza:
+
+colores existentes
++
+colorimetría
+
+Y genera:
+
+- colores que sí le favorecen
+- colores que puede utilizar como neutros
+- colores que puede usar de otra manera
+- colores que debería dejar de priorizar
+- cómo aprovecharlos
+
+No le digas automáticamente que tire ropa.
+
+Puedes recomendar utilizar determinados colores lejos del rostro o combinarlos con colores favorables.
+
+Q6 — PRENDAS DEL CLÓSET
+
+Cruza:
+
+prendas existentes
++
+silueta
++
+colorimetría
++
+estilo
++
+ocasiones
++
+presupuesto
+
+Debe producir:
+
+- prendas que ya le funcionan
+- combinaciones que puede hacer
+- prendas que le faltan
+- qué comprar primero
+- qué no necesita comprar
+
+Q7 — METAL
+
+Utilízalo principalmente como preferencia de accesorios.
+
+NO lo utilices como prueba definitiva de temperatura.
+
+Q8 — ESTILO
+
+Debe modificar realmente las recomendaciones.
+
+Q9 — OCASIONES
+
+Debe afectar directamente los looks.
+
+Las ocasiones seleccionadas por el usuario deben reemplazar los valores hardcodeados actuales.
+
+Q10 — LOOK DE REFERENCIA
+
+Debe influir en la dirección estética de las recomendaciones.
+
+NO debe modificar la colorimetría.
+
+==================================================
+REGLA CENTRAL
+==================================================
+
+Quiero que el resultado sea realmente diferente cuando cambian las respuestas.
+
+Por ejemplo:
+
+USUARIO A:
+- Silueta: reloj de arena
+- Presupuesto: menos de 1000
+- Ocasión: oficina
+- Estilo: profesional
+- Feeling: sofisticada
+
+USUARIO B:
+- Silueta: rectángulo
+- Presupuesto: más de 10000
+- Ocasión: citas
+- Estilo: romántico
+- Feeling: natural
+
+Aunque ambos tengan la misma temporada de color, NO deben recibir los mismos looks ni las mismas prioridades de compra.
+
+==================================================
+REGLA SOBRE COLORIMETRÍA
+==================================================
+
+NO permitas que estilo, presupuesto, feeling u ocasiones cambien artificialmente la temporada.
+
+La colorimetría debe basarse en el análisis de color.
+
+Las respuestas del test determinan CÓMO APLICAR esa colorimetría a la vida del cliente.
+
+==================================================
+FASE 5 — VERIFICACIÓN
+==================================================
+
+Después de implementar, NO te limites a decir "funciona".
+
+Haz una prueba completa en TEST_MODE.
+
+Comprueba:
+
+1. Q1 llega correctamente.
+2. Q2 llega correctamente.
+3. Q3 llega correctamente.
+4. Q4 llega correctamente.
+5. Q5 llega correctamente.
+6. Q6 llega correctamente.
+7. Q7 llega correctamente.
+8. Q8 llega correctamente.
+9. Q9 llega correctamente.
+10. Q10 llega correctamente.
+11. Las 3 fotografías llegan correctamente.
+12. La foto aparece en la portada.
+13. El reporte tiene 7 páginas.
+14. Existe el botón DESCARGAR PDF.
+15. El PDF descargado corresponde al usuario actual.
+16. No se utiliza sample-report.pdf.
+
+También realiza una prueba comparativa:
+
+PRUEBA A:
+Oficina + profesional + presupuesto bajo + reloj de arena.
+
+PRUEBA B:
+Citas + romántico + presupuesto alto + rectángulo.
+
+Comprueba que las recomendaciones cambian.
+
+==================================================
+IMPORTANTE
+==================================================
+
+NO implementes cambios en MercadoPago en esta etapa.
+
+NO cambies el flujo de pago real.
+
+NO cambies las 12 preguntas.
+
+NO cambies el diseño.
+
+NO cambies la estructura visual del PDF.
+
+NO agregues elementos nuevos al PDF que alteren su diseño.
+
+Solo conecta correctamente los datos y personaliza el contenido.
+
+Cuando termines, dame:
+
+- archivos modificados;
+- qué cambió en cada archivo;
+- resultado de las pruebas;
+- ejemplo del PersonalStyleProfile generado;
+- confirmación de que la foto aparece en portada;
+- confirmación de que el PDF tiene 7 páginas;
+- confirmación de que el botón de descarga funciona;
+- confirmación de que las respuestas del test cambian las recomendaciones.
+
+Si encuentras un problema durante la implementación que requiera cambiar el diseño, DETENTE y consúltame antes de hacerlo.

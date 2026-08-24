@@ -42,7 +42,7 @@ export async function generatePdfHtml(profile: PersonalStyleProfile): Promise<Ge
     pageCount: 7,
   };
 
-  // Generate HTML
+  // Generate HTML with user photos
   const html = buildPdfHtml(profile, looks, hair, fabrics);
   pdfData.pdfHtml = html;
 
@@ -51,6 +51,7 @@ export async function generatePdfHtml(profile: PersonalStyleProfile): Promise<Ge
     profileId: profile.profileId,
     looksCount: looks.length,
     pageCount: pdfData.pageCount,
+    hasUserPhoto: !!profile.userPhotos?.length,
   });
 
   return pdfData;
@@ -66,7 +67,7 @@ function buildPdfHtml(
   hair: HairRecommendation,
   fabrics: FabricRecommendation[]
 ): string {
-  const { userName, colorimetry, silhouette, lifestyle } = profile;
+  const { userName, colorimetry, silhouette, lifestyle, userPhotos } = profile;
 
   // Get all colors for display
   const allColors = [
@@ -75,6 +76,10 @@ function buildPdfHtml(
     ...colorimetry.palette.accent,
     ...colorimetry.palette.neutral,
   ].slice(0, 8);
+
+  // Get user's first photo or empty string
+  const userPhoto = userPhotos && userPhotos.length > 0 ? userPhotos[0] : '';
+  const hasPhoto = !!userPhoto;
 
   return `<!DOCTYPE html>
 <html lang="es">
@@ -101,6 +106,9 @@ function buildPdfHtml(
     .cover-score-label { font-size: 9pt; letter-spacing: 0.2em; opacity: 0.6; text-transform: uppercase; }
     .cover-score-num { font-size: 64pt; font-weight: 200; color: #d4a473; }
     .cover-name { font-size: 12pt; opacity: 0.8; }
+    .cover-photo { position: absolute; top: 40px; right: 50px; width: 120px; height: 160px; border-radius: 8px; overflow: hidden; border: 2px solid rgba(212, 164, 115, 0.5); }
+    .cover-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .cover-photo-placeholder { width: 100%; height: 100%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 40px; }
 
     /* Page 2: Season */
     .season-page { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
@@ -213,6 +221,11 @@ function buildPdfHtml(
   <div>
     <div class="cover-brand">PRYSM</div>
     <div class="cover-date">2026 · Premium</div>
+    ${hasPhoto ? `
+    <div class="cover-photo">
+      <img src="${userPhoto}" alt="Foto de ${userName}" />
+    </div>
+    ` : ''}
   </div>
   <div>
     <div class="label" style="color: rgba(255,255,255,0.5); margin-bottom: 10px;">Análisis completado · PRYSM Engine 2026</div>
