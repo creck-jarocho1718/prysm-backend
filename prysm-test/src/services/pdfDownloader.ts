@@ -1,9 +1,9 @@
 /**
  * PDF Downloader Service
- * Generates real PDF files from HTML using html2pdf.js
+ * Generates real PDF files from HTML using html2canvas + jsPDF
+ * Based on the mechanism that was verified to work in testing
  */
 
-import html2pdf from 'html2pdf.js';
 import { testLog } from '../config';
 
 export interface PdfDownloadOptions {
@@ -12,11 +12,57 @@ export interface PdfDownloadOptions {
   userName: string;
 }
 
+// Type declarations for html2canvas and jsPDF
+declare const html2canvas: (element: HTMLElement, options?: any) => Promise<HTMLCanvasElement>;
+declare const jspdf: {
+  jsPDF: new (options?: any) => jsPDFInstance;
+};
+
+interface jsPDFInstance {
+  addImage(imageData: string, format: string, x: number, y: number, w: number, h: number): void;
+  addPage(): void;
+  save(filename: string): void;
+  internal: {
+    pageSize: {
+      width: number;
+      height: number;
+    };
+  };
+}
+
+// Load html2canvas and jsPDF from CDN
+async function loadLibraries(): Promise<void> {
+  if (typeof html2canvas !== 'undefined' && typeof jspdf !== 'undefined') {
+    return; // Already loaded
+  }
+
+  testLog.pdf({ action: 'Loading html2canvas and jsPDF from CDN' });
+
+  // Load html2canvas
+  await new Promise<void>((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error('Failed to load html2canvas'));
+    document.head.appendChild(script);
+  });
+
+  // Load jsPDF
+  await new Promise<void>((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error('Failed to load jsPDF'));
+    document.head.appendChild(script);
+  });
+
+  testLog.pdf({ action: 'Libraries loaded successfully' });
+}
+
 /**
  * Pre-load images and convert base64 to Blob URLs for proper rendering
  */
 async function preloadImages(htmlContent: string): Promise<{ html: string; imageCount: number }> {
-  // Find all base64 images in the HTML
   const base64ImageRegex = /<img[^>]+src=["'](data:image\/[^;]+;base64,[^"']+)["'][^>]*>/gi;
   const matches = [...htmlContent.matchAll(base64ImageRegex)];
 
@@ -29,25 +75,19 @@ async function preloadImages(htmlContent: string): Promise<{ html: string; image
   let processedHtml = htmlContent;
   let loadedCount = 0;
 
-  // Pre-load each base64 image
   for (const match of matches) {
     const fullMatch = match[0];
     const base64Data = match[1];
 
     try {
-      // Convert base64 to Blob
       const response = await fetch(base64Data);
       const blob = await response.blob();
       const blobUrl = URL.createObjectURL(blob);
-
-      // Replace in HTML
       processedHtml = processedHtml.replace(fullMatch, fullMatch.replace(base64Data, blobUrl));
       loadedCount++;
-
       testLog.pdf({ action: 'Image preloaded', index: loadedCount });
     } catch (error) {
       testLog.pdf({ action: 'Failed to preload image', error: String(error) });
-      // Keep original base64 if conversion fails
     }
   }
 
@@ -56,74 +96,129 @@ async function preloadImages(htmlContent: string): Promise<{ html: string; image
 
 /**
  * Generate a real PDF file from HTML content
- * Returns the PDF as a Blob for download
+ * Uses html2canvas + jsPDF directly (verified to work)
  */
 export async function generateRealPdf(options: PdfDownloadOptions): Promise<Blob> {
   const { htmlContent, fileName, userName } = options;
 
-  testLog.pdf({ action: 'Starting real PDF generation', userName, fileName });
+  testLog.pdf({ action: 'Starting PDF generation', userName, fileName });
+
+  // Load libraries if not already loaded
+  await loadLibraries();
 
   // Pre-load images to ensure they render correctly
   const { html: processedHtml, imageCount } = await preloadImages(htmlContent);
   testLog.pdf({ action: 'Images preprocessed', count: imageCount });
 
   return new Promise((resolve, reject) => {
-    // Create a temporary container
-    const container = document.createElement('div');
-    container.innerHTML = processedHtml;
-    container.style.position = 'absolute';
-    container.style.left = '-9999px';
-    container.style.top = '0';
-    container.style.width = '210mm'; // A4 width
-    container.style.background = '#ffffff';
-    document.body.appendChild(container);
+    try {
+      // Create a temporary container for rendering
+      const container = document.createElement('div');
+      container.innerHTML = processedHtml;
+      container.style.position = 'absolute';
+      container.style.left = '-9999px';
+      container.style.top = '0';
+      container.style.width = '210mm';
+      container.style.background = '#ffffff';
+      container.style.zIndex = '-1';
+      document.body.appendChild(container);
 
-    // Wait for images to be fully loaded
-    const images = container.querySelectorAll('img');
-    const imagePromises = Array.from(images).map(img => {
-      return new Promise<void>((resolve) => {
-        if (img.complete) {
-          resolve();
-        } else {
-          img.onload = () => resolve();
-          img.onerror = () => resolve(); // Continue even if image fails
-        }
+      // Wait for images to load
+      const images = container.querySelectorAll('img');
+      const imagePromises = Array.from(images).map(img => {
+        return new Promise<void>((resolve) => {
+          if (img.complete) {
+            resolve();
+          } else {
+            img.onload = () => resolve();
+            img.onerror = () => resolve();
+          }
+        });
       });
-    });
 
-    // Also add a small delay to ensure rendering is ready
-    const delay = new Promise<void>(resolve => setTimeout(resolve, 100));
+      // Small delay to ensure rendering is ready
+      const delay = new Promise<void>(resolve => setTimeout(resolve, 500));
 
-    Promise.all([...imagePromises, delay]).then(() => {
-      testLog.pdf({ action: 'Images ready, generating PDF' });
+      Promise.all([...imagePromises, delay]).then(async () => {
+        testLog.pdf({ action: 'Rendering HTML with html2canvas' });
 
-      const filename = `${fileName}-${userName.replace(/\s+/g, '_')}.pdf`;
+        try {
+          // Capture HTML with html2canvas
+          const canvas = await html2canvas(container, {
+            backgroundColor: '#ffffff',
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            logging: false,
+            onclone: (clonedDoc: Document) => {
+              const clonedContainer = clonedDoc.body.firstChild as HTMLElement;
+              if (clonedContainer) {
+                clonedContainer.style.position = 'static';
+              }
+            }
+          });
 
-      const pdfOptions = {
-        margin: 0,
-        filename: filename,
-        image: { type: 'jpeg' as const, quality: 0.98 },
-        html2canvas: {
-          scale: 2,
-          useCORS: true,
-          allowTaint: true,
-          letterRendering: true,
-        },
-        jsPDF: {
-          unit: 'mm',
-          format: 'a4',
-          orientation: 'portrait' as const,
-        },
-        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
-      };
+          testLog.pdf({ action: 'Canvas captured', width: canvas.width, height: canvas.height });
 
-      html2pdf()
-        .set(pdfOptions)
-        .from(container)
-        .outputPdf('blob')
-        .then((blob: Blob) => {
           // Clean up container
           document.body.removeChild(container);
+
+          // Create PDF with jsPDF
+          const { jsPDF } = (window as any).jspdf;
+          const pdf = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'a4'
+          });
+
+          // A4 dimensions in mm
+          const pageWidth = 210;
+          const pageHeight = 297;
+
+          // Calculate image dimensions to fit page
+          const imgWidth = pageWidth;
+          const imgHeight = (canvas.height * pageWidth) / canvas.width;
+
+          testLog.pdf({ action: 'Creating PDF', imgWidth, imgHeight, canvasHeight: canvas.height });
+
+          // If content is taller than one page, handle multiple pages
+          if (imgHeight > pageHeight) {
+            testLog.pdf({ action: 'Multi-page PDF detected' });
+
+            const ratio = canvas.width / pageWidth;
+            const pageHeightPx = pageHeight * ratio;
+            let yPos = 0;
+            let pageNum = 1;
+
+            while (yPos < canvas.height) {
+              if (pageNum > 1) {
+                pdf.addPage();
+              }
+
+              // Create temporary canvas for this page
+              const tempCanvas = document.createElement('canvas');
+              tempCanvas.width = canvas.width;
+              tempCanvas.height = Math.min(pageHeightPx, canvas.height - yPos);
+              const tempCtx = tempCanvas.getContext('2d');
+              tempCtx.drawImage(canvas, 0, yPos, canvas.width, tempCanvas.height, 0, 0, canvas.width, tempCanvas.height);
+
+              const pageImg = tempCanvas.toDataURL('image/png');
+              const pageImgHeight = (tempCanvas.height * pageWidth) / canvas.width;
+
+              pdf.addImage(pageImg, 'PNG', 0, 0, imgWidth, pageImgHeight);
+              testLog.pdf({ action: `Page ${pageNum} added`, height: tempCanvas.height });
+
+              yPos += pageHeightPx;
+              pageNum++;
+            }
+          } else {
+            // Single page
+            const imgData = canvas.toDataURL('image/png');
+            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+          }
+
+          // Get PDF as Blob
+          const pdfBlob = pdf.output('blob');
 
           // Clean up Blob URLs
           const blobUrls = processedHtml.match(/blob:[^"'\s]+/gi) || [];
@@ -131,36 +226,40 @@ export async function generateRealPdf(options: PdfDownloadOptions): Promise<Blob
             try {
               URL.revokeObjectURL(url);
             } catch (e) {
-              // Ignore errors during cleanup
+              // Ignore errors
             }
           });
 
-          testLog.pdf({ action: 'PDF generated successfully', size: blob.size, imageCount });
-          resolve(blob);
-        })
-        .catch((error: Error) => {
-          // Clean up
-          if (document.body.contains(container)) {
-            document.body.removeChild(container);
-          }
-          testLog.pdf({ action: 'PDF generation failed', error: error.message });
-          reject(error);
-        });
-    });
+          testLog.pdf({ action: 'PDF generated successfully', size: pdfBlob.size });
+          resolve(pdfBlob);
+
+        } catch (error) {
+          document.body.removeChild(container);
+          throw error;
+        }
+      });
+
+    } catch (error) {
+      testLog.pdf({ action: 'PDF generation failed', error: String(error) });
+      reject(error);
+    }
   });
 }
 
 /**
- * Download PDF file directly
+ * Download PDF file directly with proper filename
  */
 export async function downloadPdf(options: PdfDownloadOptions): Promise<void> {
   try {
+    testLog.pdf({ action: 'Starting PDF download', fileName: options.fileName });
+
     const blob = await generateRealPdf(options);
     const url = URL.createObjectURL(blob);
 
+    // Create download link
     const link = document.createElement('a');
     link.href = url;
-    link.download = `${options.fileName}-${options.userName.replace(/\s+/g, '_')}.pdf`;
+    link.download = `PRYSM-Reporte-${options.userName.replace(/\s+/g, '-')}.pdf`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -168,7 +267,7 @@ export async function downloadPdf(options: PdfDownloadOptions): Promise<void> {
     // Clean up
     URL.revokeObjectURL(url);
 
-    testLog.pdf({ action: 'PDF download triggered', fileName: options.fileName });
+    testLog.pdf({ action: 'PDF download completed', fileName: link.download });
   } catch (error) {
     console.error('Error downloading PDF:', error);
     throw error;
