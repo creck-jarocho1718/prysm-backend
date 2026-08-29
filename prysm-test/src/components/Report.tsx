@@ -128,12 +128,21 @@ export default function Report({
 
   // Get data from testPdfData, analysisResult, or fallback
   const getReportData = () => {
-    // If we have test PDF data, use it
+    // If we have test PDF data, use it - SAME data as PDF generator
     if (testPdfData?.profile) {
       const profile = testPdfData.profile;
-      const recommendations = testPdfData.recommendations || testPdfData;
 
-      testLog.info('Using test PDF data for report');
+      testLog.info('Using testPdfData for report - SAME data as PDF');
+      testLog.profile('Report component using PersonalStyleProfile from PDF generator');
+
+      // Get looks from testPdfData (direct, not nested)
+      const looks = testPdfData.looks || [];
+
+      // Get hair from testPdfData (direct, not nested)
+      const hair = testPdfData.hair;
+
+      // Get fabrics from testPdfData (direct, not nested)
+      const fabrics = testPdfData.fabrics || [];
 
       return {
         season: {
@@ -150,22 +159,53 @@ export default function Report({
         palette: profile.colorimetry?.palette || fallbackData.palette,
         silhouette: profile.silhouette || fallbackData.silhouette,
         tips: profile.silhouette?.recommendations?.favor || fallbackData.tips,
-        fabrics: recommendations.fabrics || fallbackData.fabrics,
-        hairColors: recommendations.hair?.recommended?.map((h: any) => ({
+        fabrics: fabrics.map((f: any) => ({
+          name: f.name,
+          desc: f.desc
+        })) || fallbackData.fabrics,
+        hairColors: hair?.recommended?.map((h: any) => ({
           name: h.name,
           color: h.hex,
           desc: h.desc
         })) || fallbackData.hairColors,
-        haircuts: recommendations.hair?.cuts || fallbackData.haircuts,
+        haircuts: hair?.cuts || fallbackData.haircuts,
         faceShape: 'Ovalada',
-        outfits: recommendations.looks?.map((look: any) => ({
+        outfits: looks.map((look: any) => ({
           occasion: look.occasion,
           icon: look.occasionIcon || '✦',
           pieces: look.pieces,
           colors: look.colors || []
         })) || fallbackData.outfits,
-        jewelry: recommendations.accessories?.find((a: any) => a.category === 'Joyería')?.recommendations || fallbackData.jewelry,
-        bags: recommendations.accessories?.find((a: any) => a.category === 'Bolsos')?.recommendations || fallbackData.bags
+        // For jewelry and bags, use generic recommendations based on metal preference
+        jewelry: [
+          {
+            name: profile.preferences?.metal === 'gold' ? 'Oro cálido / Bronce' :
+                  profile.preferences?.metal === 'silver' ? 'Plata / Acero' : 'Oro y Plata combinados',
+            desc: 'El metal correcto complementa tu subtono. Evita el metal opuesto.'
+          },
+          {
+            name: 'Aros colgantes',
+            desc: 'De longitud media. Las gotas o aros complejos favorecen tu rostro.'
+          },
+          {
+            name: 'Collares en V',
+            desc: 'Alargan el cuello. Los charms discretos son perfectos.'
+          }
+        ],
+        bags: [
+          {
+            name: 'Tote de cuero suave',
+            desc: `Formato amplio, asas cortas. En tonos ${profile.colorimetry?.season?.depth === 'deep' ? 'oscuros' : 'neutros'}.`
+          },
+          {
+            name: 'Crossbody pequeña',
+            desc: 'Para evenings. Cadena dorada con cuerpo de cuero.'
+          },
+          {
+            name: 'Clutch estructurada',
+            desc: 'Para eventos formales. En verde profundo o dorado.'
+          }
+        ]
       };
     }
 
