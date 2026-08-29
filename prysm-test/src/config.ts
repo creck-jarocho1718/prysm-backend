@@ -16,6 +16,14 @@ export const API_BASE_URL = TEST_MODE
   : (import.meta.env.VITE_API_URL || 'http://localhost:3001');
 
 // ============================================================================
+// OpenAI Configuration
+// ============================================================================
+export const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY || '';
+
+// Enable OpenAI analysis (requires VITE_OPENAI_API_KEY)
+export const USE_OPENAI_ANALYSIS = !!OPENAI_API_KEY;
+
+// ============================================================================
 // Test Mode Configuration
 // ============================================================================
 export const TEST_MODE_CONFIG = {
@@ -50,6 +58,14 @@ export const testLog = {
       console.log(`[TEST MODE] ${message}`, data || '');
     }
   },
+  warn: (message: string, data?: any) => {
+    if (TEST_MODE_CONFIG.debugLogging || USE_OPENAI_ANALYSIS) {
+      console.warn(`[TEST MODE] ${message}`, data || '');
+    }
+  },
+  error: (message: string, data?: any) => {
+    console.error(`[TEST MODE] ${message}`, data || '');
+  },
   profile: (profile: any) => {
     if (TEST_MODE_CONFIG.logProfileGeneration) {
       console.log('[TEST MODE] PersonalStyleProfile generated:', JSON.stringify(profile, null, 2));
@@ -63,6 +79,11 @@ export const testLog = {
   pdf: (info: any) => {
     if (TEST_MODE_CONFIG.debugLogging) {
       console.log('[TEST MODE] PDF Generation:', info);
+    }
+  },
+  ai: (info: any) => {
+    if (TEST_MODE_CONFIG.debugLogging || USE_OPENAI_ANALYSIS) {
+      console.log('[AI ANALYSIS]', info);
     }
   },
 };
