@@ -6,9 +6,31 @@
 import { TEST_MODE } from '../config';
 
 // Use TEST_MODE to determine which API URL to use
-const API_BASE_URL = TEST_MODE
-  ? (import.meta.env.VITE_TEST_API_URL || 'http://localhost:3001')
-  : (import.meta.env.VITE_API_URL || 'http://localhost:3001');
+// IMPORTANT: VITE_TEST_API_URL and VITE_API_URL are set during build/deployment
+const getApiBaseUrl = (): string => {
+  const testUrl = import.meta.env.VITE_TEST_API_URL;
+  const prodUrl = import.meta.env.VITE_API_URL;
+  const fallbackUrl = 'http://localhost:3001';
+
+  if (TEST_MODE) {
+    if (testUrl) {
+      console.log('[PRYSM API] Using TEST API URL:', testUrl);
+      return testUrl;
+    }
+    console.log('[PRYSM API] TEST_MODE enabled but VITE_TEST_API_URL not set, using localhost');
+    return fallbackUrl;
+  }
+
+  if (prodUrl) {
+    console.log('[PRYSM API] Using PROD API URL:', prodUrl);
+    return prodUrl;
+  }
+
+  console.log('[PRYSM API] No API URL configured, using localhost');
+  return fallbackUrl;
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 export interface QuizAnswers {
   [key: string]: string | string[];
