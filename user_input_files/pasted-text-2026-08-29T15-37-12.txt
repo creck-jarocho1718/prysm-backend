@@ -1,0 +1,703 @@
+PROMPT MAESTRO — INTEGRACIÓN REAL DE OPENAI EN PRYSM
+
+OBJETIVO PRINCIPAL
+
+Quiero modificar PRYSM para que el resultado final del análisis de imagen personal sea generado REALMENTE por OpenAI GPT utilizando:
+
+1. Las fotografías reales que sube el usuario.
+2. TODAS las respuestas del test.
+3. El análisis visual disponible de las fotografías.
+4. La lógica de colorimetría, estilo, silueta, presupuesto y guardarropa.
+
+NO quiero resultados predeterminados ni resultados hardcodeados.
+
+MUY IMPORTANTE:
+NO MODIFIQUES EL DISEÑO VISUAL ACTUAL DE PRYSM.
+NO CAMBIES Landing, Quiz, animaciones, estructura visual del Report, estilos, tipografías, colores ni distribución.
+Solo modifica la lógica y conexión de datos necesaria para conseguir el análisis real.
+
+==================================================
+1. FLUJO NUEVO OBLIGATORIO
+==================================================
+
+El flujo debe ser:
+
+Landing
+→ Quiz
+→ Fotos
+→ Análisis
+→ Preview
+→ Pago / Simular pago en TEST MODE
+→ Report
+→ PDF
+
+Después de completar el test:
+
+FOTOS + RESPUESTAS + DATOS DEL ANÁLISIS
+                ↓
+         OPENAI / GPT
+                ↓
+      PERSONAL STYLE PROFILE
+                ↓
+       GUARDAR RESULTADO
+                ↓
+       ┌────────┴────────┐
+       ↓                 ↓
+     REPORT              PDF
+
+REPORT Y PDF DEBEN UTILIZAR EXACTAMENTE EL MISMO RESULTADO.
+
+NO volver a analizar al generar el PDF.
+NO generar un segundo perfil para Report.
+NO generar datos diferentes entre Report y PDF.
+
+==================================================
+2. OPENAI DEBE HACER EL ANÁLISIS REAL
+==================================================
+
+La IA debe recibir las fotografías reales del usuario mediante visión.
+
+También debe recibir las respuestas completas del test.
+
+Debe cruzar ambas fuentes.
+
+NO debe limitarse a leer solamente las respuestas.
+NO debe limitarse a analizar solamente las fotografías.
+
+El resultado debe surgir de la combinación de:
+
+- características visuales observables
+- tono/subtono de piel observable
+- profundidad de color
+- contraste
+- cabello y ojos cuando sean visibles
+- respuestas del usuario
+- silueta indicada en el test
+- estilo deseado
+- sensación que quiere proyectar
+- ocasiones
+- presupuesto
+- colores que ya tiene
+- prendas que ya tiene
+- metal preferido
+- arquetipo/look de referencia
+
+==================================================
+3. TEMPORADAS DE COLOR
+==================================================
+
+ESTÁ PROHIBIDO usar una temporada fija como resultado predeterminado.
+
+NO utilizar:
+
+"soft_autumn"
+
+"deep_autumn"
+
+"warm_autumn"
+
+ni ninguna otra temporada como fallback automático.
+
+GPT debe poder determinar cualquiera de las familias:
+
+PRIMAVERA
+VERANO
+OTOÑO
+INVIERNO
+
+Y, cuando exista suficiente evidencia, una subestación correspondiente.
+
+Ejemplos:
+
+- Primavera Cálida
+- Primavera Clara
+- Primavera Brillante
+- Verano Claro
+- Verano Suave
+- Verano Frío
+- Otoño Cálido
+- Otoño Suave
+- Otoño Profundo
+- Invierno Frío
+- Invierno Brillante
+- Invierno Profundo
+
+NO elegir una temporada porque sea la más fácil de generar.
+
+La temporada debe estar sustentada por las características observadas.
+
+Si la evidencia visual no es suficiente para determinar una subestación con seguridad, devolver la familia de temporada y marcar la confianza como menor.
+
+==================================================
+4. PROHIBICIÓN DE RESULTADOS HARDCODEADOS
+==================================================
+
+Buscar y eliminar/reemplazar cualquier lógica como:
+
+season = 'deep_autumn'
+
+season = 'soft_autumn'
+
+budget = 'medium'
+
+style = 'classic'
+
+silhouette = 'hourglass'
+
+metal = 'gold'
+
+o cualquier otro valor fijo utilizado como resultado final.
+
+Los fallbacks no deben fabricar un perfil.
+
+Si OpenAI falla:
+
+NO inventar Otoño.
+NO inventar una paleta.
+NO inventar una silueta.
+NO generar un reporte falso.
+
+Mostrar un mensaje de error y permitir REINTENTAR.
+
+==================================================
+5. RESPUESTAS DEL TEST
+==================================================
+
+Debes verificar que TODAS las respuestas lleguen correctamente a OpenAI.
+
+Mapear las preguntas reales del Quiz según sus IDs actuales.
+
+Como mínimo:
+
+Q1 — Cómo quiere sentirse / imagen deseada
+Q2 — Tono de piel
+Q3 — Tipo de cuerpo / silueta
+Q4 — Presupuesto
+Q5 — Colores existentes en el clóset
+Q6 — Prendas existentes
+Q7 — Metal preferido
+Q8 — Estilo
+Q9 — Ocasiones
+Q10 — Look/arquetipo de referencia
+Q11 — Fotografías
+Q12 — Nombre/email
+
+NO asumir que estos IDs son exactamente los nombres internos.
+Primero revisar Quiz.tsx y utilizar los IDs reales.
+
+==================================================
+6. CÓMO DEBE USAR CADA RESPUESTA
+==================================================
+
+Q1:
+Debe influir en la dirección estética y las recomendaciones.
+
+Ejemplo:
+Si quiere sentirse sofisticada:
+priorizar líneas pulidas, elegantes y refinadas.
+
+Si quiere sentirse natural:
+priorizar texturas, siluetas y combinaciones relajadas.
+
+Q2:
+Debe utilizarse como información complementaria para el análisis de color.
+
+NO debe sustituir automáticamente el análisis fotográfico.
+
+Q3:
+Debe determinar las recomendaciones de silueta.
+
+Ejemplo:
+
+Reloj de arena:
+- enfatizar cintura
+- equilibrar proporciones
+- recomendar cortes que respeten curvas
+
+Rectángulo:
+- crear definición visual
+- capas, volumen o estructura donde corresponda
+
+Triángulo:
+- equilibrar visualmente hombros y cadera
+
+Etc.
+
+Q4:
+DEBE modificar las recomendaciones de compra.
+
+Presupuesto bajo:
+priorizar básicos versátiles, precio/uso y combinaciones.
+
+Presupuesto medio:
+mezclar básicos de buena calidad con piezas de inversión.
+
+Presupuesto alto:
+permitir piezas premium y de mayor inversión.
+
+NO mostrar siempre las mismas recomendaciones independientemente del presupuesto.
+
+Q5:
+Analizar los colores existentes del clóset contra la paleta personalizada.
+
+Para cada color importante indicar:
+
+✓ CONSÉRVALO
+→ porque armoniza con tu paleta.
+
+⚠️ ÚSALO CONDICIONALMENTE
+→ funciona mejor combinado con determinados colores.
+
+✕ CONSIDERA REEMPLAZARLO
+→ porque genera poco contraste/armonía según el análisis.
+
+Q6:
+Analizar las prendas que ya posee.
+
+Separar:
+
+YA TIENES Y TE FAVORECE
+YA TIENES PERO COMBÍNALO ASÍ
+TE FALTA
+PRIORIDAD DE COMPRA
+
+No recomendar comprar cosas que ya tiene si no son necesarias.
+
+Q7:
+Usar metal preferido como información para accesorios.
+
+No cambiar arbitrariamente la preferencia del usuario.
+
+Q8:
+Debe influir fuertemente en la estética de los looks.
+
+Q9:
+Debe determinar qué looks generar y su prioridad.
+
+Q10:
+Debe utilizarse como referencia estética.
+
+==================================================
+7. PALETA PERSONALIZADA
+==================================================
+
+La paleta NO debe ser una lista fija asociada simplemente a "Otoño".
+
+Debe generarse a partir del resultado de colorimetría.
+
+Entregar:
+
+- colores protagonistas
+- colores secundarios
+- neutros
+- acentos
+- colores recomendados para prendas superiores
+- colores recomendados para prendas inferiores
+- colores recomendados para accesorios
+- colores que conviene evitar o utilizar con cuidado
+
+Cada color debe incluir:
+
+nombre
+HEX
+uso recomendado
+
+Ejemplo:
+
+Terracota
+#C96A45
+"Excelente para blusas, vestidos y accesorios."
+
+Pero los valores deben ser determinados por el análisis.
+
+==================================================
+8. RESULTADO PERSONALIZADO
+==================================================
+
+Crear un objeto único:
+
+PersonalStyleProfile
+
+Debe contener como mínimo:
+
+userName
+userEmail
+userPhotos
+
+colorimetry
+  season
+  seasonFamily
+  confidence
+  undertone
+  depth
+  contrast
+  palette
+  colorsToAvoid
+
+silhouette
+  type
+  name
+  recommendations
+  flatteringCuts
+  necklines
+  fabrics
+  proportions
+
+style
+  desiredFeeling
+  primary
+  secondary
+  referenceLooks
+
+lifestyle
+  budget
+  occasions
+  wardrobeStatus
+  shoppingPriorities
+
+preferences
+  metal
+
+looks
+
+analysisSummary
+
+==================================================
+9. NIVEL DE CONFIANZA
+==================================================
+
+GPT debe indicar:
+
+confidence: high / medium / low
+
+Y explicar brevemente por qué.
+
+Ejemplo:
+
+"Confianza media: las fotografías permiten observar claramente el tono de piel, pero la iluminación afecta parcialmente la percepción del subtono."
+
+Esto evita presentar una conclusión dudosa como si fuera absoluta.
+
+==================================================
+10. FOTOS
+==================================================
+
+Las fotografías originales del usuario deben mantenerse disponibles.
+
+La portada del Report debe utilizar la fotografía real.
+
+El PDF debe utilizar la misma fotografía.
+
+NO utilizar fotografías genéricas de Unsplash cuando exista una foto del usuario.
+
+NO convertir la foto en una URL temporal que posteriormente desaparezca.
+
+==================================================
+11. REPORT Y PDF
+==================================================
+
+ESTO ES CRÍTICO.
+
+Debe existir UN SOLO resultado final:
+
+const finalProfile = ...
+
+Ese mismo objeto debe alimentar:
+
+Report(finalProfile)
+
+y
+
+generatePdf(finalProfile)
+
+No hacer:
+
+Report → vuelve a analizar
+
+PDF → vuelve a analizar
+
+Debe ser:
+
+GPT
+ ↓
+finalProfile
+ ↓
+ ├── Report
+ └── PDF
+
+Por lo tanto, si Report dice:
+
+"Otoño Profundo"
+
+el PDF debe decir exactamente:
+
+"Otoño Profundo"
+
+Si Report dice:
+
+"Primavera Clara"
+
+el PDF debe decir exactamente:
+
+"Primavera Clara"
+
+Los colores, silueta, estilo, presupuesto, recomendaciones y looks deben coincidir.
+
+==================================================
+12. PDF
+==================================================
+
+Mantener el diseño actual del PDF.
+
+NO rediseñar.
+
+Solo garantizar que el contenido provenga de finalProfile.
+
+El botón DESCARGAR PDF debe generar un PDF real.
+
+No guardar enormes cantidades de base64 en localStorage si eso provoca quota exceeded.
+
+Utilizar el mecanismo de generación que ya fue probado exitosamente en PRYSM TEST.
+
+El PDF no debe quedar en blanco.
+
+Antes de descargar:
+
+- comprobar Blob
+- comprobar MIME application/pdf
+- comprobar tamaño > 0
+- comprobar que comienza con %PDF-
+
+==================================================
+13. TEST MODE
+==================================================
+
+Mantener TEST_MODE.
+
+En TEST_MODE:
+
+NO enviar al usuario al pago real.
+
+Debe existir:
+
+SIMULAR PAGO EXITOSO
+
+y avanzar directamente al Report.
+
+Pero el análisis debe ser REAL utilizando OpenAI.
+
+TEST_MODE solamente debe saltarse el pago.
+
+NO debe convertir el análisis en datos demo.
+
+==================================================
+14. SEGURIDAD DE OPENAI
+==================================================
+
+NO colocar OPENAI_API_KEY dentro del JavaScript del frontend.
+
+La clave debe permanecer en el backend/servidor.
+
+Arquitectura:
+
+Frontend
+ ↓
+/api/analyze-style
+ ↓
+Backend
+ ↓
+OpenAI API
+ ↓
+JSON estructurado
+ ↓
+Frontend
+
+Si actualmente existe una llamada a:
+
+localhost:3001/api/analyze
+
+NO asumir que funcionará en producción.
+
+Configurar correctamente la URL del backend para el entorno desplegado.
+
+==================================================
+15. RESPUESTA ESTRUCTURADA DE GPT
+==================================================
+
+Solicitar a OpenAI una respuesta JSON estructurada.
+
+NO depender de texto libre para construir el perfil.
+
+Ejemplo conceptual:
+
+{
+  "season": {
+    "family": "...",
+    "subseason": "...",
+    "confidence": "...",
+    "reasoning": "..."
+  },
+  "palette": {...},
+  "silhouette": {...},
+  "style": {...},
+  "wardrobe": {...},
+  "shopping": {...},
+  "looks": [...]
+}
+
+Validar el JSON antes de utilizarlo.
+
+Si el JSON es inválido:
+reintentar o mostrar error.
+
+NO utilizar datos hardcodeados para completar silenciosamente campos faltantes.
+
+==================================================
+16. PRUEBA OBLIGATORIA
+==================================================
+
+Después de implementar, hacer al menos 3 pruebas diferentes.
+
+PERFIL A:
+
+- piel clara
+- reloj de arena
+- presupuesto bajo
+- estilo profesional
+- oficina
+- colores negro/blanco/beige
+- dorado
+
+PERFIL B:
+
+- piel morena
+- rectángulo
+- presupuesto alto
+- estilo romántico
+- citas/eventos
+- colores rosa/verde/morado
+- plateado
+
+PERFIL C:
+
+Cambiar las respuestas nuevamente y utilizar fotografías diferentes.
+
+VERIFICAR:
+
+1. ¿La temporada puede cambiar?
+2. ¿La paleta cambia?
+3. ¿La silueta cambia?
+4. ¿Los looks cambian?
+5. ¿El presupuesto cambia las recomendaciones?
+6. ¿Los colores del clóset son analizados?
+7. ¿Las prendas existentes cambian las compras sugeridas?
+8. ¿Report y PDF muestran exactamente el mismo resultado?
+
+==================================================
+17. LOGS DE DEBUG
+==================================================
+
+En TEST_MODE mostrar en consola:
+
+[TEST MODE] OpenAI analysis started
+
+[TEST MODE] Photos sent: X
+
+[TEST MODE] Quiz answers received: X
+
+[TEST MODE] OpenAI analysis completed
+
+[TEST MODE] Season: ...
+
+[TEST MODE] Subseason: ...
+
+[TEST MODE] Confidence: ...
+
+[TEST MODE] Palette generated: ...
+
+[TEST MODE] Silhouette: ...
+
+[TEST MODE] Style: ...
+
+[TEST MODE] Budget: ...
+
+[TEST MODE] Looks generated: X
+
+[TEST MODE] Final profile saved
+
+NO imprimir la OPENAI_API_KEY.
+
+==================================================
+18. REGLA MÁS IMPORTANTE
+==================================================
+
+PRYSM NO DEBE DECIDIR EL RESULTADO ANTES DE GPT.
+
+NO quiero:
+
+foto
+→ lógica local
+→ Otoño
+→ GPT solamente redacta el resultado.
+
+Quiero:
+
+foto + respuestas
+→ GPT analiza
+→ GPT determina resultado
+→ PRYSM muestra ese resultado.
+
+GPT debe ser el motor de análisis.
+
+==================================================
+19. NO MODIFICAR EL DISEÑO
+==================================================
+
+Repito:
+
+NO modificar el diseño actual.
+
+NO rediseñar Report.
+
+NO rediseñar PDF.
+
+NO modificar Quiz.
+
+NO modificar Landing.
+
+NO cambiar colores visuales de la aplicación.
+
+NO cambiar estructura de navegación.
+
+NO eliminar funcionalidades que ya funcionan.
+
+Modificar únicamente:
+
+- conexión con OpenAI
+- procesamiento del análisis
+- estructura de datos
+- persistencia del resultado
+- integración Report/PDF
+- manejo de errores
+- TEST_MODE cuando sea necesario.
+
+==================================================
+20. ENTREGA FINAL
+==================================================
+
+Cuando termines, NO digas simplemente "ya está".
+
+Entregar:
+
+1. Archivos modificados.
+2. Qué cambió en cada uno.
+3. Confirmación de que OpenAI recibe fotografías.
+4. Confirmación de que recibe respuestas del Quiz.
+5. Confirmación de que ya no existe fallback automático a Otoño.
+6. Confirmación de que Report y PDF utilizan el mismo finalProfile.
+7. Confirmación de que TEST_MODE no lleva al pago real.
+8. URL de prueba.
+9. Resultado de las pruebas A, B y C.
+10. Cualquier problema que todavía exista.
+
+NO declares la implementación terminada si GPT no está realmente generando resultados diferentes según fotografías y respuestas.
