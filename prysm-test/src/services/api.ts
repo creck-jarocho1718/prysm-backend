@@ -154,51 +154,53 @@ export interface AnalysisResponse {
 
 /**
  * Upload photos to backend and get analysis
+ *
+ * IMPORTANT: This function sends data to the backend which calls OpenAI.
+ * No mock data is used - if the request fails, an error is returned.
  */
 export async function analyzeImage(request: AnalysisRequest): Promise<AnalysisResponse> {
+  console.log('[PRYSM API] analyzeImage called');
+  console.log('[PRYSM API] Photos included:', request.photos && request.photos.length > 0);
+  console.log('[PRYSM API] Photos count:', request.photos?.length || 0);
+  console.log('[PRYSM API] Quiz answers included:', !!request.answers);
+  console.log('[PRYSM API] API URL:', API_BASE_URL);
+
   try {
-    // Convert base64 photos to FormData
-    const formData = new FormData();
-    formData.append('name', request.name);
-    formData.append('email', request.email);
-    formData.append('answers', JSON.stringify(request.answers));
-
-    // Add skin analysis data if available
-    if (request.skinAnalysis) {
-      formData.append('skinAnalysis', JSON.stringify(request.skinAnalysis));
-    }
-
-    // Add photos
-    request.photos.forEach((photo, index) => {
-      // Convert base64 to blob
-      const byteString = atob(photo.split(',')[1]);
-      const mimeString = photo.split(',')[0].split(':')[1].split(';')[0];
-      const ab = new ArrayBuffer(byteString.length);
-      const ia = new Uint8Array(ab);
-      for (let i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-      }
-      const blob = new Blob([ab], { type: mimeString });
-      formData.append(`photo${index === 0 ? 'Front' : index === 1 ? 'Left' : 'Right'}`, blob, `photo${index}.jpg`);
-    });
-
+    // Send JSON with base64 photos
     const response = await fetch(`${API_BASE_URL}/api/analyze`, {
       method: 'POST',
-      body: formData,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: request.name,
+        email: request.email,
+        photos: request.photos, // base64 encoded images
+        answers: request.answers,
+        skinAnalysis: request.skinAnalysis,
+      }),
     });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error || `HTTP error ${response.status}`);
-    }
+    console.log('[PRYSM API] Response status:', response.status);
 
     const data = await response.json();
+    console.log('[PRYSM API] Response success:', data.success);
+
+    if (data.success) {
+      console.log('[PRYSM] GPT season:', data.verification?.season);
+      console.log('[PRYSM] GPT palette colors:', data.verification?.paletteColors);
+      console.log('[PRYSM] GPT silhouette:', data.verification?.silhouette);
+      console.log('[PRYSM] GPT style:', data.verification?.style);
+    } else {
+      console.log('[PRYSM API] Error:', data.error);
+    }
+
     return data;
   } catch (error) {
-    console.error('Analysis API error:', error);
+    console.error('[PRYSM API] Network error:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Error al conectar con el servidor'
+      error: error instanceof Error ? error.message : 'No pudimos conectar con el servidor. Intenta nuevamente.'
     };
   }
 }
