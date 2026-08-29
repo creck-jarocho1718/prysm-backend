@@ -1,0 +1,563 @@
+QUIERO INTEGRAR OPENAI GPT-5.6 LUNA EN PRYSM.
+
+NO CAMBIES EL DISEÑO ACTUAL.
+NO CAMBIES EL QUIZ.
+NO CAMBIES EL PDF QUE YA FUNCIONA.
+NO CAMBIES EL FLUJO VISUAL.
+
+==================================================
+OBJETIVO
+==================================================
+
+GPT-5.6 Luna será el MOTOR PRINCIPAL DE ANÁLISIS
+PERSONALIZADO DE PRYSM.
+
+Modelo:
+
+gpt-5.6-luna
+
+Debe utilizar la OpenAI Responses API.
+
+IMPORTANTE:
+La API KEY de OpenAI debe permanecer exclusivamente
+en el BACKEND.
+
+NUNCA colocar OPENAI_API_KEY en el frontend.
+
+==================================================
+DATOS QUE DEBE RECIBIR GPT
+==================================================
+
+Enviar:
+
+1. Las 12 respuestas completas del test.
+
+2. Las 3 fotografías originales del usuario.
+
+3. El análisis técnico existente de Canvas:
+   - skinColor
+   - undertone
+   - depth
+   - saturation
+   - contrast
+   - confidence
+   - RGB
+   - HSL
+
+Canvas debe considerarse una fuente auxiliar,
+NO la autoridad final.
+
+==================================================
+LAS 12 PREGUNTAS
+==================================================
+
+Q1:
+¿Cómo te gustaría sentirte?
+
+Q2:
+Tono de piel.
+
+Q3:
+Tipo de silueta.
+
+Q4:
+Presupuesto mensual.
+
+Q5:
+Colores que tiene actualmente en su clóset.
+
+Q6:
+Prendas que tiene actualmente.
+
+Q7:
+Dorado / plateado / ambos.
+
+Q8:
+Estilo.
+
+Q9:
+Ocasiones.
+
+Q10:
+Look de referencia.
+
+Q11:
+Fotografías.
+
+Q12:
+Nombre/email.
+
+==================================================
+ANÁLISIS DE COLOR
+==================================================
+
+GPT debe analizar las fotografías y determinar,
+con explicación:
+
+- temperatura;
+- subtono;
+- profundidad;
+- contraste;
+- intensidad/croma;
+- armonía general;
+- estación;
+- subestación si corresponde;
+- nivel de confianza.
+
+NO utilizar una regla fija como:
+
+warm + medium = Otoño.
+
+NO utilizar Otoño como fallback.
+
+NO utilizar una temporada hardcodeada.
+
+Si la evidencia no permite determinar una temporada
+con suficiente confianza, debe indicarlo.
+
+El resultado puede ser:
+
+Primavera
+Verano
+Otoño
+Invierno
+
+y la subcategoría correspondiente cuando exista
+evidencia suficiente.
+
+==================================================
+IMPORTANTE SOBRE Q2
+==================================================
+
+El tono de piel respondido en el test NO debe utilizarse
+como sustituto del análisis visual.
+
+Debe utilizarse como información complementaria.
+
+Una persona con piel clara puede ser cálida, fría o neutra.
+Una persona con piel morena también puede ser cálida,
+fría o neutra.
+
+==================================================
+PALETA
+==================================================
+
+GPT debe generar una paleta personalizada.
+
+Incluir:
+
+- colores protagonistas;
+- colores secundarios;
+- neutros;
+- acentos;
+- colores cercanos al rostro;
+- colores que conviene limitar;
+- explicación de por qué.
+
+Cada color debe incluir:
+
+- nombre;
+- HEX;
+- función;
+- dónde utilizarlo.
+
+NO usar siempre la misma paleta.
+
+==================================================
+SILUETA
+==================================================
+
+Utilizar Q3.
+
+Analizar:
+
+- proporciones;
+- equilibrio visual;
+- cortes;
+- escotes;
+- largos;
+- volumen;
+- prendas recomendadas;
+- prendas a evitar o utilizar con cuidado.
+
+No limitarse a repetir el nombre de la silueta.
+
+==================================================
+ESTILO
+==================================================
+
+Utilizar:
+
+Q1 + Q8 + Q10
+
+Determinar:
+
+- identidad estética;
+- estilo principal;
+- estilos secundarios;
+- elementos visuales;
+- tejidos;
+- cortes;
+- accesorios;
+- nivel de formalidad.
+
+==================================================
+PRESUPUESTO
+==================================================
+
+Utilizar Q4.
+
+Generar una estrategia de compras acorde al presupuesto.
+
+No recomendar las mismas prendas a alguien con:
+
+menos de $1,000
+
+que a alguien con:
+
+más de $10,000.
+
+Indicar:
+
+- qué comprar primero;
+- qué piezas son prioritarias;
+- qué piezas pueden ser económicas;
+- dónde conviene invertir;
+- qué NO necesita comprar.
+
+==================================================
+CLÓSET
+==================================================
+
+Utilizar Q5 + Q6.
+
+Analizar los colores existentes.
+
+Para cada color:
+
+- conservar;
+- usar;
+- combinar;
+- limitar;
+- reemplazar.
+
+Analizar las prendas existentes.
+
+Indicar:
+
+- qué prendas ya funcionan;
+- cómo combinarlas;
+- qué falta;
+- qué debería comprar primero.
+
+NO decir simplemente:
+
+"estos colores te sirven".
+
+Debe explicar CÓMO utilizarlos.
+
+==================================================
+JOYERÍA
+==================================================
+
+Utilizar Q7 + colorimetría.
+
+Determinar:
+
+- metal principal;
+- metal secundario;
+- acabados;
+- tamaño de accesorios;
+- recomendaciones.
+
+==================================================
+OCASIONES
+==================================================
+
+Utilizar Q9.
+
+Crear recomendaciones diferentes según las
+ocasiones seleccionadas.
+
+Por ejemplo:
+
+oficina
+citas
+eventos
+fin de semana
+viajes
+fiestas
+
+No generar siempre los mismos looks.
+
+==================================================
+LOOKS
+==================================================
+
+Generar looks personalizados.
+
+Cada look debe incluir:
+
+- ocasión;
+- prendas;
+- colores;
+- calzado;
+- accesorios;
+- explicación;
+- nivel de presupuesto.
+
+Los looks deben depender realmente de:
+
+colorimetría
+silueta
+estilo
+ocasión
+presupuesto
+clóset
+
+==================================================
+RESPUESTA ESTRUCTURADA
+==================================================
+
+GPT debe devolver JSON estructurado.
+
+No devolver texto libre como respuesta principal.
+
+Crear un schema que incluya como mínimo:
+
+{
+  colorimetry: {
+    season,
+    subSeason,
+    temperature,
+    undertone,
+    depth,
+    contrast,
+    chroma,
+    confidence,
+    explanation
+  },
+
+  palette: {
+    protagonist: [],
+    secondary: [],
+    neutral: [],
+    accent: [],
+    limit: []
+  },
+
+  silhouette: {
+    type,
+    explanation,
+    favor,
+    avoid
+  },
+
+  style: {
+    primary,
+    secondary,
+    desiredFeeling,
+    referenceLook,
+    explanation
+  },
+
+  wardrobe: {
+    colorsToKeep: [],
+    colorsToLimit: [],
+    piecesToKeep: [],
+    piecesToBuy: [],
+    combinations: []
+  },
+
+  budget: {
+    level,
+    strategy,
+    priorities: [],
+    recommendations: []
+  },
+
+  accessories: {
+    metal,
+    recommendations: []
+  },
+
+  occasions: [],
+
+  looks: [],
+
+  summary: {
+    title,
+    explanation,
+    confidence
+  }
+}
+
+==================================================
+REGLA FUNDAMENTAL
+==================================================
+
+El resultado NO puede estar hardcodeado.
+
+Dos usuarios con respuestas y fotografías diferentes
+deben poder recibir resultados diferentes.
+
+Por ejemplo:
+
+Usuario A:
+- profesional
+- oficina
+- presupuesto bajo
+- reloj de arena
+- dorado
+
+Usuario B:
+- romántico
+- citas
+- presupuesto alto
+- rectángulo
+- plateado
+
+Aunque ambos tengan la misma temporada de color,
+sus recomendaciones deben ser diferentes.
+
+==================================================
+ERROR / FALLBACK
+==================================================
+
+Si OpenAI no responde:
+
+NO inventar silenciosamente "Otoño".
+
+Mostrar un estado de error controlado.
+
+En TEST_MODE se puede permitir un fallback explícito,
+pero debe aparecer claramente:
+
+"ANÁLISIS GPT NO DISPONIBLE — RESULTADO DE PRUEBA"
+
+Nunca presentar un resultado genérico como si fuera
+un análisis real.
+
+==================================================
+ARQUITECTURA
+==================================================
+
+Frontend
+   ↓
+Backend PRYSM
+   ↓
+OpenAI Responses API
+   ↓
+GPT-5.6 Luna
+   ↓
+JSON estructurado
+   ↓
+PersonalStyleProfile
+   ↓
+Report.tsx
+   ↓
+PDF
+
+El mismo PersonalStyleProfile debe alimentar:
+
+1. página Report;
+2. PDF.
+
+Así ambos deben mostrar exactamente el mismo análisis.
+
+==================================================
+SEGURIDAD
+==================================================
+
+Agregar en backend:
+
+OPENAI_API_KEY
+
+mediante variables de entorno.
+
+Nunca:
+
+VITE_OPENAI_API_KEY
+OPENAI_API_KEY en frontend
+API key escrita en código
+API key en GitHub.
+
+==================================================
+TEST MODE
+==================================================
+
+Mantener TEST_MODE.
+
+En TEST_MODE:
+
+- no solicitar pago;
+- sí llamar a GPT;
+- sí analizar las fotos;
+- sí analizar las respuestas;
+- sí generar Report;
+- sí generar PDF.
+
+Agregar logs:
+
+[PRYSM AI] Starting analysis
+[PRYSM AI] Photos received: 3
+[PRYSM AI] Quiz answers received: 12
+[PRYSM AI] Calling GPT-5.6 Luna
+[PRYSM AI] Analysis completed
+[PRYSM AI] Season: ...
+[PRYSM AI] Confidence: ...
+[PRYSM AI] Looks generated: ...
+
+NO imprimir la API key.
+
+==================================================
+NO MODIFICAR
+==================================================
+
+NO modificar:
+
+Landing
+Quiz
+Analyzing visual design
+Paywall visual design
+Report visual design
+PDF visual design
+CSS general
+MercadoPago
+flujo de producción
+
+Solo sustituir el motor de análisis por GPT y conectar
+el resultado con el sistema existente.
+
+==================================================
+PRUEBA OBLIGATORIA
+==================================================
+
+Después de implementar:
+
+PRUEBA A:
+Completar todo el test + 3 fotos.
+
+PRUEBA B:
+Cambiar las respuestas del test y utilizar otro perfil.
+
+Comprobar que cambian:
+
+- temporada cuando corresponda;
+- paleta;
+- explicación;
+- silueta;
+- recomendaciones;
+- clóset;
+- presupuesto;
+- ocasiones;
+- looks.
+
+IMPORTANTE:
+
+No des por terminada la implementación porque
+"GPT respondió".
+
+Hay que comprobar que el resultado realmente llega a:
+
+PersonalStyleProfile → Report → PDF.
