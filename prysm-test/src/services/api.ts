@@ -40,6 +40,9 @@ export interface SeasonInfo {
   name: string;
   temperature: string;
   depth: string;
+  saturation?: string;
+  contrast?: string;
+  explanation?: string;
 }
 
 export interface PaletteColors {
@@ -55,6 +58,81 @@ export interface BodyTypeInfo {
   name: string;
 }
 
+// GPT Analysis data structure (matches StyleAnalysisResponse from styleAnalysis.ts)
+export interface GPTAnalysisData {
+  analisisColor: {
+    subtono: string;
+    profundidad: string;
+    contraste: string;
+    saturacion: string;
+    estacion: string;
+    subestacion?: string;
+    confianza: number;
+    explicacion: string;
+    paleta: {
+      protagonistas: { hex: string; nombre: string; explicacion: string }[];
+      secundarios: { hex: string; nombre: string; explicacion: string }[];
+      neutros: { hex: string; nombre: string; explicacion: string }[];
+      acento: { hex: string; nombre: string; explicacion: string }[];
+      evitar: { hex: string; nombre: string; explicacion: string }[];
+    };
+  };
+  silueta: {
+    tipoCuerpo: string;
+    cortes: string[];
+    proporciones: string;
+    escotes: string[];
+    largos: { pantalones: string; faldas: string };
+    prendasFavorecen: string[];
+    prendasEvitar: string[];
+    explicacion: string;
+  };
+  estilo: {
+    principal: { nombre: string; descripcion: string; palabrasClave: string[] };
+    secundarios: string[];
+    arquetipo: string;
+    sensacionProyectar: string;
+  };
+  presupuesto: {
+    nivel: string;
+    comprasPrioritarias: { prenda: string; razon: string; rangoPrecio: string }[];
+    invertir: { prenda: string; razon: string; rangoPrecio: string }[];
+    economicas: { prenda: string; dondeAhorrar: string; rangoPrecio: string }[];
+    puedeEsperar: string[];
+  };
+  closet: {
+    yaTienes: { prenda: string; comoUsar: string; combinaCon: string[] }[];
+    teSirve: { prenda: string; comoAdaptar: string }[];
+    combinaloAsi: { prenda: string; combinacion: string; colores: string[] }[];
+    teFalta: string[];
+    noEsPrioridad: string[];
+  };
+  ocasiones: {
+    nombre: string;
+    prioridad: number;
+    looks: { nombre: string; piezas: string; colores: string[]; sensacion: string; descripcion: string }[];
+  }[];
+  joyeria: {
+    metal: string;
+    acabados: string[];
+    tipos: string[];
+    piedras: string[];
+    explicacion: string;
+  };
+  perfil: {
+    descubrimiento: string;
+    explicacion: string;
+    coloresFavorecen: string;
+    coloresConservar: string;
+    coloresDejar: string;
+    prendasFavorecen: string;
+    prendasComprar: string;
+    prioridadCompras: string;
+    looksPrincipales: string;
+    imagenDeseada: string;
+  };
+}
+
 export interface AnalysisResponse {
   success: boolean;
   reportId?: string;
@@ -64,8 +142,10 @@ export interface AnalysisResponse {
     palette: PaletteColors;
     bodyType: BodyTypeInfo;
     prysmScore: number;
-    analysisMethod: 'photo_analysis' | 'quiz_answers' | 'client_side_photo_analysis' | 'client_side_no_photos';
+    analysisMethod: 'photo_analysis' | 'quiz_answers' | 'client_side_photo_analysis' | 'client_side_no_photos' | 'gpt_analysis';
     skinAnalysisData?: SkinAnalysisData;
+    // Full GPT analysis data for personalization
+    gptAnalysisData?: GPTAnalysisData;
   };
   analysisNote?: string;
   error?: string;

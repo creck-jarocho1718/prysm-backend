@@ -9,7 +9,7 @@ import Share from './components/Share';
 import { AnalysisResponse, QuizAnswers } from './services/api';
 import { TEST_MODE, testLog } from './config';
 import { generatePdfHtml } from './services/pdfGenerator';
-import { PersonalStyleProfile, SilhouetteType, BudgetLevel, StyleType, OccasionType, MetalPreference } from './services/styleGenome';
+import { PersonalStyleProfile, SilhouetteType, BudgetLevel, StyleType, OccasionType, MetalPreference, SeasonType } from './services/styleGenome';
 
 export type Screen = 'landing' | 'quiz' | 'analyzing' | 'result' | 'report' | 'paywall' | 'share' | 'processing';
 
@@ -143,7 +143,8 @@ const SECONDARY_STYLES: Record<StyleType, StyleType[]> = {
 };
 
 /**
- * Build PersonalStyleProfile from real quiz answers
+ * Build PersonalStyleProfile from real quiz answers AND GPT analysis
+ * GPT analysis takes PRIORITY over quiz answers
  */
 function buildProfileFromAnswers(
   answers: QuizAnswer[],
@@ -153,15 +154,42 @@ function buildProfileFromAnswers(
   analysis: any,
   skinAnalysis: any
 ): PersonalStyleProfile {
-  // Q1: Desired feeling
+  // Check if we have GPT analysis data
+  const gptData = analysis?.analysis?.gptAnalysisData;
+  const hasGPTAnalysis = !!gptData;
+
+  testLog.info('Building profile - GPT analysis available:', hasGPTAnalysis);
+
+  // Q1: Desired feeling (from quiz, as fallback for GPT)
   const desiredFeeling = getStringAnswer(answers, 'feeling') || 'segura';
 
-  // Q2: Skin tone (complement to photo analysis)
+  // Q2: Skin tone (from quiz, as reference)
   const skinToneQuiz = getStringAnswer(answers, 'skin-tone');
 
-  // Q3: Silhouette
+  // Q3: Silhouette - Use GPT result if available, else quiz
   const silhouetteAnswer = getStringAnswer(answers, 'silhouette');
-  const silhouetteData = SILHOUETTE_MAP[silhouetteAnswer] || SILHOUETTE_MAP['reloj-arena'];
+  let silhouetteData = SILHOUETTE_MAP[silhouetteAnswer] || SILHOUETTE_MAP['reloj-arena'];
+  let silhouetteRecommendations = getSilhouetteRecommendations(silhouetteData.type);
+
+  if (hasGPTAnalysis) {
+    // GPT determines the silhouette type
+    const gptSilhouetteMap: Record<string, typeof silhouetteData> = {
+      'Reloj de arena': { type: 'hourglass', name: 'Reloj de Arena' },
+      'Triángulo': { type: 'pear', name: 'Triángulo' },
+      'Triángulo invertido': { type: 'inverted_triangle', name: 'Triángulo Invertido' },
+      'Rectángulo': { type: 'rectangle', name: 'Rectángulo' },
+      'Ovalada': { type: 'oval', name: 'Ovalada' },
+      'Diamante': { type: 'diamond', name: 'Diamante' },
+      'Manzana': { type: 'apple', name: 'Manzana' }
+    };
+    silhouetteData = gptSilhouetteMap[gptData.silueta.tipoCuerpo] || silhouetteData;
+    silhouetteRecommendations = {
+      favor: gptData.silueta.prendasFavorecen || [],
+      avoid: gptData.silueta.prendasEvitar || [],
+      necklines: gptData.silueta.escotes || [],
+      silhouettes: gptData.silueta.cortes || []
+    };
+  }
 
   // Q4: Budget
   const budgetAnswer = getStringAnswer(answers, 'budget');
@@ -206,23 +234,52 @@ function buildProfileFromAnswers(
 
   // Q7: Metal preference
   const metalAnswer = getStringAnswer(answers, 'metal');
-  const metal = METAL_MAP[metalAnswer] || 'both';
+  let metal = METAL_MAP[metalAnswer] || 'both';
+
+  if (hasGPTAnalysis) {
+    // GPT determines metal preference based on colorimetry
+    const metalMap: Record<string, typeof metal> = {
+      'oro': 'gold',
+      'oro rosa': 'gold', // Map to gold as fallback
+      'plata': 'silver',
+      'bronce': 'both', // Map to both as bronze works with warm tones
+      'acero': 'silver'
+    };
+    metal = metalMap[gptData.joyeria.metal.toLowerCase()] || metal;
+  }
 
   // Q8: Style
   const styleAnswers = getArrayAnswer(answers, 'style');
-  const primaryStyle = styleAnswers.length > 0 ?
+  let primaryStyle = styleAnswers.length > 0 ?
     (STYLE_MAP[styleAnswers[0]] || 'classic') : 'classic';
-  const secondaryStyles = styleAnswers.length > 1 ?
+  let secondaryStyles = styleAnswers.length > 1 ?
     styleAnswers.slice(1, 3).map(s => STYLE_MAP[s] || 'casual') :
     SECONDARY_STYLES[primaryStyle];
+
+  if (hasGPTAnalysis) {
+    // GPT determines style based on analysis
+    const styleMap: Record<string, typeof primaryStyle> = {
+      'clásico': 'classic',
+      'casual': 'casual',
+      'bohemio': 'boho',
+      'glamuroso': 'glamorous',
+      'minimalista': 'minimalist',
+      'deportivo': 'sporty',
+      'romántico': 'romantic',
+      'dramático': 'dramatic',
+      'artístico': 'artistic',
+      'elegante': 'elegant',
+      'profesional': 'professional'
+    };
+    primaryStyle = styleMap[gptData.estilo.principal.nombre.toLowerCase()] || primaryStyle;
+  }
 
   // Q9: Occasions with priorities
   const occasionAnswers = getArrayAnswer(answers, 'occasions');
   const occasions = occasionAnswers.map((occ, idx) => ({
     type: OCCASION_MAP[occ] || 'casual',
-    priority: Math.max(1, 5 - idx), // First selected = highest priority
+    priority: Math.max(1, 5 - idx),
   }));
-  // Ensure at least some default occasions if none selected
   if (occasions.length === 0) {
     occasions.push({ type: 'office', priority: 5 });
     occasions.push({ type: 'casual', priority: 4 });
@@ -231,41 +288,86 @@ function buildProfileFromAnswers(
   // Q10: Archetype (reference looks)
   const archetype = getStringAnswer(answers, 'archetype');
 
-  // Get season from analysis (from photo analysis, NOT from quiz answers)
-  // If no analysis or insufficient data, mark as pending
-  const seasonId = analysis?.analysis?.season?.id || analysis?.analysis?.season?.primary || 'pending';
-  const seasonName = analysis?.analysis?.season?.name || 'Pendiente de análisis';
-  const isAnalysisInsufficient = seasonId === 'pending' || seasonId === 'insufficient_data';
-
-  // Determine temperature and depth from season ID
-  const isWarm = seasonId.includes('autumn') || seasonId.includes('spring');
-  const isCool = seasonId.includes('winter') || seasonId.includes('summer');
-  const isDeep = seasonId.includes('deep') || seasonId.includes('dark');
-  const isLight = seasonId.includes('light');
-  const isBright = seasonId.includes('bright');
-  const isSoft = seasonId.includes('soft');
-
-  // Use actual analysis data, not hardcoded defaults
-  const analysisTemperature = analysis?.analysis?.season?.temperature;
-  const analysisDepth = analysis?.analysis?.season?.depth;
-  const analysisContrast = analysis?.analysis?.season?.contrast;
-  const analysisSaturation = analysis?.analysis?.season?.saturation;
-
-  const season = {
-    primary: seasonId,
-    name: seasonName,
-    subtitle: isAnalysisInsufficient
-      ? 'Análisis pendiente'
-      : `${seasonName} · ${analysisTemperature ? (analysisTemperature.charAt(0).toUpperCase() + analysisTemperature.slice(1)) : 'Warm'} · ${isDeep ? 'Rich' : isSoft ? 'Soft' : 'Medium'}`,
-    temperature: (analysisTemperature || (isWarm ? 'warm' : isCool ? 'cool' : 'neutral')) as 'warm' | 'cool' | 'neutral',
-    depth: (analysisDepth || (isDeep ? 'deep' : isLight ? 'light' : 'medium')) as 'light' | 'medium' | 'deep',
-    contrast: (analysisContrast || (isBright ? 'high' : isSoft ? 'low' : 'medium')) as 'low' | 'medium' | 'high',
-    saturation: (analysisSaturation || (isBright ? 'bright' : isSoft ? 'muted' : 'medium')) as 'muted' | 'medium' | 'bright',
-    isPending: isAnalysisInsufficient,
+  // Get season from GPT analysis (if available) or analysis data
+  let season = {
+    primary: 'pending',
+    name: 'Pendiente de análisis',
+    subtitle: 'Análisis pendiente',
+    temperature: 'neutral' as 'warm' | 'cool' | 'neutral',
+    depth: 'medium' as 'light' | 'medium' | 'deep',
+    contrast: 'medium' as 'low' | 'medium' | 'high',
+    saturation: 'medium' as 'muted' | 'medium' | 'bright',
+    isPending: true,
   };
 
-  // Use palette from analysis - NO HARDCODED FALLBACK
-  const palette = analysis?.analysis?.palette || {
+  if (hasGPTAnalysis) {
+    // Use GPT's color analysis
+    const gptSeason = gptData.analisisColor;
+    const substation = gptSeason.subestacion || '';
+    const seasonName = substation ? `${gptSeason.estacion} ${substation}` : gptSeason.estacion;
+
+    // Map season to internal format
+    const seasonTypeMap: Record<string, string> = {
+      'otoño profundo': 'deep_autumn',
+      'otoño suave': 'soft_autumn',
+      'otoño cálido': 'warm_autumn',
+      'invierno profundo': 'deep_winter',
+      'invierno brillante': 'bright_winter',
+      'invierno frío': 'cool_winter',
+      'invierno suave': 'soft_winter',
+      'primavera brillante': 'bright_spring',
+      'primavera cálida': 'warm_spring',
+      'primavera clara': 'light_spring',
+      'primavera suave': 'soft_spring',
+      'verano claro': 'light_summer',
+      'verano suave': 'soft_summer',
+      'verano frío': 'cool_summer',
+      'verano brillante': 'bright_summer',
+      'otoño': 'warm_autumn',
+      'invierno': 'cool_winter',
+      'primavera': 'warm_spring',
+      'verano': 'cool_summer'
+    };
+
+    const seasonIdKey = substation ? substation.toLowerCase() : gptSeason.estacion.toLowerCase();
+    const seasonPrimary = seasonTypeMap[seasonIdKey] || seasonTypeMap[gptSeason.estacion.toLowerCase()] || 'warm_autumn';
+
+    season = {
+      primary: seasonPrimary as any,
+      name: seasonName,
+      subtitle: `${gptSeason.estacion} · ${gptSeason.subtono} · ${gptSeason.profundidad}`,
+      temperature: gptSeason.subtono === 'cálido' ? 'warm' :
+                   gptSeason.subtono === 'frío' ? 'cool' : 'neutral',
+      depth: gptSeason.profundidad === 'claro' ? 'light' :
+             gptSeason.profundidad === 'profundo' ? 'deep' : 'medium',
+      contrast: gptSeason.contraste === 'bajo' ? 'low' :
+                gptSeason.contraste === 'alto' ? 'high' : 'medium',
+      saturation: gptSeason.saturacion === 'baja' ? 'muted' :
+                  gptSeason.saturacion === 'alta' ? 'bright' : 'medium',
+      isPending: false,
+    };
+  } else if (analysis?.analysis?.season) {
+    // Fallback to analysis data
+    const seasonId = analysis.analysis.season.id || analysis.analysis.season.primary || 'pending';
+    const isWarm = seasonId.includes('autumn') || seasonId.includes('spring');
+    const isCool = seasonId.includes('winter') || seasonId.includes('summer');
+    const isDeep = seasonId.includes('deep') || seasonId.includes('dark');
+    const isLight = seasonId.includes('light');
+
+    season = {
+      primary: seasonId,
+      name: analysis.analysis.season.name || 'Pendiente de análisis',
+      subtitle: `${analysis.analysis.season.name || 'Temporada'} · ${analysis.analysis.season.temperature || 'Warm'} · ${isDeep ? 'Rich' : 'Medium'}`,
+      temperature: (analysis.analysis.season.temperature as any) || (isWarm ? 'warm' : isCool ? 'cool' : 'neutral'),
+      depth: (analysis.analysis.season.depth as any) || (isDeep ? 'deep' : isLight ? 'light' : 'medium'),
+      contrast: (analysis.analysis.season.contrast as any) || 'medium',
+      saturation: (analysis.analysis.season.saturation as any) || 'medium',
+      isPending: seasonId === 'pending',
+    };
+  }
+
+  // Use palette from GPT analysis (if available) or analysis data
+  let palette = {
     protagonist: [] as string[],
     secondary: [] as string[],
     accent: [] as string[],
@@ -274,9 +376,24 @@ function buildProfileFromAnswers(
     isPending: true,
   };
 
-  // Get silhouette recommendations based on type
-  const silhouetteRecommendations = getSilhouetteRecommendations(silhouetteData.type);
+  if (hasGPTAnalysis) {
+    // GPT provides the complete palette
+    palette = {
+      protagonist: gptData.analisisColor.paleta.protagonistas.map((c: any) => c.hex),
+      secondary: gptData.analisisColor.paleta.secundarios.map((c: any) => c.hex),
+      accent: gptData.analisisColor.paleta.acento.map((c: any) => c.hex),
+      neutral: gptData.analisisColor.paleta.neutros.map((c: any) => c.hex),
+      avoid: gptData.analisisColor.paleta.evitar.map((c: any) => c.hex),
+      isPending: false,
+    };
+  } else if (analysis?.analysis?.palette) {
+    palette = {
+      ...analysis.analysis.palette,
+      isPending: false,
+    };
+  }
 
+  // Build the final profile
   return {
     profileId: `test-${Date.now()}`,
     createdAt: new Date().toISOString(),
@@ -285,7 +402,7 @@ function buildProfileFromAnswers(
     userPhotos: uploadedPhotos,
     colorimetry: {
       season: {
-        primary: season.primary,
+        primary: season.primary as SeasonType,
         name: season.name,
         subtitle: season.subtitle,
         temperature: season.temperature,
@@ -294,7 +411,6 @@ function buildProfileFromAnswers(
         saturation: season.saturation,
       },
       palette,
-      // Use actual skinAnalysis from photos, not quiz answers
       skinAnalysis: skinAnalysis || (analysis?.analysis?.skinAnalysisData ? {
         undertone: analysis.analysis.skinAnalysisData.undertone || 'unknown',
         depth: analysis.analysis.skinAnalysisData.depth || 'unknown',
@@ -354,8 +470,8 @@ function buildProfileFromAnswers(
       primary: desiredFeeling,
       blockers: [],
     },
-    prysmScore: analysis?.analysis?.prysmScore || 8.5,
-    analysisConfidence: 0.85,
+    prysmScore: analysis?.analysis?.prysmScore || (hasGPTAnalysis ? (gptData.analisisColor.confianza || 0.85) * 10 : 8.5),
+    analysisConfidence: hasGPTAnalysis ? (gptData.analisisColor.confianza || 0.9) : 0.85,
   };
 }
 

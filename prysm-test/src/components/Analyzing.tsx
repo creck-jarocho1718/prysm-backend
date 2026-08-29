@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { analyzeImage, AnalysisResponse, QuizAnswers } from '../services/api';
 import { analyzePhotos, SkinAnalysisResult } from '../services/colorAnalysis';
+import { analyzeStyle, StyleAnalysisResponse } from '../services/styleAnalysis';
 import { TEST_MODE, testLog } from '../config';
 
 interface AnalyzingProps {
@@ -255,6 +256,130 @@ const fallbackResult: AnalysisResponse = {
   }
 };
 
+/**
+ * Call GPT for real style analysis based on user photos and quiz answers
+ * This is the NEW primary analysis method in TEST_MODE
+ */
+async function callGPTForAnalysis(
+  userName: string,
+  userEmail: string,
+  answers: QuizAnswers,
+  photos: string[],
+  skinAnalysis?: SkinAnalysisResult
+): Promise<AnalysisResponse> {
+  testLog.info('Calling GPT for real analysis...');
+
+  // Call the GPT analysis service
+  const gptResult = await analyzeStyle({
+    photos: photos,
+    answers: answers,
+    userName: userName,
+    skinAnalysis: skinAnalysis ? {
+      undertone: skinAnalysis.undertone,
+      depth: skinAnalysis.depth,
+      saturation: skinAnalysis.saturation
+    } : undefined
+  });
+
+  if (gptResult.success && gptResult.data) {
+    testLog.info('GPT analysis successful - converting to AnalysisResponse format');
+    testLog.info('GPT detected season:', gptResult.data.analisisColor.estacion);
+
+    // Convert GPT result to AnalysisResponse format
+    const gptData = gptResult.data;
+
+    // Map GPT season to internal season ID format
+    const seasonIdMap: Record<string, string> = {
+      'Primavera': 'warm_spring',
+      'Verano': 'cool_summer',
+      'Otoño': 'warm_autumn',
+      'Invierno': 'cool_winter'
+    };
+
+    // Map substation if present
+    const stationName = gptData.analisisColor.estacion;
+    const substation = gptData.analisisColor.subestacion || '';
+    let seasonName = stationName;
+    if (substation) {
+      seasonName = `${stationName} ${substation}`;
+    }
+
+    const seasonId = substation
+      ? substation.toLowerCase().replace(/\s+/g, '_')
+      : seasonIdMap[stationName] || 'warm_autumn';
+
+    // Map silhouette type
+    const silhouetteMap: Record<string, { id: string; name: string }> = {
+      'Reloj de arena': { id: 'hourglass', name: 'Reloj de Arena' },
+      'Triángulo': { id: 'pear', name: 'Triángulo' },
+      'Triángulo invertido': { id: 'inverted_triangle', name: 'Triángulo Invertido' },
+      'Rectángulo': { id: 'rectangle', name: 'Rectángulo' },
+      'Ovalada': { id: 'oval', name: 'Ovalada' },
+      'Diamante': { id: 'diamond', name: 'Diamante' },
+      'Manzana': { id: 'apple', name: 'Manzana' }
+    };
+
+    const silhouetteData = silhouetteMap[gptData.silueta.tipoCuerpo] || { id: 'hourglass', name: gptData.silueta.tipoCuerpo };
+
+    // Build palette from GPT data
+    const palette = {
+      protagonist: gptData.analisisColor.paleta.protagonistas.map(c => c.hex),
+      secondary: gptData.analisisColor.paleta.secundarios.map(c => c.hex),
+      neutral: gptData.analisisColor.paleta.neutros.map(c => c.hex),
+      accent: gptData.analisisColor.paleta.acento.map(c => c.hex),
+      avoid: gptData.analisisColor.paleta.evitar.map(c => c.hex)
+    };
+
+    const response: AnalysisResponse = {
+      success: true,
+      reportId: `gpt-${Date.now()}`,
+      analysis: {
+        season: {
+          id: seasonId,
+          name: seasonName,
+          temperature: gptData.analisisColor.subtono === 'cálido' ? 'warm' :
+                      gptData.analisisColor.subtono === 'frío' ? 'cool' : 'neutral',
+          depth: gptData.analisisColor.profundidad === 'claro' ? 'light' :
+                 gptData.analisisColor.profundidad === 'profundo' ? 'deep' : 'medium',
+          saturation: gptData.analisisColor.saturacion,
+          contrast: gptData.analisisColor.contraste,
+          explanation: gptData.analisisColor.explicacion
+        },
+        palette: palette,
+        bodyType: {
+          id: silhouetteData.id,
+          name: silhouetteData.name
+        },
+        prysmScore: Math.round((gptData.analisisColor.confianza || 0.85) * 10 * 10) / 10,
+        analysisMethod: 'gpt_analysis' as const,
+        // Store full GPT data for later use
+        gptAnalysisData: gptData,
+        skinAnalysisData: skinAnalysis ? {
+          undertone: skinAnalysis.undertone,
+          depth: skinAnalysis.depth,
+          saturation: skinAnalysis.saturation,
+          confidence: skinAnalysis.confidence || 0,
+          skinColor: skinAnalysis.skinColor || '#d4a574',
+          contrast: 'medium',
+          raw: skinAnalysis.raw || { rgb: { r: 180, g: 140, b: 100 }, hsl: { h: 30, s: 50, l: 55 } }
+        } : undefined
+      }
+    };
+
+    testLog.info('Converted GPT response:', {
+      season: response.analysis.season,
+      paletteColors: palette.protagonist.length,
+      score: response.analysis.prysmScore
+    });
+
+    return response;
+  }
+
+  // If GPT failed, fall back to client-side analysis
+  testLog.warn('GPT analysis failed, falling back to client-side');
+  return generateClientSideAnalysis(userName, userEmail, skinAnalysis);
+}
+
 export default function Analyzing({
   onComplete,
   userName,
@@ -330,15 +455,16 @@ export default function Analyzing({
           } else {
             // Backend returned error
             if (TEST_MODE) {
-              testLog.info('Backend returned error in TEST_MODE - this is expected if backend is not deployed');
-              // In TEST_MODE, generate analysis client-side
-              const clientSideResult = generateClientSideAnalysis(userName, userEmail, skinAnalysis);
-              console.log('[ANALYZING] Client-side generated result:', JSON.stringify(clientSideResult, null, 2));
-              localStorage.setItem('prysm_analysis', JSON.stringify(clientSideResult));
+              testLog.info('Backend returned error in TEST_MODE - calling GPT for real analysis');
+              // In TEST_MODE, use GPT for real analysis
+              const gptAnalysis = await callGPTForAnalysis(userName, userEmail, answers, photos, skinAnalysis);
+              console.log('[ANALYZING] GPT analysis result:', JSON.stringify(gptAnalysis, null, 2));
+              localStorage.setItem('prysm_analysis', JSON.stringify(gptAnalysis));
+              localStorage.setItem('prysm_gpt_analysis', JSON.stringify(gptAnalysis));
               if (skinAnalysis) {
                 localStorage.setItem('prysm_skin_analysis', JSON.stringify(skinAnalysis));
               }
-              onComplete(clientSideResult);
+              onComplete(gptAnalysis);
             } else {
               console.log('Backend analysis failed, using demo data');
               localStorage.setItem('prysm_analysis', JSON.stringify(fallbackResult));
@@ -348,15 +474,16 @@ export default function Analyzing({
         } catch (err) {
           console.log('[ANALYZING] Analysis error:', err);
           if (TEST_MODE) {
-            testLog.info('Backend connection failed in TEST_MODE - generating client-side analysis');
-            // In TEST_MODE, generate analysis client-side instead of using demo data
-            const clientSideResult = generateClientSideAnalysis(userName, userEmail, skinAnalysis);
-            console.log('[ANALYZING] Catch block - Client-side generated result:', JSON.stringify(clientSideResult, null, 2));
-            localStorage.setItem('prysm_analysis', JSON.stringify(clientSideResult));
+            testLog.info('Backend connection failed in TEST_MODE - calling GPT for real analysis');
+            // In TEST_MODE, use GPT for real analysis instead of demo data
+            const gptAnalysis = await callGPTForAnalysis(userName, userEmail, answers, photos, skinAnalysis);
+            console.log('[ANALYZING] Catch block - GPT analysis result:', JSON.stringify(gptAnalysis, null, 2));
+            localStorage.setItem('prysm_analysis', JSON.stringify(gptAnalysis));
+            localStorage.setItem('prysm_gpt_analysis', JSON.stringify(gptAnalysis));
             if (skinAnalysis) {
               localStorage.setItem('prysm_skin_analysis', JSON.stringify(skinAnalysis));
             }
-            onComplete(clientSideResult);
+            onComplete(gptAnalysis);
           } else {
             console.log('Using demo data due to error');
             localStorage.setItem('prysm_analysis', JSON.stringify(fallbackResult));
