@@ -1,0 +1,839 @@
+PROMPT MAESTRO — INTEGRACIÓN DE OPENAI EN PRYSM
+
+Quiero integrar OpenAI en PRYSM para convertir el sistema actual en un analizador de imagen y estilo realmente personalizado.
+
+IMPORTANTE:
+NO MODIFIQUES EL DISEÑO VISUAL ACTUAL.
+NO CAMBIES LA LANDING.
+NO CAMBIES EL DISEÑO DEL QUIZ.
+NO CAMBIES LA ESTRUCTURA VISUAL DEL REPORTE.
+NO CAMBIES LA ESTRUCTURA VISUAL DEL PDF.
+NO ELIMINES FUNCIONALIDADES QUE YA FUNCIONAN.
+
+El objetivo es cambiar principalmente EL MOTOR DE ANÁLISIS, no la interfaz.
+
+==================================================
+1. OBJETIVO PRINCIPAL
+==================================================
+
+Actualmente PRYSM utiliza reglas fijas para determinar temporada, colores y recomendaciones.
+
+Quiero reemplazar esa lógica fija por un análisis inteligente utilizando OpenAI.
+
+OpenAI debe analizar conjuntamente:
+
+- Las fotografías del usuario.
+- Las respuestas completas del test.
+- El análisis colorimétrico existente de Canvas.
+- El tono de piel indicado en Q2.
+- La silueta indicada en Q3.
+- El presupuesto de Q4.
+- Los colores existentes del clóset de Q5.
+- Las prendas existentes de Q6.
+- El metal de Q7.
+- El estilo de Q8.
+- Las ocasiones de Q9.
+- El look/arquetipo de referencia de Q10.
+
+NO quiero que una sola respuesta determine todo el resultado.
+
+El resultado debe ser la combinación de TODA la información disponible.
+
+==================================================
+2. API KEY
+==================================================
+
+La variable de entorno ya existe:
+
+OPENAI_API_KEY
+
+NO expongas esta API Key en React, JavaScript del navegador, HTML ni variables VITE_.
+
+La llamada a OpenAI debe realizarse exclusivamente desde el backend.
+
+Nunca enviar la API Key al frontend.
+
+==================================================
+3. FOTOS
+==================================================
+
+PRYSM ya recibe las fotografías del usuario.
+
+Utilizar las fotos como parte del análisis visual.
+
+Las fotos pueden incluir:
+
+1. Vista frontal.
+2. Vista de perfil.
+3. Vista de cuerpo completo.
+
+El sistema debe utilizar las imágenes disponibles.
+
+Si falta alguna foto, continuar con las disponibles.
+
+NO inventar características que no puedan observarse claramente.
+
+Si una característica visual no puede determinarse con suficiente confianza, devolver:
+
+"no_determinado"
+
+o explicar que se necesita una mejor fotografía.
+
+==================================================
+4. ANÁLISIS COLORIMÉTRICO
+==================================================
+
+Conservar el análisis Canvas existente.
+
+Canvas actualmente proporciona:
+
+- skinColor
+- undertone
+- depth
+- saturation
+- contrast
+- confidence
+- RGB
+- HSL
+
+Estos datos NO deben eliminarse.
+
+OpenAI debe recibirlos como información complementaria.
+
+El modelo debe cruzar:
+
+ANÁLISIS CANVAS
++
+FOTOGRAFÍAS
++
+Q2 DEL TEST
+
+para producir la conclusión de colorimetría.
+
+IMPORTANTE:
+
+NO forzar siempre "Otoño".
+
+No utilizar:
+
+deep_autumn
+
+como fallback automático cuando no exista información suficiente.
+
+No poner una temporada fija como resultado predeterminado.
+
+Si la información no permite determinar una estación con suficiente confianza, indicarlo.
+
+==================================================
+5. TEMPORADA Y PALETA
+==================================================
+
+El sistema debe poder producir diferentes resultados.
+
+Por ejemplo:
+
+- Primavera
+- Verano
+- Otoño
+- Invierno
+
+Y sus subcategorías si PRYSM decide utilizarlas.
+
+La temporada NO debe depender solamente de:
+
+undertone + depth
+
+ni de una condición hardcodeada.
+
+La IA debe evaluar toda la evidencia disponible.
+
+Debe devolver:
+
+season
+season_name
+confidence
+reason
+
+Ejemplo:
+
+{
+  "season": {
+    "id": "spring_warm",
+    "name": "Primavera Cálida",
+    "confidence": 0.87,
+    "reason": "..."
+  }
+}
+
+La explicación debe ser específica para esa persona.
+
+==================================================
+6. PALETA PERSONALIZADA
+==================================================
+
+No utilizar siempre la misma paleta.
+
+Generar una paleta coherente con el análisis.
+
+Separar:
+
+- colores protagonistas
+- colores secundarios
+- neutros
+- acentos
+- colores recomendados para prendas superiores
+- colores recomendados para prendas inferiores
+- colores recomendados para accesorios
+- colores a evitar o utilizar con moderación
+
+Cada color debe tener:
+
+- nombre
+- HEX
+- explicación breve
+
+Ejemplo:
+
+{
+  "name": "Verde salvia",
+  "hex": "#..."
+  "reason": "..."
+}
+
+No inventar colores arbitrarios que contradigan la colorimetría.
+
+==================================================
+7. Q1 — CÓMO QUIERE SENTIRSE
+==================================================
+
+Utilizar Q1 como objetivo de imagen.
+
+Ejemplos:
+
+sofisticada
+segura
+imponente
+vibrante
+serena
+poderosa
+natural
+glamurosa
+
+No ignorar esta respuesta.
+
+Debe afectar:
+
+- selección de prendas
+- siluetas
+- styling
+- accesorios
+- combinaciones
+- lenguaje de recomendaciones
+- looks finales
+
+Ejemplo:
+
+Si quiere sentirse "sofisticada":
+
+priorizar líneas limpias, estructura, acabados pulidos y combinaciones elegantes.
+
+Si quiere sentirse "natural":
+
+priorizar texturas, cortes y combinaciones relajadas.
+
+==================================================
+8. Q2 — TONO DE PIEL
+==================================================
+
+Utilizar Q2 como dato complementario.
+
+No sustituir automáticamente el análisis fotográfico.
+
+Comparar:
+
+Q2 del usuario
++
+Canvas
++
+fotografía
+
+Si existe discrepancia, analizarla y explicar la decisión.
+
+==================================================
+9. Q3 — SILUETA
+==================================================
+
+Utilizar realmente la respuesta:
+
+- reloj-arena
+- triángulo
+- triángulo invertido
+- rectángulo
+- ovalada
+- diamante
+
+La silueta debe cambiar las recomendaciones.
+
+Generar:
+
+- cortes recomendados
+- escotes recomendados
+- largos
+- proporciones
+- prendas superiores
+- prendas inferiores
+- vestidos
+- chaquetas/blazers
+- accesorios
+- qué evitar o utilizar con cuidado
+
+No usar siempre recomendaciones de reloj de arena.
+
+==================================================
+10. Q4 — PRESUPUESTO
+==================================================
+
+Utilizar realmente:
+
+- menos-1000
+- 1000-3000
+- 3000-5000
+- 5000-10000
+- mas-10000
+
+El presupuesto debe cambiar las recomendaciones.
+
+Crear:
+
+- prioridades de compra
+- piezas básicas
+- piezas de inversión
+- dónde conviene gastar más
+- dónde ahorrar
+- cantidad aproximada de piezas
+- estrategia de construcción del guardarropa
+
+NO recomendar automáticamente artículos de lujo a una persona con presupuesto bajo.
+
+==================================================
+11. Q5 — COLORES DEL CLÓSET
+==================================================
+
+Analizar los colores que el usuario ya posee.
+
+Compararlos con la paleta personalizada.
+
+Clasificarlos:
+
+1. CONSERVAR
+2. USAR MÁS
+3. USAR COMO ACENTO
+4. COMBINAR CON OTROS COLORES
+5. USAR CON MODERACIÓN
+6. CONSIDERAR REEMPLAZAR
+
+Ejemplo:
+
+"El beige que ya tienes funciona muy bien como neutro."
+
+"El rosa puede funcionar mejor cerca del rostro si utilizas esta tonalidad."
+
+No decir simplemente "estos colores te quedan".
+
+Explicar cómo utilizarlos.
+
+==================================================
+12. Q6 — PRENDAS DEL CLÓSET
+==================================================
+
+Utilizar realmente las prendas indicadas.
+
+Ejemplos:
+
+jeans
+blusas
+vestidos
+faldas
+shorts
+blazers
+sweaters
+zapatos
+bolsas
+accesorios
+sudaderas
+camisas
+
+Crear:
+
+- prendas que ya tiene y debería aprovechar
+- combinaciones posibles
+- prendas que le faltan
+- prendas prioritarias para comprar
+- prendas que no son prioritarias
+- piezas versátiles
+
+El objetivo es NO obligar al usuario a comprar un guardarropa completo.
+
+==================================================
+13. Q7 — DORADO / PLATEADO
+==================================================
+
+Utilizar realmente:
+
+- dorado
+- plateado
+- ambos
+
+Adaptar:
+
+- joyería
+- hebillas
+- relojes
+- accesorios
+- acabados metálicos
+
+==================================================
+14. Q8 — ESTILO
+==================================================
+
+Utilizar las respuestas de estilo.
+
+Ejemplos:
+
+clásico
+casual
+bohemio
+glamuroso
+minimalista
+deportivo
+romántico
+edgy
+vintage
+streetwear
+profesional
+chic
+
+Si selecciona varios estilos:
+
+determinar uno principal y estilos secundarios.
+
+No ignorar las combinaciones.
+
+Ejemplo:
+
+romántico + bohemio
+
+debe producir un resultado diferente a:
+
+profesional + clásico.
+
+==================================================
+15. Q9 — OCASIONES
+==================================================
+
+Utilizar las ocasiones seleccionadas.
+
+Ejemplos:
+
+oficina
+citas
+eventos
+fin de semana
+ejercicio
+viajes
+fiestas
+familia
+coworking
+casa
+
+Crear looks específicamente para las ocasiones seleccionadas.
+
+No generar siempre:
+
+office
+casual
+date
+travel
+
+si el usuario no las seleccionó.
+
+Las ocasiones seleccionadas por el usuario deben tener prioridad.
+
+==================================================
+16. Q10 — LOOK DE REFERENCIA
+==================================================
+
+Utilizar:
+
+natural
+dramática
+romántica
+ingenua
+arquitectónica
+glamourosa
+
+como dirección estética.
+
+Debe afectar el styling final.
+
+==================================================
+17. MOTOR DE RECOMENDACIONES
+==================================================
+
+Crear un perfil completo antes de generar recomendaciones.
+
+Conceptualmente:
+
+USER
+↓
+PHOTOS
++
+CANVAS
++
+Q1-Q10
+↓
+PERSONAL STYLE PROFILE
+↓
+OPENAI ANALYSIS
+↓
+COLORIMETRY
++
+SILHOUETTE
++
+STYLE
++
+BUDGET
++
+WARDROBE
++
+OCCASIONS
+↓
+PERSONALIZED RECOMMENDATIONS
+↓
+REPORT
+↓
+PDF
+
+==================================================
+18. RESPUESTA ESTRUCTURADA
+==================================================
+
+OpenAI debe devolver JSON estructurado.
+
+NO depender de texto libre para renderizar el reporte.
+
+Crear un esquema estable.
+
+Debe incluir como mínimo:
+
+{
+  "colorimetry": {},
+  "season": {},
+  "palette": {},
+  "silhouette": {},
+  "style": {},
+  "wardrobeAnalysis": {},
+  "budgetStrategy": {},
+  "jewelry": {},
+  "hair": {},
+  "recommendations": {},
+  "looks": [],
+  "summary": ""
+}
+
+Validar el JSON antes de enviarlo al frontend.
+
+Si OpenAI devuelve una respuesta inválida:
+
+- registrar el error
+- intentar recuperar/parsear
+- utilizar el análisis local como fallback
+- nunca romper el reporte.
+
+==================================================
+19. PERSONALIZACIÓN REAL
+==================================================
+
+REQUISITO CRÍTICO:
+
+Dos usuarios con respuestas diferentes NO deben recibir automáticamente el mismo reporte.
+
+Por ejemplo:
+
+USUARIO A:
+
+sofisticada
++
+reloj de arena
++
+menos de $1000
++
+profesional
++
+oficina
++
+negro/blanco/beige
+
+debe recibir recomendaciones diferentes a:
+
+USUARIO B:
+
+natural
++
+rectángulo
++
+más de $10,000
++
+romántico
++
+citas/fiestas
++
+rosa/verde/morado.
+
+La temporada puede coincidir si realmente corresponde al análisis de color.
+
+Pero las recomendaciones de ropa, compras, looks y styling deben seguir siendo diferentes.
+
+==================================================
+20. PDF
+==================================================
+
+No cambiar el diseño actual del PDF.
+
+El contenido debe utilizar el nuevo análisis.
+
+La portada debe seguir mostrando la fotografía real del usuario.
+
+El PDF debe contener los resultados personalizados.
+
+Los looks deben ser generados utilizando el perfil real.
+
+No utilizar contenido fijo cuando pueda ser personalizado.
+
+Mantener las 7 páginas actuales.
+
+==================================================
+21. REPORTE WEB
+==================================================
+
+No cambiar el diseño visual.
+
+El reporte web debe mostrar exactamente los resultados generados por el nuevo motor.
+
+Debe seguir siendo desplazable.
+
+Debe conservar:
+
+- fotografía
+- paleta
+- score
+- temporada
+- silueta
+- recomendaciones
+- looks
+- botón de descarga PDF
+
+==================================================
+22. TEST MODE
+==================================================
+
+Mantener TEST_MODE.
+
+En TEST_MODE:
+
+NO enviar al usuario a MercadoPago.
+
+Debe existir:
+
+"SIMULAR PAGO EXITOSO"
+
+Después de simular el pago:
+
+→ Report
+
+→ Descargar PDF
+
+El modo prueba debe permitir comprobar todo el análisis sin pagar.
+
+No modificar el flujo de producción.
+
+==================================================
+23. LOGS DE DEBUG
+==================================================
+
+En TEST_MODE mostrar en consola:
+
+[TEST MODE] OpenAI analysis started
+
+[TEST MODE] Photos received
+
+[TEST MODE] Canvas analysis received
+
+[TEST MODE] Quiz answers received
+
+[TEST MODE] Personal profile generated
+
+[TEST MODE] OpenAI analysis completed
+
+[TEST MODE] Season: ...
+
+[TEST MODE] Palette generated
+
+[TEST MODE] Silhouette: ...
+
+[TEST MODE] Budget: ...
+
+[TEST MODE] Occasions: ...
+
+[TEST MODE] Personalized looks generated
+
+[TEST MODE] PDF data generated
+
+No imprimir la API Key.
+
+==================================================
+24. SEGURIDAD
+==================================================
+
+Nunca exponer:
+
+OPENAI_API_KEY
+
+en el navegador.
+
+Nunca ponerla en:
+
+VITE_OPENAI_API_KEY
+
+localStorage
+
+React state
+
+HTML
+
+console.log
+
+La API Key solo debe existir en el backend.
+
+==================================================
+25. NO HACER
+==================================================
+
+NO:
+
+- cambiar diseño
+- cambiar colores de la interfaz
+- cambiar navegación
+- eliminar preguntas
+- eliminar Canvas
+- eliminar fotos
+- eliminar PDF
+- eliminar TEST_MODE
+- forzar Otoño
+- usar siempre la misma paleta
+- usar recomendaciones hardcodeadas
+- usar Math.random() para decidir resultados
+- inventar datos que no están disponibles
+- exponer la API Key
+
+==================================================
+26. CRITERIO DE ÉXITO
+==================================================
+
+La implementación solo se considera terminada cuando pueda hacer estas pruebas:
+
+PRUEBA A:
+
+Usuario:
+- piel clara
+- reloj de arena
+- presupuesto bajo
+- profesional
+- oficina
+- negro/blanco/beige
+
+Resultado:
+debe reflejar esas respuestas.
+
+PRUEBA B:
+
+Usuario:
+- piel morena
+- rectángulo
+- presupuesto alto
+- romántico
+- citas/fiestas
+- rosa/verde/morado
+
+Resultado:
+debe ser claramente diferente.
+
+PRUEBA C:
+
+Misma persona, pero cambia solamente Q3.
+
+El resultado de silueta y recomendaciones de prendas debe cambiar.
+
+PRUEBA D:
+
+Misma persona, cambia Q4.
+
+La estrategia de compras debe cambiar.
+
+PRUEBA E:
+
+Misma persona, cambia Q9.
+
+Los looks generados deben cambiar según las ocasiones.
+
+PRUEBA F:
+
+Fotos diferentes.
+
+El análisis de colorimetría debe poder cambiar cuando la evidencia visual realmente cambie.
+
+==================================================
+27. IMPLEMENTACIÓN
+==================================================
+
+Antes de modificar archivos:
+
+1. Inspecciona la arquitectura actual.
+2. Identifica exactamente dónde se construye PersonalStyleProfile.
+3. Identifica el endpoint actual /api/analyze.
+4. Identifica cómo se generan los datos del Report.
+5. Identifica cómo se genera el PDF.
+6. Identifica cómo está implementado TEST_MODE.
+
+Después:
+
+7. Implementa la integración OpenAI en BACKEND.
+8. Conecta el análisis al flujo existente.
+9. Elimina únicamente los fallbacks hardcodeados que estén causando resultados repetitivos.
+10. Mantén Canvas como análisis complementario.
+11. Mantén el diseño intacto.
+12. Mantén TEST_MODE.
+13. Compila.
+14. Ejecuta pruebas.
+15. Corrige errores.
+16. Verifica que el reporte web y PDF reciban exactamente los mismos datos.
+
+NO te detengas simplemente después de crear la integración.
+
+Quiero que pruebes el flujo completo.
+
+==================================================
+RESULTADO FINAL ESPERADO
+==================================================
+
+PRYSM debe dejar de ser un sistema que básicamente dice:
+
+"Tu temporada es Otoño y estos son siempre tus colores."
+
+Quiero que se convierta en:
+
+"Analizamos tus fotos + tus respuestas + tu silueta + tu estilo + tu presupuesto + tu guardarropa + tus ocasiones y construimos un perfil de estilo personalizado."
+
+El diseño actual debe permanecer igual.
+
+SOLO estamos mejorando EL CEREBRO DE PRYSM.
