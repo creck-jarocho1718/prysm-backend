@@ -1,0 +1,551 @@
+# CORRECCIÓN COMPLETA DEL MOTOR DE REPORTES PRYSM
+
+Necesito corregir el sistema que genera los reportes de análisis de color, morfología, rostro, cabello, outfits y accesorios de PRYSM.
+
+## OBJETIVO PRINCIPAL
+
+NO cambies automáticamente el resultado obtenido por el test.
+
+Si el motor de análisis determinó:
+
+* Estación: Primavera Cálida / Warm Spring
+* Subtono: warm / cálido
+* Profundidad: medium / media
+* Contraste: medium / medio
+
+mantén ese resultado **si los datos del test realmente lo sustentan**.
+
+El objetivo es corregir la generación del reporte para que toda la información mostrada sea coherente con los datos obtenidos.
+
+---
+
+# 1. NOMBRE DE LA ESTACIÓN
+
+Nunca repetir el nombre.
+
+Incorrecto:
+
+"Primavera Primavera cálida"
+
+Correcto:
+
+"Primavera Cálida"
+
+Opcional:
+
+"Primavera Cálida (Warm Spring)"
+
+El nombre debe generarse una sola vez y utilizarse de forma consistente en todo el documento.
+
+---
+
+# 2. NO INVENTAR DATOS
+
+El reporte solamente puede mostrar información que:
+
+1. provenga del resultado del análisis,
+2. pueda calcularse correctamente a partir de los datos disponibles,
+3. o sea una recomendación estándar claramente compatible con la estación/morfología detectada.
+
+No inventar:
+
+* subtono
+* profundidad
+* contraste
+* forma de rostro
+* tipo de cuerpo
+* color de ojos
+* características del cabello
+* puntuaciones
+* resultados del análisis de fotografía
+
+Si un dato no fue realmente calculado, no presentarlo como un hecho.
+
+---
+
+# 3. CORREGIR EL SISTEMA DE COLORES
+
+Este es uno de los errores más importantes del reporte actual.
+
+Cada color debe tener una relación exacta:
+
+HEX → nombre correcto → categoría → recomendación
+
+Nunca permitir que un HEX reciba el nombre de otro color.
+
+Ejemplos que actualmente están MAL:
+
+#FF6F61 = coral, NO "ocre quemado"
+
+#FFD700 = dorado/amarillo intenso, NO "ocre quemado"
+
+#FFB6C1 = rosa claro, NO "verde oliva"
+
+#32CD32 = verde lima brillante, NO "verde musgo"
+
+#FF4500 = rojo anaranjado intenso
+
+#FFFFFF = blanco puro
+
+#F5F5DC = beige
+
+Implementar una validación automática antes de generar el PDF.
+
+Si el nombre del color y el HEX no corresponden, el sistema debe corregirlo o bloquear la generación del reporte.
+
+---
+
+# 4. PALETA DE PRIMAVERA CÁLIDA
+
+Si el resultado es Primavera Cálida, la descripción debe ser coherente con esta estación.
+
+Priorizar:
+
+* colores cálidos
+* luminosos
+* vivos
+* relativamente claros o medios
+* coral
+* melocotón
+* salmón cálido
+* amarillo cálido
+* dorado
+* verde cálido
+* turquesa cálido
+* naranja cálido
+* beige cálido
+* crema
+
+No describir la paleta principalmente como:
+
+"ocres profundos, tierra quemada y verdes musgo"
+
+porque esa descripción puede confundirse con una paleta otoñal.
+
+Los colores otoñales profundos pueden aparecer como opciones secundarias solamente cuando sean compatibles con el análisis.
+
+---
+
+# 5. PALETA PERSONALIZADA
+
+Separar correctamente:
+
+## Colores principales
+
+Los colores que mejor representan la estación.
+
+## Colores favoritos
+
+8 colores personalizados seleccionados de acuerdo con:
+
+* estación
+* temperatura
+* profundidad
+* contraste
+
+## Neutros
+
+Ejemplos posibles:
+
+* crema
+* marfil
+* beige cálido
+* camel claro
+* marrón cálido
+
+## Acentos
+
+Colores más vivos utilizados para complementar el outfit.
+
+Cada color debe mostrar:
+
+* nombre
+* HEX
+* muestra visual
+* categoría
+* explicación breve
+
+---
+
+# 6. COLORES A EVITAR
+
+No utilizar frases absolutas como:
+
+"Todos los azules apagarán tu rostro."
+
+"Todos los rosas te quedan mal."
+
+En su lugar explicar:
+
+"Los tonos muy fríos y azulados pueden generar menos armonía con una paleta cálida. Si se utilizan, seleccionar versiones cálidas o equilibradas."
+
+Mostrar una lista concreta de colores menos compatibles cuando existan datos suficientes.
+
+---
+
+# 7. SUBTONO
+
+Si el resultado es:
+
+warm
+
+mostrar:
+
+"Cálido (Warm)"
+
+o:
+
+"Subtono cálido / dorado"
+
+No mezclar innecesariamente español e inglés.
+
+Si el resultado es medium:
+
+"Profundidad media"
+
+Si el resultado es medium contrast:
+
+"Contraste medio"
+
+---
+
+# 8. JUSTIFICACIÓN DEL RESULTADO
+
+La sección:
+
+"¿Por qué estos colores son los tuyos?"
+
+debe explicar el resultado utilizando únicamente las características realmente obtenidas.
+
+Ejemplo:
+
+"Tu análisis indica un subtono cálido, profundidad media y contraste medio. Por eso PRYSM prioriza colores cálidos y luminosos que mantienen una armonía equilibrada con estas características."
+
+No afirmar características que el análisis no haya obtenido.
+
+---
+
+# 9. PRYSM SCORE
+
+Si existe un PRYSM SCORE, debe existir una lógica real para calcularlo.
+
+Si el sistema no tiene una fórmula documentada, NO presentar el número como una medición científica.
+
+El score debe indicar claramente qué representa.
+
+Por ejemplo:
+
+"PRYSM Score: 8.5/10"
+
+"Nivel de confianza del análisis"
+
+solamente si realmente representa el nivel de confianza calculado por el sistema.
+
+No utilizar números arbitrarios.
+
+---
+
+# 10. MORFOLOGÍA CORPORAL
+
+No combinar categorías diferentes en una sola etiqueta.
+
+Actualmente aparece:
+
+"Triángulo Invertido · Lineal"
+
+Separar los conceptos.
+
+Ejemplo:
+
+"Tipo de silueta: Triángulo Invertido"
+
+"Característica secundaria: Lineal"
+
+Solamente mostrar "Lineal" si realmente forma parte del sistema de clasificación utilizado.
+
+Las recomendaciones deben derivarse de la morfología detectada.
+
+---
+
+# 11. RECOMENDACIONES DE ROPA
+
+No generar recomendaciones genéricas.
+
+Cada recomendación debe explicar brevemente POR QUÉ favorece la silueta detectada.
+
+Por ejemplo:
+
+"Faldas acampanadas — ayudan a aportar volumen visual a la zona inferior y equilibrar la silueta."
+
+No recomendar automáticamente prendas que añadan volumen precisamente a la zona que se quiere equilibrar.
+
+---
+
+# 12. ANÁLISIS FACIAL
+
+Si se determina:
+
+"Rostro ovalado"
+
+el sistema debe haber utilizado datos reales de la fotografía o del análisis facial.
+
+No inventar la forma del rostro.
+
+Las recomendaciones de corte deben corresponder realmente a la forma detectada.
+
+---
+
+# 13. CABELLO
+
+Separar:
+
+## Colores recomendados
+
+Ejemplo:
+
+* dorado miel
+* castaño cálido
+* cobre cálido
+
+## Colores menos compatibles
+
+Explicar que la recomendación depende de la temperatura y contraste.
+
+No decir que un color "apaga" automáticamente a cualquier persona sin considerar el tono específico.
+
+---
+
+# 14. OCASIONES
+
+Actualmente el reporte anuncia:
+
+"4 ocasiones"
+
+pero solamente muestra 3.
+
+Corregir esto.
+
+Debe ocurrir una de estas dos cosas:
+
+A) Mostrar realmente 4 ocasiones.
+
+O:
+
+B) Cambiar el título a:
+
+"3 ocasiones"
+
+Nunca mostrar un número diferente al contenido real.
+
+---
+
+# 15. PRESUPUESTO
+
+Si el reporte dice:
+
+"Adaptados a tu presupuesto"
+
+debe mostrar realmente alternativas de precio.
+
+Por ejemplo:
+
+* Económico
+* Medio
+* Premium
+
+Si no existe información sobre presupuesto, no afirmar que los looks fueron adaptados al presupuesto.
+
+---
+
+# 16. IDIOMA
+
+Si el usuario seleccionó español, generar TODO el reporte en español.
+
+Evitar mezclas como:
+
+* warm
+* medium
+* evenings
+* skirt
+* luxe natural
+
+Si se utiliza un término técnico en inglés, mostrarlo solamente como referencia:
+
+"Subtono cálido (Warm)"
+
+---
+
+# 17. CORREGIR ERRORES DE TEXTO
+
+Corregir automáticamente errores como:
+
+"Skirt estruturado"
+
+→ "Falda estructurada"
+
+"evenings"
+
+→ "para la noche"
+
+"complexion"
+
+→ "tez"
+
+"Primavera Primavera cálida"
+
+→ "Primavera Cálida"
+
+---
+
+# 18. JOYERÍA
+
+Las recomendaciones deben depender del resultado de temperatura.
+
+Para una estación cálida se pueden recomendar:
+
+* oro cálido
+* bronce
+* cobre
+
+Pero no convertir estas recomendaciones en reglas universales.
+
+Explicar brevemente la relación con la temperatura detectada.
+
+---
+
+# 19. ACCESORIOS
+
+Los bolsos, zapatos, joyería y accesorios deben mantener coherencia con:
+
+* estación
+* temperatura
+* contraste
+* profundidad
+* ocasión
+* morfología
+
+No utilizar bloques idénticos para todos los usuarios.
+
+---
+
+# 20. VALIDACIÓN FINAL ANTES DE GENERAR EL PDF
+
+Antes de crear el PDF ejecutar una validación.
+
+Comprobar:
+
+[ ] La estación aparece correctamente y una sola vez.
+
+[ ] Subtono coincide con el resultado del análisis.
+
+[ ] Profundidad coincide con el resultado.
+
+[ ] Contraste coincide con el resultado.
+
+[ ] Todos los HEX corresponden al nombre mostrado.
+
+[ ] Ningún color tiene el nombre de otro color.
+
+[ ] Los colores pertenecen realmente a la familia recomendada.
+
+[ ] Los colores "a evitar" están claramente definidos.
+
+[ ] La morfología está correctamente etiquetada.
+
+[ ] La forma del rostro no fue inventada.
+
+[ ] Las recomendaciones de cabello corresponden a la temperatura.
+
+[ ] El número de ocasiones coincide con las ocasiones mostradas.
+
+[ ] El presupuesto solamente se menciona si realmente fue utilizado.
+
+[ ] No existen mezclas innecesarias de idiomas.
+
+[ ] No existen errores de traducción.
+
+[ ] No existen campos duplicados.
+
+[ ] No existen valores hardcodeados que contradigan el resultado del test.
+
+[ ] No existen valores de fallback que sustituyan silenciosamente el resultado real.
+
+---
+
+# 21. REGLA CRÍTICA CONTRA FALLBACKS
+
+NO utilizar una estación predeterminada como:
+
+"Primavera Cálida"
+
+si el análisis no produjo ese resultado.
+
+NO utilizar colores predeterminados si el usuario tiene una paleta calculada diferente.
+
+NO utilizar:
+
+season = "Deep Autumn"
+
+o cualquier otro valor hardcodeado como fallback sin indicarlo.
+
+El flujo correcto debe ser:
+
+TEST → RESPUESTAS → ANÁLISIS → RESULTADO → PALETA → REPORTE → PDF
+
+Nunca:
+
+TEST → FALLBACK → REPORTE
+
+---
+
+# 22. CONSISTENCIA ENTRE PANTALLA Y PDF
+
+El resultado mostrado en la aplicación y el resultado del PDF deben utilizar exactamente los mismos datos.
+
+No permitir que:
+
+* la pantalla diga una estación,
+* el PDF diga otra,
+* la pantalla tenga una paleta,
+* el PDF genere otra.
+
+La fuente de verdad debe ser un único objeto de resultado del análisis.
+
+Ejemplo conceptual:
+
+analysisResult = {
+season,
+undertone,
+depth,
+contrast,
+colors,
+bodyShape,
+faceShape,
+hairRecommendations,
+outfitRecommendations,
+accessories
+}
+
+El PDF debe consumir este resultado directamente.
+
+---
+
+# 23. REGLA FINAL
+
+No cambies un resultado del test solamente porque una recomendación parezca extraña.
+
+Primero determina si:
+
+1. el resultado del test es correcto,
+2. la clasificación es correcta,
+3. la paleta está correctamente generada,
+4. los nombres y HEX coinciden,
+5. las recomendaciones corresponden a la clasificación.
+
+La prioridad es:
+
+**DATOS DEL TEST → LÓGICA DE ANÁLISIS → RESULTADO → CONTENIDO → DISEÑO DEL PDF**
+
+No modificar el resultado para que "se vea bonito".
+
+El reporte debe ser coherente, verificable y consistente con los datos reales utilizados por PRYSM.
