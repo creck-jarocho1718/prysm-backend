@@ -155,7 +155,8 @@ function buildProfileFromAnswers(
   skinAnalysis: any
 ): PersonalStyleProfile {
   // Check if we have GPT analysis data
-  const gptData = analysis?.analysis?.gptAnalysisData;
+  // Backend returns: { success, data: { analisisColor, silueta, estilo, ... } }
+  const gptData = analysis?.data;
   const hasGPTAnalysis = !!gptData;
 
   testLog.info('Building profile - GPT analysis available:', hasGPTAnalysis);

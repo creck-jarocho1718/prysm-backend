@@ -1,0 +1,302 @@
+[PRYSM API] Using TEST API URL: https://prysm-backend-pipq.onrender.com
+index-CcYkoZQB.js:41 [TEST MODE] TEST MODE is ACTIVE 
+index-CcYkoZQB.js:603 [TEST MODE] Running in test environment
+/favicon.ico:1 
+        
+        
+       Failed to load resource: the server responded with a status of 404 (Not Found)
+index-CcYkoZQB.js:41 [Analyzing] Starting photo analysis with 1 photos...
+index-CcYkoZQB.js:41 [Analyzing] Photo analysis complete: Object
+index-CcYkoZQB.js:41 [Analyzing] Calling backend API...
+index-CcYkoZQB.js:41 [PRYSM API] analyzeImage called
+index-CcYkoZQB.js:41 [PRYSM API] Photos included: true
+index-CcYkoZQB.js:41 [PRYSM API] Photos count: 1
+index-CcYkoZQB.js:41 [PRYSM API] Quiz answers included: true
+index-CcYkoZQB.js:41 [PRYSM API] API URL: https://prysm-backend-pipq.onrender.com
+index-CcYkoZQB.js:41 [PRYSM API] Response status: 200
+index-CcYkoZQB.js:41 [PRYSM API] Response success: true
+index-CcYkoZQB.js:41 [PRYSM] GPT season: Invierno
+index-CcYkoZQB.js:41 [PRYSM] GPT palette colors: 2
+index-CcYkoZQB.js:41 [PRYSM] GPT silhouette: rectángulo
+index-CcYkoZQB.js:41 [PRYSM] GPT style: Dramática
+index-CcYkoZQB.js:41 [TEST MODE] Backend analysis successful 
+index-CcYkoZQB.js:41 [ANALYZING] Backend result success
+index-CcYkoZQB.js:41 [ANALYZING] Calling onComplete with success result
+index-CcYkoZQB.js:603 [App] handleAnalysisComplete received: {
+  "success": true,
+  "data": {
+    "analisisColor": {
+      "subtono": "frío",
+      "profundidad": "medio",
+      "contraste": "alto",
+      "saturacion": "alta",
+      "estacion": "Invierno",
+      "subestacion": null,
+      "confianza": 0.85,
+      "explicacion": "La combinación de tonos de piel y cabello indica un subtono frío con un contraste alto, lo que sugiere que los colores intensos y oscuros le favorecerán.",
+      "paleta": {
+        "protagonistas": [
+          {
+            "hex": "#FF0000",
+            "nombre": "Rojo intenso",
+            "explicacion": "Resalta su confianza y poder, ideal para ocasiones donde desea destacar."
+          },
+          {
+            "hex": "#4B0082",
+            "nombre": "Índigo",
+            "explicacion": "Profundo y dramático, complementa su tono de piel y resalta su elegancia."
+          }
+        ],
+        "secundarios": [
+          {
+            "hex": "#00FF00",
+            "nombre": "Verde esmeralda",
+            "explicacion": "Ofrece frescura y versatilidad, ideal para combinar con otros colores."
+          }
+        ],
+        "neutros": [
+          {
+            "hex": "#FFFFFF",
+            "nombre": "Blanco puro",
+            "explicacion": "Funciona como un lienzo para resaltar otros colores y aporta luminosidad."
+          }
+        ],
+        "acento": [
+          {
+            "hex": "#FFD700",
+            "nombre": "Dorado",
+            "explicacion": "Añade un toque de glamour y sofisticación a cualquier look."
+          }
+        ],
+        "evitar": [
+          {
+            "hex": "#FFC0CB",
+            "nombre": "Rosa pastel",
+            "explicacion": "Puede hacer que su piel se vea apagada y no resalta su fuerza."
+          }
+        ]
+      }
+    },
+    "silueta": {
+      "tipoCuerpo": "rectángulo",
+      "cortes": [
+        "Cortes asimétricos",
+        "Prendas entalladas en la cintura"
+      ],
+      "proporciones": "Crear una apariencia de curvas con cinturas definidas y volumen en la parte superior e inferior.",
+      "escotes": [
+        "Escote en V",
+        "Escote halter"
+      ],
+      "largos": {
+        "pantalones": "Largos hasta el tobillo con cierta amplitud",
+        "faldas": "Faldas midi o largas con movimiento"
+      },
+      "prendasFavorecen": [
+        "Vestidos ajustados a la cintura",
+        "Chaquetas estructuradas"
+      ],
+      "prendasEvitar": [
+        "Prendas rectas sin forma",
+        "Cortes demasiado sueltos"
+      ],
+      "explicacion": "El uso de cortes que definen la figura y prendas que añaden volumen ayuda a crear una silueta más curvilínea."
+    },
+    "estilo": {
+      "principal": {
+        "nombre": "Dramática",
+        "descripcion": "Un estilo que combina elementos llamativos y audaces con un toque de sofisticación.",
+        "palabrasClave": [
+          "glamour",
+          "poder",
+          "expresión"
+        ]
+      },
+      "secundarios": [
+        "bohemio",
+        "edgy",
+        "romántico",
+        "chic"
+      ],
+      "arquetipo": "dramática",
+      "sensacionProyectar": "segura, glamurosa y poderosa"
+    },
+    "presupuesto": {
+      "nivel": "alto",
+      "comprasPrioritarias": [
+        {
+          "prenda": "Vestido de noche",
+          "razon": "Ideal para fiestas y ocasiones especiales.",
+          "rangoPrecio": "800-1500"
+        }
+      ],
+      "invertir": [
+        {
+          "prenda": "Chaqueta estructurada",
+          "razon": "Versátil para múltiples looks y temporadas.",
+          "rangoPrecio": "400-800"
+        }
+      ],
+      "economicas": [
+        {
+          "prenda": "Accesorios llamativos",
+          "dondeAhorrar": "Se pueden encontrar opciones de bajo costo que impacten.",
+          "rangoPrecio": "50-200"
+        }
+      ],
+      "puedeEsperar": [
+        "Zapatos de alta gama",
+        "Bolsos de diseñador"
+      ]
+    },
+    "closet": {
+      "yaTienes": [
+        {
+          "prenda": "Blusa blanca",
+          "comoUsar": "Combinar con pantalones de cuero o faldas de colores.",
+          "combinaCon": [
+            "negro",
+            "rojo",
+            "verde"
+          ]
+        }
+      ],
+      "teSirve": [
+        {
+          "prenda": "Vestido rojo",
+          "comoAdaptar": "Añadir un cinturón para definir la cintura."
+        }
+      ],
+      "combinaloAsi": [
+        {
+          "prenda": "Pantalones negros",
+          "combinacion": "Con blusas de colores vivos o estampados.",
+          "colores": [
+            "rojo",
+            "verde",
+            "blanco"
+          ]
+        }
+      ],
+      "teFalta": [
+        "Chaqueta de cuero",
+        "Vestido largo elegante"
+      ],
+      "noEsPrioridad": [
+        "Prendas de algodón básicas",
+        "Tops sin forma"
+      ]
+    },
+    "ocasiones": [
+      {
+        "nombre": "Citas",
+        "prioridad": 1,
+        "looks": [
+          {
+            "nombre": "Look seductor",
+            "piezas": "Vestido rojo ajustado, tacones negros, clutch plateado.",
+            "colores": [
+              "#FF0000",
+              "#000000",
+              "#C0C0C0"
+            ],
+            "sensacion": "Atractiva y segura.",
+            "descripcion": "Un look que resalta la figura y atrae miradas."
+          }
+        ]
+      },
+      {
+        "nombre": "Fiestas",
+        "prioridad": 2,
+        "looks": [
+          {
+            "nombre": "Look festivo",
+            "piezas": "Falda midi negra, blusa con brillos, chaqueta estructurada.",
+            "colores": [
+              "#000000",
+              "#FFD700",
+              "#FFFFFF"
+            ],
+            "sensacion": "Brillante y glamorosa.",
+            "descripcion": "Un conjunto que combina elegancia y un toque de diversión."
+          }
+        ]
+      },
+      {
+        "nombre": "Familia",
+        "prioridad": 3,
+        "looks": [
+          {
+            "nombre": "Look casual chic",
+            "piezas": "Jeans ajustados, blusa blanca, chaqueta de mezclilla.",
+            "colores": [
+              "#FFFFFF",
+              "#0000FF",
+              "#FF5733"
+            ],
+            "sensacion": "Cómoda y estilizada.",
+            "descripcion": "Un outfit que mezcla comodidad con estilo."
+          }
+        ]
+      }
+    ],
+    "joyeria": {
+      "metal": "plata",
+      "acabados": [
+        "pulido",
+        "mate"
+      ],
+      "tipos": [
+        "pendientes grandes",
+        "pulseras con detalles"
+      ],
+      "piedras": [
+        "zafiro",
+        "amatista"
+      ],
+      "explicacion": "La plata complementa su tono de piel frío y añade un aire de sofisticación."
+    },
+    "perfil": {
+      "descubrimiento": "El usuario busca un estilo que proyecte poder y elegancia, con una base de colores fríos.",
+      "explicacion": "La combinación de su tono de piel, preferencias de estilo y deseos de proyección sugieren un enfoque en el glamour y la sofisticación.",
+      "coloresFavorecen": "Colores intensos y fríos resaltan su belleza natural y confianza.",
+      "coloresConservar": "Blanco, verde, rojo, morado.",
+      "coloresDejar": "Colores pastel y apagados.",
+      "prendasFavorecen": "Vestidos ajustados y chaquetas estructuradas que definen la figura.",
+      "prendasComprar": "Chaqueta de cuero, vestido largo elegante.",
+      "prioridadCompras": "Comprar primero el vestido de noche y la chaqueta estructurada.",
+      "looksPrincipales": "Looks que combinan glamour y un toque dramático para citas y fiestas.",
+      "imagenDeseada": "Proyectar una imagen de seguridad, glamour y poder en todas las ocasiones."
+    }
+  },
+  "processingTime": 14062,
+  "verification": {
+    "photosIncluded": true,
+    "photosCount": 1,
+    "answersIncluded": true,
+    "season": "Invierno",
+    "paletteColors": 2,
+    "silhouette": "rectángulo",
+    "style": "Dramática"
+  }
+}
+index-CcYkoZQB.js:603 [App] analysis.season: undefined
+index-CcYkoZQB.js:603 [App] analysis.palette: undefined
+index-CcYkoZQB.js:41 [ResultPreview] Props and State: Object
+index-CcYkoZQB.js:41 [ResultPreview] Extracted data: Object
+index-CcYkoZQB.js:41 [ResultPreview] Props and State: Object
+index-CcYkoZQB.js:41 [ResultPreview] Extracted data: Object
+index-CcYkoZQB.js:41 [TEST MODE] TEST MODE: Starting PDF generation... 
+index-CcYkoZQB.js:41 [TEST MODE] PersonalStyleProfile generated: "Analysis data retrieved from localStorage"
+index-CcYkoZQB.js:41 [TEST MODE] Building profile - GPT analysis available: 
+index-CcYkoZQB.js:41 [TEST MODE] PersonalStyleProfile generated: "PersonalStyleProfile built from quiz answers"
+index-CcYkoZQB.js:41 [TEST MODE] Answers used: Object
+index-CcYkoZQB.js:41 [TEST MODE] PDF Generation: Object
+index-CcYkoZQB.js:41 [TEST MODE] Generating personalized looks... 
+index-CcYkoZQB.js:41 [TEST MODE] Generated looks: Array(3)
+index-CcYkoZQB.js:41 [TEST MODE] PDF Generation: Object
+index-CcYkoZQB.js:41 [TEST MODE] PDF Generation: Object
+index-CcYkoZQB.js:41 [TEST MODE] Using testPdfData for report - SAME data as PDF 
+index-CcYkoZQB.js:41 [TEST MODE] PersonalStyleProfile generated: "Report component using PersonalStyleProfile from PDF generator"
+index-CcYkoZQB.js:41 [TEST MODE] Report component loaded with testPdfData: AVAILABLE
+index-CcYkoZQB.js:41 [TEST MODE] User photo available: true
