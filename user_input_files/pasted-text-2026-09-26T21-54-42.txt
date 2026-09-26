@@ -1,0 +1,366 @@
+[PRYSM API] Using TEST API URL: https://prysm-backend-pipq.onrender.com
+index-BWTr_lkP.js:41 [TEST MODE] TEST MODE is ACTIVE 
+index-BWTr_lkP.js:603 [TEST MODE] Running in test environment
+/favicon.ico:1 
+        
+        
+       Failed to load resource: the server responded with a status of 404 (Not Found)
+index-BWTr_lkP.js:41 [Analyzing] Starting photo analysis with 1 photos...
+index-BWTr_lkP.js:41 [Analyzing] Photo analysis complete: Object
+index-BWTr_lkP.js:41 [Analyzing] Calling backend API...
+index-BWTr_lkP.js:41 [PRYSM API] analyzeImage called
+index-BWTr_lkP.js:41 [PRYSM API] Photos included: true
+index-BWTr_lkP.js:41 [PRYSM API] Photos count: 1
+index-BWTr_lkP.js:41 [PRYSM API] Quiz answers included: true
+index-BWTr_lkP.js:41 [PRYSM API] API URL: https://prysm-backend-pipq.onrender.com
+index-BWTr_lkP.js:41 [PRYSM API] Response status: 200
+index-BWTr_lkP.js:41 [PRYSM API] Response success: true
+index-BWTr_lkP.js:41 [PRYSM] GPT season: Verano
+index-BWTr_lkP.js:41 [PRYSM] GPT palette colors: 2
+index-BWTr_lkP.js:41 [PRYSM] GPT silhouette: ovalada
+index-BWTr_lkP.js:41 [PRYSM] GPT style: Casual Romántico
+index-BWTr_lkP.js:41 [TEST MODE] Backend analysis successful 
+index-BWTr_lkP.js:41 [ANALYZING] Backend result success
+index-BWTr_lkP.js:41 [ANALYZING] Calling onComplete with success result
+index-BWTr_lkP.js:603 [App] handleAnalysisComplete received: {
+  "success": true,
+  "data": {
+    "analisisColor": {
+      "subtono": "neutro",
+      "profundidad": "medio",
+      "contraste": "medio",
+      "saturacion": "media",
+      "estacion": "Verano",
+      "subestacion": "Verano suave",
+      "confianza": 0.8,
+      "explicacion": "El análisis indica un subtono neutro que se adapta bien a múltiples colores, con una profundidad media que favorece tonalidades más suaves.",
+      "paleta": {
+        "protagonistas": [
+          {
+            "hex": "#F5CBA0",
+            "nombre": "Durazno suave",
+            "explicacion": "Aporta calidez y resalta el brillo natural de la piel."
+          },
+          {
+            "hex": "#E67E22",
+            "nombre": "Naranja quemado",
+            "explicacion": "Aporta energía y luminosidad, ideal para un look fresco."
+          }
+        ],
+        "secundarios": [
+          {
+            "hex": "#C0392B",
+            "nombre": "Rojo intenso",
+            "explicacion": "Un color vibrante que añade un toque de elegancia y atractivo."
+          },
+          {
+            "hex": "#D5DBDB",
+            "nombre": "Gris suave",
+            "explicacion": "Versátil y fácil de combinar, ideal para el día a día."
+          }
+        ],
+        "neutros": [
+          {
+            "hex": "#FFFFFF",
+            "nombre": "Blanco puro",
+            "explicacion": "Perfecto para crear contrastes y resaltar otros colores."
+          },
+          {
+            "hex": "#AAB7B8",
+            "nombre": "Gris claro",
+            "explicacion": "Un neutro que puede complementar bien los colores protagonistas."
+          }
+        ],
+        "acento": [
+          {
+            "hex": "#2980B9",
+            "nombre": "Azul brillante",
+            "explicacion": "Ideal para detalles y accesorios que añaden interés visual."
+          }
+        ],
+        "evitar": [
+          {
+            "hex": "#7B7D7D",
+            "nombre": "Gris oscuro",
+            "explicacion": "Puede resultar apagado y no resaltar las características del usuario."
+          }
+        ]
+      }
+    },
+    "silueta": {
+      "tipoCuerpo": "ovalada",
+      "cortes": [
+        "cortes imperio",
+        "cortes en A"
+      ],
+      "proporciones": "Ideal mantener la parte superior equilibrada con la inferior, evitando prendas demasiado ajustadas.",
+      "escotes": [
+        "escote en V",
+        "escote redondo"
+      ],
+      "largos": {
+        "pantalones": "Largo recto que alarga la figura",
+        "faldas": "Faldas tipo A o midi"
+      },
+      "prendasFavorecen": [
+        "blusas fluidas",
+        "chaquetas estructuradas",
+        "vestidos en línea A"
+      ],
+      "prendasEvitar": [
+        "prendas ajustadas en la cintura",
+        "cortes rectos sin forma"
+      ],
+      "explicacion": "Las prendas con cortes imperio y fluidos favorecen la silueta ovalada al crear una línea vertical que estiliza."
+    },
+    "estilo": {
+      "principal": {
+        "nombre": "Casual Romántico",
+        "descripcion": "Un estilo que combina comodidad con toques románticos, como encajes y telas suaves, ideal para el día a día.",
+        "palabrasClave": [
+          "cómodo",
+          "femenino",
+          "versátil"
+        ]
+      },
+      "secundarios": [
+        "Bohemio",
+        "Minimalista"
+      ],
+      "arquetipo": "Arquitectónica",
+      "sensacionProyectar": "Deseo de elegancia y confort al mismo tiempo."
+    },
+    "presupuesto": {
+      "nivel": "medio",
+      "comprasPrioritarias": [
+        {
+          "prenda": "chaqueta estructurada",
+          "razon": "Aporta forma y elegancia a los looks.",
+          "rangoPrecio": "1500-2500"
+        },
+        {
+          "prenda": "vestido en línea A",
+          "razon": "Ideal para múltiples ocasiones y muy favorecedor.",
+          "rangoPrecio": "2000-3000"
+        }
+      ],
+      "invertir": [
+        {
+          "prenda": "zapatos cómodos",
+          "razon": "Versatilidad y confort para el día a día.",
+          "rangoPrecio": "1000-2000"
+        }
+      ],
+      "economicas": [
+        {
+          "prenda": "blusas básicas",
+          "dondeAhorrar": "Pueden encontrarse a buen precio en tiendas económicas.",
+          "rangoPrecio": "300-800"
+        }
+      ],
+      "puedeEsperar": [
+        "accesorios adicionales",
+        "ropa de moda rápida"
+      ]
+    },
+    "closet": {
+      "yaTienes": [
+        {
+          "prenda": "blusa beige",
+          "comoUsar": "Combínala con jeans o faldas en tonos cálidos.",
+          "combinaCon": [
+            "naranja",
+            "rojo"
+          ]
+        },
+        {
+          "prenda": "pantalón rojo",
+          "comoUsar": "Ideal para looks más audaces, combínalo con neutros.",
+          "combinaCon": [
+            "blanco",
+            "gris"
+          ]
+        }
+      ],
+      "teSirve": [
+        {
+          "prenda": "chaqueta de mezclilla",
+          "comoAdaptar": "Agregar parches o bordados para un toque personal."
+        }
+      ],
+      "combinaloAsi": [
+        {
+          "prenda": "falda naranja",
+          "combinacion": "Con blusa blanca y zapatos neutrales.",
+          "colores": [
+            "#F5CBA0",
+            "#FFFFFF",
+            "#E67E22"
+          ]
+        }
+      ],
+      "teFalta": [
+        "blusa de encaje",
+        "vestido tipo A"
+      ],
+      "noEsPrioridad": [
+        "bufandas",
+        "sombreros"
+      ]
+    },
+    "ocasiones": [
+      {
+        "nombre": "Eventos",
+        "prioridad": 10,
+        "looks": [
+          {
+            "nombre": "Elegancia Casual",
+            "piezas": "Vestido en línea A, chaqueta estructurada, zapatos cómodos.",
+            "colores": [
+              "#F5CBA0",
+              "#E67E22",
+              "#C0392B"
+            ],
+            "sensacion": "Elegante y cómoda.",
+            "descripcion": "Un look que combina elegancia y confort, ideal para eventos sociales."
+          }
+        ]
+      },
+      {
+        "nombre": "Familia",
+        "prioridad": 8,
+        "looks": [
+          {
+            "nombre": "Día Familiar",
+            "piezas": "Blusa beige, pantalón rojo, zapatos neutrales.",
+            "colores": [
+              "#FFFFFF",
+              "#F5CBA0",
+              "#C0392B"
+            ],
+            "sensacion": "Cómoda y feliz.",
+            "descripcion": "Un look perfecto para pasar tiempo con la familia, combina comodidad y estilo."
+          }
+        ]
+      },
+      {
+        "nombre": "Casa",
+        "prioridad": 6,
+        "looks": [
+          {
+            "nombre": "Relax en Casa",
+            "piezas": "Blusa básica, pantalones cómodos, chaqueta de mezclilla.",
+            "colores": [
+              "#FFFFFF",
+              "#AAB7B8",
+              "#F5CBA0"
+            ],
+            "sensacion": "Relajada y acogedora.",
+            "descripcion": "Un look cómodo y práctico para disfrutar en casa."
+          }
+        ]
+      },
+      {
+        "nombre": "Viajes",
+        "prioridad": 5,
+        "looks": [
+          {
+            "nombre": "Viaje Cómodo",
+            "piezas": "Leggings, blusa de encaje, chaqueta ligera.",
+            "colores": [
+              "#D5DBDB",
+              "#F5CBA0",
+              "#2980B9"
+            ],
+            "sensacion": "Práctica y a la moda.",
+            "descripcion": "Un look que combina comodidad y estilo para largos viajes."
+          }
+        ]
+      }
+    ],
+    "joyeria": {
+      "metal": "plata",
+      "acabados": [
+        "pulido",
+        "mate"
+      ],
+      "tipos": [
+        "aretes",
+        "pulseras",
+        "collares"
+      ],
+      "piedras": [
+        "piedras azul",
+        "piedras verdes"
+      ],
+      "explicacion": "La plata complementa bien el tono neutro de la piel, mientras que las piedras de colores añaden un toque vibrante."
+    },
+    "perfil": {
+      "descubrimiento": "El usuario se siente cómoda con un estilo casual y romántico, que se adapta a su silueta ovalada y tono neutro.",
+      "explicacion": "Las recomendaciones están basadas en la combinación de su tipo de cuerpo, colores en su clóset y estilo preferido.",
+      "coloresFavorecen": "Los colores suaves y cálidos resaltan su tono de piel y aportan frescura.",
+      "coloresConservar": "Beige, rojo y naranja son colores que deben ser parte integral de su guardarropa.",
+      "coloresDejar": "Evitar tonos oscuros que no favorecen su luminosidad.",
+      "prendasFavorecen": "Las prendas con cortes imperio y fluidos favorecen su silueta ovalada.",
+      "prendasComprar": "Incluir chaquetas estructuradas y vestidos en línea A para mejorar su guardarropa.",
+      "prioridadCompras": "Chaquetas y vestidos deben ser prioridad en su presupuesto.",
+      "looksPrincipales": "Looks elegantes y cómodos para eventos familiares y ocasiones especiales.",
+      "imagenDeseada": "Proyectar una imagen de elegancia casual combinando comodidad y estilo."
+    }
+  },
+  "processingTime": 18798,
+  "verification": {
+    "photosIncluded": true,
+    "photosCount": 1,
+    "answersIncluded": true,
+    "season": "Verano",
+    "paletteColors": 2,
+    "silhouette": "ovalada",
+    "style": "Casual Romántico"
+  }
+}
+index-BWTr_lkP.js:603 [App] analysis.season: undefined
+index-BWTr_lkP.js:603 [App] analysis.palette: undefined
+index-BWTr_lkP.js:41 [ResultPreview] Props and State: Object
+index-BWTr_lkP.js:41 [ResultPreview] Extracted data: Object
+index-BWTr_lkP.js:41 [ResultPreview] Props and State: Object
+index-BWTr_lkP.js:41 [ResultPreview] Extracted data: Object
+index-BWTr_lkP.js:41 [TEST MODE] TEST MODE: Starting PDF generation... 
+index-BWTr_lkP.js:41 [TEST MODE] PersonalStyleProfile generated: "Analysis data retrieved from localStorage"
+index-BWTr_lkP.js:41 [TEST MODE] Building profile - GPT analysis available: 
+index-BWTr_lkP.js:41 [TEST MODE] PersonalStyleProfile generated: "PersonalStyleProfile built from quiz answers"
+index-BWTr_lkP.js:41 [TEST MODE] Answers used: Object
+index-BWTr_lkP.js:41 [TEST MODE] PDF Generation: Object
+index-BWTr_lkP.js:41 [TEST MODE] Generating personalized looks... 
+index-BWTr_lkP.js:41 [TEST MODE] Generated looks: Array(4)
+index-BWTr_lkP.js:41 [TEST MODE] PDF Generation: Object
+index-BWTr_lkP.js:41 [TEST MODE] PDF Generation: Object
+index-BWTr_lkP.js:41 [TEST MODE] Using testPdfData for report - SAME data as PDF 
+index-BWTr_lkP.js:41 [TEST MODE] PersonalStyleProfile generated: "Report component using PersonalStyleProfile from PDF generator"
+index-BWTr_lkP.js:41 [TEST MODE] Report component loaded with testPdfData: AVAILABLE
+index-BWTr_lkP.js:41 [TEST MODE] User photo available: true
+index-BWTr_lkP.js:41 [TEST MODE] PDF Generation: Object
+index-BWTr_lkP.js:41 [TEST MODE] PDF Generation: Object
+index-BWTr_lkP.js:41 [TEST MODE] PDF Generation: Object
+index-BWTr_lkP.js:41 [TEST MODE] PDF Generation: Object
+index-BWTr_lkP.js:41 [TEST MODE] Using testPdfData for report - SAME data as PDF 
+index-BWTr_lkP.js:41 [TEST MODE] PersonalStyleProfile generated: "Report component using PersonalStyleProfile from PDF generator"
+index-BWTr_lkP.js:41 [TEST MODE] PDF Generation: Object
+index-BWTr_lkP.js:41 [TEST MODE] PDF Generation: Object
+index-BWTr_lkP.js:41 [TEST MODE] PDF Generation: Object
+index-BWTr_lkP.js:41 [TEST MODE] PDF Generation: Object
+index-BWTr_lkP.js:41 [TEST MODE] PDF Generation: Object
+index-BWTr_lkP.js:41 [TEST MODE] PDF Generation: Object
+index-BWTr_lkP.js:41 [TEST MODE] PDF Generation: Object
+index-BWTr_lkP.js:41 [TEST MODE] PDF Generation: Object
+index-BWTr_lkP.js:41 [TEST MODE] PDF Generation: Object
+index-BWTr_lkP.js:41 [TEST MODE] PDF Generation: Object
+index-BWTr_lkP.js:41 [TEST MODE] PDF Generation: Object
+index-BWTr_lkP.js:41 [TEST MODE] PDF Generation: Object
+index-BWTr_lkP.js:41 [TEST MODE] PDF Generation: Object
+index-BWTr_lkP.js:41 [TEST MODE] PDF Generation: Object
+index-BWTr_lkP.js:41 [TEST MODE] PDF Generation: Object
+index-BWTr_lkP.js:41 [TEST MODE] PDF Generation: Object
+index-BWTr_lkP.js:41 [TEST MODE] PDF Generation: Object
+index-BWTr_lkP.js:41 [TEST MODE] Using testPdfData for report - SAME data as PDF 
+index-BWTr_lkP.js:41 [TEST MODE] PersonalStyleProfile generated: "Report component using PersonalStyleProfile from PDF generator"

@@ -81,12 +81,22 @@ export default function ResultPreview({
     analysis: analysis
   });
 
-  // Use actual analysis data, NOT fallback values
-  // If no analysis, show "Completando análisis..." as placeholder
-  const seasonName = analysis?.analysis?.season?.name || (analysis?.success === false ? 'Análisis en progreso...' : 'Temporada personalizada');
-  const prysmScore = analysis?.analysis?.prysmScore?.toString() || (analysis?.success === false ? '...' : '8.5');
-  const bodyTypeName = analysis?.analysis?.bodyType?.name || 'Tu silueta';
-  const palette = analysis?.analysis?.palette || (analysis?.success === false ? { protagonist: [], secondary: [], neutral: [], accent: [], avoid: [] } : fallbackPalette);
+  // Use actual analysis data from backend (GPT), NOT fallback values
+  // Backend returns: { success, data: { analisisColor, silueta, estilo, ... } }
+  const gptData = analysis?.data;
+  const seasonName = gptData?.analisisColor?.estacion || (analysis?.success === false ? 'Análisis en progreso...' : 'Temporada personalizada');
+  const prysmScore = analysis?.success === false ? '...' : '8.5';
+  const bodyTypeName = gptData?.silueta?.tipoCuerpo || 'Tu silueta';
+
+  // Transform GPT palette format to component format
+  const gptPalette = gptData?.analisisColor?.paleta;
+  const palette = gptPalette ? {
+    protagonist: gptPalette.protagonistas?.map((c: { hex: string }) => c.hex) || [],
+    secondary: gptPalette.secundarios?.map((c: { hex: string }) => c.hex) || [],
+    neutral: gptPalette.neutros?.map((c: { hex: string }) => c.hex) || [],
+    accent: gptPalette.acento?.map((c: { hex: string }) => c.hex) || [],
+    avoid: gptPalette.evitar?.map((c: { hex: string }) => c.hex) || []
+  } : (analysis?.success === false ? { protagonist: [], secondary: [], neutral: [], accent: [], avoid: [] } : fallbackPalette);
 
   // Debug log
   console.log('[ResultPreview] Extracted data:', {
