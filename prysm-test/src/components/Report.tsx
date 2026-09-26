@@ -231,12 +231,20 @@ export default function Report({
   const accentColors = palette.accent || fallbackData.palette.accent;
   const avoidColors = palette.avoid || fallbackData.palette.avoid;
 
+  // Helper to normalize color (handles both string hex and ColorObject from GPT)
+  const normalizeColor = (c: string | { hex: string; nombre?: string }, tag: string) => {
+    if (typeof c === 'string') {
+      return { hex: c, tag, nombre: '' };
+    }
+    return { hex: c.hex, tag, nombre: c.nombre || '' };
+  };
+
   // All 8 colors for the report
   const allColors = [
-    ...protagonistColors.map((c, i) => ({ hex: c, tag: i === 0 ? 'Best' : 'Top' })),
-    ...secondaryColors.map(c => ({ hex: c, tag: 'Favorito' })),
-    ...accentColors.map(c => ({ hex: c, tag: 'Acento' })),
-    ...(palette.neutral || []).map(c => ({ hex: c, tag: 'Neutro' }))
+    ...(Array.isArray(protagonistColors) ? protagonistColors.map((c: any, i: number) => normalizeColor(c, i === 0 ? 'Best' : 'Top')) : []),
+    ...(Array.isArray(secondaryColors) ? secondaryColors.map((c: any) => normalizeColor(c, 'Favorito')) : []),
+    ...(Array.isArray(accentColors) ? accentColors.map((c: any) => normalizeColor(c, 'Acento')) : []),
+    ...(Array.isArray(palette.neutral) ? palette.neutral.map((c: any) => normalizeColor(c, 'Neutro')) : [])
   ].slice(0, 8);
 
   // Get hex name

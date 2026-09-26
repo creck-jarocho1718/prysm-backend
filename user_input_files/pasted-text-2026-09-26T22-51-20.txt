@@ -1,0 +1,333 @@
+[PRYSM API] Using TEST API URL: https://prysm-backend-pipq.onrender.com
+index-DrXm2iKP.js:41 [TEST MODE] TEST MODE is ACTIVE 
+index-DrXm2iKP.js:603 [TEST MODE] Running in test environment
+/favicon.ico:1 
+        
+        
+       Failed to load resource: the server responded with a status of 404 (Not Found)
+index-DrXm2iKP.js:41 [Analyzing] Starting photo analysis with 1 photos...
+index-DrXm2iKP.js:41 [Analyzing] Photo analysis complete: Object
+index-DrXm2iKP.js:41 [Analyzing] Calling backend API...
+index-DrXm2iKP.js:41 [PRYSM API] analyzeImage called
+index-DrXm2iKP.js:41 [PRYSM API] Photos included: true
+index-DrXm2iKP.js:41 [PRYSM API] Photos count: 1
+index-DrXm2iKP.js:41 [PRYSM API] Quiz answers included: true
+index-DrXm2iKP.js:41 [PRYSM API] API URL: https://prysm-backend-pipq.onrender.com
+index-DrXm2iKP.js:41 [PRYSM API] Response status: 200
+index-DrXm2iKP.js:41 [PRYSM API] Response success: true
+index-DrXm2iKP.js:41 [PRYSM] GPT season: Primavera
+index-DrXm2iKP.js:41 [PRYSM] GPT palette colors: 2
+index-DrXm2iKP.js:41 [PRYSM] GPT silhouette: diamante
+index-DrXm2iKP.js:41 [PRYSM] GPT style: Romántico Chic
+index-DrXm2iKP.js:41 [TEST MODE] Backend analysis successful 
+index-DrXm2iKP.js:41 [ANALYZING] Backend result success
+index-DrXm2iKP.js:41 [ANALYZING] Calling onComplete with success result
+index-DrXm2iKP.js:603 [App] handleAnalysisComplete received: {
+  "success": true,
+  "data": {
+    "analisisColor": {
+      "subtono": "cálido",
+      "profundidad": "medio",
+      "contraste": "medio",
+      "saturacion": "alta",
+      "estacion": "Primavera",
+      "subestacion": "Primavera Cálida",
+      "confianza": 0.9,
+      "explicacion": "Los tonos cálidos en la fotografía reflejan un subtono cálido, lo que sugiere que los colores en esta paleta realzan el tono de piel.",
+      "paleta": {
+        "protagonistas": [
+          {
+            "hex": "#FF6347",
+            "nombre": "Rojo Tomate",
+            "explicacion": "Este color resalta la calidez de la piel y aporta un aire vibrante."
+          },
+          {
+            "hex": "#FFA500",
+            "nombre": "Naranja",
+            "explicacion": "El naranja complementa el subtono cálido y añade energía a los looks."
+          }
+        ],
+        "secundarios": [
+          {
+            "hex": "#FFD700",
+            "nombre": "Dorado",
+            "explicacion": "Este tono no solo es el metal preferido, también armoniza con el calor de la piel."
+          }
+        ],
+        "neutros": [
+          {
+            "hex": "#FFFFFF",
+            "nombre": "Blanco",
+            "explicacion": "El blanco es un neutro versátil que ilumina cualquier atuendo y se puede combinar fácilmente."
+          }
+        ],
+        "acento": [
+          {
+            "hex": "#FF4500",
+            "nombre": "Rojo Anaranjado",
+            "explicacion": "Ideal para detalles que aportan un toque vibrante a los looks."
+          }
+        ],
+        "evitar": [
+          {
+            "hex": "#000000",
+            "nombre": "Negro",
+            "explicacion": "El negro puede ser demasiado duro y opaca el brillo natural del tono de piel."
+          }
+        ]
+      }
+    },
+    "silueta": {
+      "tipoCuerpo": "diamante",
+      "cortes": [
+        "cortes imperio",
+        "cortes en A"
+      ],
+      "proporciones": "Resaltar la parte superior y crear equilibrio con la parte inferior.",
+      "escotes": [
+        "escote en V",
+        "escote redondo"
+      ],
+      "largos": {
+        "pantalones": "largos que alargan la figura",
+        "faldas": "faldas en A que fluyen"
+      },
+      "prendasFavorecen": [
+        "blusas con detalles en el pecho",
+        "chaquetas entalladas"
+      ],
+      "prendasEvitar": [
+        "prendas ceñidas a la cadera",
+        "cinturones anchos en la cintura"
+      ],
+      "explicacion": "Estas prendas ayudan a equilibrar la figura, resaltando la parte superior y creando una silueta más armoniosa."
+    },
+    "estilo": {
+      "principal": {
+        "nombre": "Romántico Chic",
+        "descripcion": "Un estilo que combina la suavidad y el romanticismo con elementos modernos y elegantes.",
+        "palabrasClave": [
+          "vibrante",
+          "glamoroso",
+          "natural"
+        ]
+      },
+      "secundarios": [
+        "Glamuroso",
+        "Natural"
+      ],
+      "arquetipo": "Ingenua",
+      "sensacionProyectar": "Desea proyectar frescura y autenticidad."
+    },
+    "presupuesto": {
+      "nivel": "alto",
+      "comprasPrioritarias": [
+        {
+          "prenda": "vestido elegante",
+          "razon": "versatilidad para ocasiones especiales",
+          "rangoPrecio": "500-1000"
+        },
+        {
+          "prenda": "chaqueta entallada",
+          "razon": "complementa la figura",
+          "rangoPrecio": "300-600"
+        }
+      ],
+      "invertir": [
+        {
+          "prenda": "zapatos de calidad",
+          "razon": "comodidad y estilo",
+          "rangoPrecio": "200-400"
+        },
+        {
+          "prenda": "bolso de diseño",
+          "razon": "accesorio clave",
+          "rangoPrecio": "800-1500"
+        }
+      ],
+      "economicas": [
+        {
+          "prenda": "blusas básicas",
+          "dondeAhorrar": "puedes encontrar opciones accesibles",
+          "rangoPrecio": "50-100"
+        },
+        {
+          "prenda": "faldas en A",
+          "dondeAhorrar": "puedes encontrar en tiendas de moda rápida",
+          "rangoPrecio": "30-80"
+        }
+      ],
+      "puedeEsperar": [
+        "abrigo de invierno",
+        "complementos de temporada"
+      ]
+    },
+    "closet": {
+      "yaTienes": [
+        {
+          "prenda": "blusa blanca",
+          "comoUsar": "combina con falda en A",
+          "combinaCon": [
+            "naranja",
+            "rojo"
+          ]
+        },
+        {
+          "prenda": "pantalón rojo",
+          "comoUsar": "ideal con blusa neutra",
+          "combinaCon": [
+            "blanco",
+            "naranja"
+          ]
+        }
+      ],
+      "teSirve": [
+        {
+          "prenda": "chaqueta",
+          "comoAdaptar": "añadir detalles en el pecho o en la cintura"
+        }
+      ],
+      "combinaloAsi": [
+        {
+          "prenda": "falda naranja",
+          "combinacion": "con blusa blanca y zapatos dorados",
+          "colores": [
+            "#FFFFFF",
+            "#FFA500",
+            "#FFD700"
+          ]
+        }
+      ],
+      "teFalta": [
+        "vestido elegante",
+        "chaqueta entallada"
+      ],
+      "noEsPrioridad": [
+        "zapatos de invierno",
+        "bufandas"
+      ]
+    },
+    "ocasiones": [
+      {
+        "nombre": "Familia",
+        "prioridad": 8,
+        "looks": [
+          {
+            "nombre": "Look Casual Familiar",
+            "piezas": "blusa blanca, pantalón rojo, zapatos dorados",
+            "colores": [
+              "#FFFFFF",
+              "#FF0000",
+              "#FFD700"
+            ],
+            "sensacion": "fresca y cómoda",
+            "descripcion": "Un look que combina lo elegante con lo relajado, perfecto para reuniones familiares."
+          }
+        ]
+      },
+      {
+        "nombre": "Fiestas",
+        "prioridad": 10,
+        "looks": [
+          {
+            "nombre": "Look Glamuroso de Fiesta",
+            "piezas": "vestido elegante, accesorios dorados",
+            "colores": [
+              "#FF6347",
+              "#FFD700"
+            ],
+            "sensacion": "deslumbrante y segura",
+            "descripcion": "Un atuendo que destaca la figura y resalta la calidez de la piel, ideal para fiestas."
+          }
+        ]
+      },
+      {
+        "nombre": "Casa",
+        "prioridad": 5,
+        "looks": [
+          {
+            "nombre": "Look Cómodo en Casa",
+            "piezas": "blusa cómoda, pantalón de mezclilla",
+            "colores": [
+              "#FFFFFF",
+              "#FFA500"
+            ],
+            "sensacion": "relajada y acogedora",
+            "descripcion": "Un conjunto que permite moverse con facilidad mientras se mantiene el estilo."
+          }
+        ]
+      }
+    ],
+    "joyeria": {
+      "metal": "dorado",
+      "acabados": [
+        "brillante",
+        "mate"
+      ],
+      "tipos": [
+        "aretes",
+        "pulseras",
+        "collares"
+      ],
+      "piedras": [
+        "amatista",
+        "topacio"
+      ],
+      "explicacion": "El dorado complementa perfectamente los tonos cálidos de la piel y aporta un toque de glamour."
+    },
+    "perfil": {
+      "descubrimiento": "El usuario se siente atraído por un estilo romántico y chic, buscando expresarse a través de colores vibrantes.",
+      "explicacion": "El uso de colores cálidos y vibrantes en combinación con un estilo romántico resalta su personalidad.",
+      "coloresFavorecen": "Los colores cálidos como el rojo y el naranja resaltan su tono de piel y su energía.",
+      "coloresConservar": "Blanco, rojo, naranja.",
+      "coloresDejar": "Colores oscuros como el negro.",
+      "prendasFavorecen": "Vestidos elegantes, blusas con detalles, chaquetas entalladas.",
+      "prendasComprar": "Vestido elegante, chaqueta entallada, zapatos de calidad.",
+      "prioridadCompras": "Comenzar con vestido elegante y chaqueta entallada.",
+      "looksPrincipales": "Looks para ocasiones familiares y fiestas, resaltando su estilo vibrante.",
+      "imagenDeseada": "Proyectar frescura y autenticidad con un aire glamuroso."
+    }
+  },
+  "processingTime": 14741,
+  "verification": {
+    "photosIncluded": true,
+    "photosCount": 1,
+    "answersIncluded": true,
+    "season": "Primavera",
+    "paletteColors": 2,
+    "silhouette": "diamante",
+    "style": "Romántico Chic"
+  }
+}
+index-DrXm2iKP.js:603 [App] GPT season: Primavera
+index-DrXm2iKP.js:603 [App] GPT palette colors: 2
+index-DrXm2iKP.js:41 [ResultPreview] Props and State: Object
+index-DrXm2iKP.js:41 [ResultPreview] Extracted data: Object
+index-DrXm2iKP.js:41 [ResultPreview] Props and State: Object
+index-DrXm2iKP.js:41 [ResultPreview] Extracted data: Object
+index-DrXm2iKP.js:41 [TEST MODE] TEST MODE: Starting PDF generation... 
+index-DrXm2iKP.js:41 [TEST MODE] PersonalStyleProfile generated: "Analysis data retrieved from localStorage"
+index-DrXm2iKP.js:41 [TEST MODE] Building profile - GPT analysis available: true
+index-DrXm2iKP.js:41 [TEST MODE] PersonalStyleProfile generated: "PersonalStyleProfile built from quiz answers"
+index-DrXm2iKP.js:41 [TEST MODE] Answers used: Object
+index-DrXm2iKP.js:41 [TEST MODE] PDF Generation: Object
+index-DrXm2iKP.js:41 [TEST MODE] Generating personalized looks... 
+index-DrXm2iKP.js:41 [TEST MODE] Generated looks: Array(3)
+index-DrXm2iKP.js:41 [TEST MODE] PDF Generation: Object
+index-DrXm2iKP.js:41 [TEST MODE] PDF Generation: Object
+index-DrXm2iKP.js:41 [TEST MODE] Using testPdfData for report - SAME data as PDF 
+index-DrXm2iKP.js:41 [TEST MODE] PersonalStyleProfile generated: "Report component using PersonalStyleProfile from PDF generator"
+index-DrXm2iKP.js:41 [TEST MODE] Using testPdfData for report - SAME data as PDF 
+index-DrXm2iKP.js:41 [TEST MODE] PersonalStyleProfile generated: "Report component using PersonalStyleProfile from PDF generator"
+index-DrXm2iKP.js:40 TypeError: M.slice is not a function
+    at Ae (index-DrXm2iKP.js:41:53280)
+    at index-DrXm2iKP.js:41:60620
+    at Array.map (<anonymous>)
+    at Tp (index-DrXm2iKP.js:41:60329)
+    at as (index-DrXm2iKP.js:38:17189)
+    at Pc (index-DrXm2iKP.js:40:44325)
+    at Nc (index-DrXm2iKP.js:40:39992)
+    at Ld (index-DrXm2iKP.js:40:39920)
+    at Ua (index-DrXm2iKP.js:40:39773)
+    at Ts (index-DrXm2iKP.js:40:36102)
+fs @ index-DrXm2iKP.js:40
