@@ -126,6 +126,129 @@ const COLOR_NAMES: Record<string, string> = {
   'naranja': 'Naranja',
 };
 
+/**
+ * Get color name from HEX code
+ * Used as fallback when GPT doesn't provide the name
+ */
+function getColorNameFromHex(hex: string): string {
+  // Remove # if present
+  const cleanHex = hex.replace('#', '').toUpperCase();
+
+  // Color name mapping based on HEX values
+  const COLOR_MAP: Record<string, string> = {
+    'FF6F61': 'Coral',
+    '6DA3D6': 'Azul Cielo',
+    'F5B9B4': 'Rosa Claro',
+    'A8D7E1': 'Turquesa',
+    'FFFFFF': 'Blanco',
+    'C0C0C0': 'Gris Claro',
+    'D50032': 'Rojo Intenso',
+    'FF0000': 'Rojo Intenso',
+    '4B0082': 'Índigo',
+    '00FF00': 'Verde Lima',
+    'FFD700': 'Dorado',
+    'FFB6C1': 'Rosa Claro',
+    '32CD32': 'Verde Lima',
+    'FF4500': 'Rojo Anaranjado',
+    'F5F5DC': 'Beige',
+    'FFB347': 'Melocotón',
+    'FFCC67': 'Amarillo Miel',
+    'FF7F50': 'Coral',
+    'FFA07A': 'Salmón',
+    'DEB887': 'Arena',
+    'D2B48C': 'Tan',
+    'C19A6B': 'Camel',
+    '8B4513': 'Marrón Suela',
+    'D2691E': 'Chocolate',
+    'CD853F': 'Perú',
+    '556B2F': 'Verde Oliva',
+    'DAA520': 'Dorado',
+    '8B7355': 'Marrón Cuero',
+    '000080': 'Azul Marino',
+    '0000FF': 'Azul Brillante',
+    '800020': 'Burdeos',
+    '0F52BA': 'Azul Zafiro',
+    '708090': 'Gris Pizarra',
+    '778899': 'Azul Grisáceo',
+    '87CEEB': 'Azul Cielo',
+    'B0C4DE': 'Azul Periwinkle',
+    'E6E6FA': 'Lavanda',
+    'D8BFD8': 'Malva',
+    'ADD8E6': 'Azul Claro',
+    'F8F9F9': 'Blanco',
+    '1C1C1C': 'Negro Profundo',
+    '333333': 'Gris Carbón',
+    '36454F': 'Carbón',
+    'FF69B4': 'Rosa Brillante',
+    '9400D3': 'Violeta',
+    '00FFFF': 'Cyan',
+    '00BFFF': 'Azul Cielo Brillante',
+    '00CED1': 'Turquesa',
+    'FF6347': 'Rojo Tomate',
+    'F7C548': 'Amarillo Sol',
+    'FF8C00': 'Naranja',
+    'FF1493': 'Rosa Intenso',
+    '1ABC9C': 'Turquesa',
+    'E74C3C': 'Rojo',
+    '9B59B6': 'Amatista',
+    'FF6B6B': 'Rojo Coral',
+    'F39C12': 'Naranja',
+    'C4B7A6': 'Gris Topo',
+    'A89F91': 'Taupe',
+    '9B8579': 'Marrón Rosado',
+    'B5A99A': 'Arena Rosada',
+    '8B8075': 'Gris Cálido',
+    '7A6F63': 'Marrón Grisáceo',
+    'D4A574': 'Melocotón',
+    'C49A6C': 'Caramelo',
+    'B8956E': 'Cobre Suave',
+    'A0826D': 'Marrón Rosado',
+    '7A6B5A': 'Marrón Ternera',
+    '6B5344': 'Marrón Oscuro',
+    '5D4E37': 'Marrón Oliva',
+    'E97451': 'Terracota',
+    'F4A460': 'Salmón',
+    '2F4F4F': 'Verde Grisáceo',
+    '4A5568': 'Gris Azulado',
+    '5B6B7C': 'Azul Gris',
+    '696969': 'Gris Dim',
+    '636363': 'Gris Medio',
+    '1C2833': 'Azul Noche',
+    'E5E4E2': 'Platino',
+    'ECF0F1': 'Gris Claro',
+    'FDFEFE': 'Blanco Nieve',
+    'FFF8DC': 'Crema',
+    'FFEFD5': 'Melocotón Claro',
+    'FAFAD2': 'Crema Claro',
+    'FFFAF0': 'Blanco Hueso',
+    'D6EAF8': 'Azul Claro',
+    'F2F3F4': 'Gris Plateado',
+    '85C1E9': 'Azul Cielo',
+    'AED6F1': 'Azul Pastel',
+    'A9CCE3': 'Azul Grisáceo',
+    'B8860B': 'Oro Oscuro',
+    '704214': 'Marrón Canela',
+    '6B4423': 'Marrón Oscuro',
+    '4A3728': 'Marrón Café',
+    '3D2914': 'Marrón Profundo',
+    '4169E1': 'Azul Real',
+    '0000CD': 'Azul Medium',
+    '8B0000': 'Rojo Oscuro',
+    '000000': 'Negro',
+    '98FB98': 'Verde Mentol',
+    'FFDAB9': 'Melocotón',
+    'F0E68C': 'Amarillo Caqui',
+    'B0E0E6': 'Azul Powder',
+    'CDC0B0': 'Beige Rosado',
+    'C8C0B8': 'Gris Béige',
+    'A89080': 'Marrón Grisáceo',
+    'B8A090': 'Rosa Salmón',
+    'A0522D': 'Siena',
+  };
+
+  return COLOR_MAP[cleanHex] || cleanHex;
+}
+
 // Derive secondary styles based on primary
 const SECONDARY_STYLES: Record<StyleType, StyleType[]> = {
   classic: ['elegant', 'professional'],
@@ -368,28 +491,74 @@ function buildProfileFromAnswers(
   }
 
   // Use palette from GPT analysis (if available) or analysis data
+  // IMPORTANT: Store full color objects (hex, nombre, explicacion) to display correct names in report
   let palette = {
-    protagonist: [] as string[],
-    secondary: [] as string[],
-    accent: [] as string[],
-    neutral: [] as string[],
-    avoid: [] as string[],
+    protagonist: [] as { hex: string; nombre: string; explicacion: string }[],
+    secondary: [] as { hex: string; nombre: string; explicacion: string }[],
+    accent: [] as { hex: string; nombre: string; explicacion: string }[],
+    neutral: [] as { hex: string; nombre: string; explicacion: string }[],
+    avoid: [] as { hex: string; nombre: string; explicacion: string }[],
     isPending: true,
   };
 
   if (hasGPTAnalysis) {
-    // GPT provides the complete palette
+    // GPT provides the complete palette with names - store full objects
     palette = {
-      protagonist: gptData.analisisColor.paleta.protagonistas.map((c: any) => c.hex),
-      secondary: gptData.analisisColor.paleta.secundarios.map((c: any) => c.hex),
-      accent: gptData.analisisColor.paleta.acento.map((c: any) => c.hex),
-      neutral: gptData.analisisColor.paleta.neutros.map((c: any) => c.hex),
-      avoid: gptData.analisisColor.paleta.evitar.map((c: any) => c.hex),
+      protagonist: gptData.analisisColor.paleta.protagonistas.map((c: any) => ({
+        hex: c.hex,
+        nombre: c.nombre || getColorNameFromHex(c.hex),
+        explicacion: c.explicacion || ''
+      })),
+      secondary: gptData.analisisColor.paleta.secundarios.map((c: any) => ({
+        hex: c.hex,
+        nombre: c.nombre || getColorNameFromHex(c.hex),
+        explicacion: c.explicacion || ''
+      })),
+      accent: gptData.analisisColor.paleta.acento.map((c: any) => ({
+        hex: c.hex,
+        nombre: c.nombre || getColorNameFromHex(c.hex),
+        explicacion: c.explicacion || ''
+      })),
+      neutral: gptData.analisisColor.paleta.neutros.map((c: any) => ({
+        hex: c.hex,
+        nombre: c.nombre || getColorNameFromHex(c.hex),
+        explicacion: c.explicacion || ''
+      })),
+      avoid: gptData.analisisColor.paleta.evitar.map((c: any) => ({
+        hex: c.hex,
+        nombre: c.nombre || getColorNameFromHex(c.hex),
+        explicacion: c.explicacion || ''
+      })),
       isPending: false,
     };
   } else if (analysis?.analysis?.palette) {
+    // Convert string arrays to color objects
     palette = {
-      ...analysis.analysis.palette,
+      protagonist: (analysis.analysis.palette.protagonist || []).map((hex: string) => ({
+        hex,
+        nombre: getColorNameFromHex(hex),
+        explicacion: ''
+      })),
+      secondary: (analysis.analysis.palette.secondary || []).map((hex: string) => ({
+        hex,
+        nombre: getColorNameFromHex(hex),
+        explicacion: ''
+      })),
+      accent: (analysis.analysis.palette.accent || []).map((hex: string) => ({
+        hex,
+        nombre: getColorNameFromHex(hex),
+        explicacion: ''
+      })),
+      neutral: (analysis.analysis.palette.neutral || []).map((hex: string) => ({
+        hex,
+        nombre: getColorNameFromHex(hex),
+        explicacion: ''
+      })),
+      avoid: (analysis.analysis.palette.avoid || []).map((hex: string) => ({
+        hex,
+        nombre: getColorNameFromHex(hex),
+        explicacion: ''
+      })),
       isPending: false,
     };
   }

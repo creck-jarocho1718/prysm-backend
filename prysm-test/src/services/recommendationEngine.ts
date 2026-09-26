@@ -298,7 +298,8 @@ export function generateLooks(profile: PersonalStyleProfile): PersonalizedLook[]
       ...colorimetry.palette.secondary,
       ...colorimetry.palette.accent,
     ];
-    const selectedColors = paletteColors.slice(0, 4);
+    // Extract hex values from ColorObject array to get string array
+    const selectedColors = paletteColors.slice(0, 4).map(c => c.hex);
 
     // Occasion icons
     const icons: Record<OccasionType, string> = {

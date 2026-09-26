@@ -32,6 +32,22 @@ export type OccasionType = 'office' | 'date' | 'casual' | 'event' | 'travel' | '
 
 export type MetalPreference = 'gold' | 'silver' | 'both' | 'neither';
 
+// Color object with full information from GPT analysis
+export interface ColorObject {
+  hex: string;
+  nombre: string;
+  explicacion: string;
+}
+
+// Palette type that stores full color objects
+export interface PaletteColors {
+  protagonist: ColorObject[];
+  secondary: ColorObject[];
+  accent: ColorObject[];
+  neutral: ColorObject[];
+  avoid: ColorObject[];
+}
+
 export interface PersonalStyleProfile {
   // Metadata
   profileId: string;
@@ -51,13 +67,7 @@ export interface PersonalStyleProfile {
       contrast: 'low' | 'medium' | 'high';
       saturation: 'muted' | 'medium' | 'bright';
     };
-    palette: {
-      protagonist: string[];
-      secondary: string[];
-      accent: string[];
-      neutral: string[];
-      avoid: string[];
-    };
+    palette: PaletteColors;
     skinAnalysis: {
       undertone: string;
       depth: string;
@@ -138,111 +148,428 @@ const SEASON_NAMES: Record<SeasonType, { name: string; subtitle: string }> = {
   bright_summer: { name: 'Verano Brillante', subtitle: 'Bright Summer · Cool · Bright' },
 };
 
-const SEASON_PALETTES: Record<SeasonType, { protagonist: string[]; secondary: string[]; accent: string[]; neutral: string[]; avoid: string[] }> = {
+// Helper to create ColorObject from hex
+const color = (hex: string, nombre: string, explicacion: string): ColorObject => ({ hex, nombre, explicacion });
+
+const SEASON_PALETTES: Record<SeasonType, PaletteColors> = {
   deep_autumn: {
-    protagonist: ['#8B4513', '#D2691E', '#CD853F'],
-    secondary: ['#556B2F', '#6B4423', '#704214'],
-    accent: ['#DAA520', '#B8860B', '#D2691E'],
-    neutral: ['#4A3728', '#5D4E37', '#3D2914'],
-    avoid: ['#ADD8E6', '#87CEEB', '#98FB98', '#FFB6C1'],
+    protagonist: [
+      color('#8B4513', 'Marrón Suela', 'Tono cálido profundo'),
+      color('#D2691E', 'Chocolate', 'Rico y versátil'),
+      color('#CD853F', 'Perú', 'Cálido y terroso'),
+    ],
+    secondary: [
+      color('#556B2F', 'Verde Oliva', 'Complementa tonos cálidos'),
+      color('#6B4423', 'Marrón Oscuro', 'Añade profundidad'),
+      color('#704214', 'Marrón Canela', 'Versátil'),
+    ],
+    accent: [
+      color('#DAA520', 'Dorado', 'Acento cálido luminoso'),
+      color('#B8860B', 'Oro Oscuro', 'Sofisticado'),
+      color('#D2691E', 'Chocolate', 'Rico y profundo'),
+    ],
+    neutral: [
+      color('#4A3728', 'Marrón Café', 'Base elegante'),
+      color('#5D4E37', 'Beige Oscuro', 'Versátil y sofisticado'),
+      color('#3D2914', 'Marrón Profundo', 'Añade contraste'),
+    ],
+    avoid: [
+      color('#ADD8E6', 'Azul Claro', 'Tono frío que puede competir'),
+      color('#87CEEB', 'Azul Cielo', 'Demasiado frío'),
+      color('#98FB98', 'Verde Claro', 'Tono pastel que no complementa'),
+      color('#FFB6C1', 'Rosa Claro', 'Demasiado frío para subtonos cálidos'),
+    ],
   },
   soft_autumn: {
-    protagonist: ['#C4B7A6', '#9B8579', '#A89F91'],
-    secondary: ['#B5A99A', '#8B7D6B', '#A39080'],
-    accent: ['#D4A574', '#C49A6C', '#B8956E'],
-    neutral: ['#8B8075', '#7A6F63', '#6B6154'],
-    avoid: ['#000080', '#FF4500', '#FFD700', '#00CED1'],
+    protagonist: [
+      color('#C4B7A6', 'Gris Topo', 'Tono muted cálido'),
+      color('#9B8579', 'Marrón Rosado', 'Suave y armonioso'),
+      color('#A89F91', 'Taupe', 'Versátil y sofisticado'),
+    ],
+    secondary: [
+      color('#B5A99A', 'Marrón Sandía', 'Cálido y suave'),
+      color('#8B7D6B', 'Marrón Taupe', 'Terroso'),
+      color('#A39080', 'Beige Grisé', 'Neutro cálido'),
+    ],
+    accent: [
+      color('#D4A574', 'Melocotón', 'Dulce y cálido'),
+      color('#C49A6C', 'Cobre Suave', 'Acento luminoso'),
+      color('#B8956E', 'Miel', 'Dorado apagado'),
+    ],
+    neutral: [
+      color('#8B8075', 'Gris Cálido', 'Base neutra'),
+      color('#7A6F63', 'Taupe Oscuro', 'Versátil'),
+      color('#6B6154', 'Marrón Medio', 'Profundidad suave'),
+    ],
+    avoid: [
+      color('#000080', 'Azul Marino', 'Demasiado frío'),
+      color('#FF4500', 'Rojo Naranja', 'Demasiado saturado'),
+      color('#FFD700', 'Dorado Brillante', 'Muy intenso'),
+      color('#00CED1', 'Turquesa', 'Frío y brillante'),
+    ],
   },
   warm_autumn: {
-    protagonist: ['#DAA520', '#CD853F', '#D2691E'],
-    secondary: ['#B8860B', '#D2B48C', '#C19A6B'],
-    accent: ['#F4A460', '#E97451', '#D2691E'],
-    neutral: ['#8B7355', '#6B5344', '#5D4E37'],
-    avoid: ['#87CEEB', '#ADD8E6', '#B0C4DE', '#E6E6FA'],
+    protagonist: [
+      color('#DAA520', 'Dorado', 'Cálido y radiante'),
+      color('#CD853F', 'Perú', 'Terroso y luminoso'),
+      color('#D2691E', 'Chocolate', 'Rico y profundo'),
+    ],
+    secondary: [
+      color('#B8860B', 'Oro Oscuro', 'Suntuoso'),
+      color('#D2B48C', 'Tan', 'Versátil'),
+      color('#C19A6B', 'Camel', 'Clásico otoñal'),
+    ],
+    accent: [
+      color('#F4A460', 'Arena', 'Cálido brillante'),
+      color('#E97451', 'Terracota', 'Vibrante'),
+      color('#D2691E', 'Chocolate', 'Fondo cálido'),
+    ],
+    neutral: [
+      color('#8B7355', 'Marrón Taupe', 'Base elegante'),
+      color('#6B5344', 'Marrón Medio', 'Versátil'),
+      color('#5D4E37', 'Beige Oscuro', 'Sofisticado'),
+    ],
+    avoid: [
+      color('#87CEEB', 'Azul Cielo', 'Demasiado frío'),
+      color('#ADD8E6', 'Azul Claro', 'Frío pastel'),
+      color('#B0C4DE', 'Azul Perla', 'Frío'),
+      color('#E6E6FA', 'Lavanda', 'Frío y claro'),
+    ],
   },
   deep_winter: {
-    protagonist: ['#1C1C1C', '#800020', '#0F52BA'],
-    secondary: ['#000080', '#800000', '#2F4F4F'],
-    accent: ['#C0C0C0', '#E5E4E2', '#FFD700'],
-    neutral: ['#2F4F4F', '#36454F', '#1C2833'],
-    avoid: ['#F5DEB3', '#FFE4C4', '#DEB887', '#D2B48C'],
+    protagonist: [
+      color('#1C1C1C', 'Negro Profundo', 'Presencia máxima'),
+      color('#800020', 'Burdeos', 'Rico y elegante'),
+      color('#0F52BA', 'Azul Zafiro', 'Intenso y frío'),
+    ],
+    secondary: [
+      color('#000080', 'Azul Marino', 'Clásico invierno'),
+      color('#800000', 'Rojo Oscuro', 'Drama'),
+      color('#2F4F4F', 'Verde Azulado', 'Profundo'),
+    ],
+    accent: [
+      color('#C0C0C0', 'Plata', 'Metal frío'),
+      color('#E5E4E2', 'Platino', 'Luminoso'),
+      color('#FFD700', 'Dorado Brillante', 'Contraste cálido'),
+    ],
+    neutral: [
+      color('#2F4F4F', 'Verde Azulado', 'Base oscura'),
+      color('#36454F', 'Carbón', 'Versátil oscuro'),
+      color('#1C2833', 'Negro Azulado', 'Profundidad'),
+    ],
+    avoid: [
+      color('#F5DEB3', 'Trigo', 'Demasiado cálido'),
+      color('#FFE4C4', 'Melocotón Claro', 'Frío conflictivo'),
+      color('#DEB887', 'Beige', 'Demasiado claro'),
+      color('#D2B48C', 'Tan', 'Cálido incorrecto'),
+    ],
   },
   bright_winter: {
-    protagonist: ['#FF0000', '#0000FF', '#FFFFFF'],
-    secondary: ['#FF69B4', '#00FFFF', '#9400D3'],
-    accent: ['#FFD700', '#00FF00', '#FF1493'],
-    neutral: ['#000000', '#333333', '#1C1C1C'],
-    avoid: ['#F5DEB3', '#DEB887', '#D2B48C', '#FFE4C4'],
+    protagonist: [
+      color('#FF0000', 'Rojo Brillante', 'Intenso y llamativo'),
+      color('#0000FF', 'Azul Brillante', 'Frío puro'),
+      color('#FFFFFF', 'Blanco Puro', 'Luminosidad máxima'),
+    ],
+    secondary: [
+      color('#FF69B4', 'Rosa Brillante', 'Vibrante'),
+      color('#00FFFF', 'Cian', 'Neón frío'),
+      color('#9400D3', 'Púrpura', 'Drama'),
+    ],
+    accent: [
+      color('#FFD700', 'Dorado', 'Contraste'),
+      color('#00FF00', 'Verde Neón', 'Impacto'),
+      color('#FF1493', 'Magenta', 'Vibrante'),
+    ],
+    neutral: [
+      color('#000000', 'Negro', 'Base máxima'),
+      color('#333333', 'Gris Oscuro', 'Versátil'),
+      color('#1C1C1C', 'Negro Carbón', 'Presencia'),
+    ],
+    avoid: [
+      color('#F5DEB3', 'Trigo', 'Demasiado cálido'),
+      color('#DEB887', 'Beige', 'Opaco'),
+      color('#D2B48C', 'Tan', 'Sin contraste'),
+      color('#FFE4C4', 'Bisque', 'Muy suave'),
+    ],
   },
   cool_winter: {
-    protagonist: ['#000080', '#800020', '#4169E1'],
-    secondary: ['#0000CD', '#8B0000', '#2F4F4F'],
-    accent: ['#C0C0C0', '#87CEEB', '#B0C4DE'],
-    neutral: ['#1C1C1C', '#333333', '#2F4F4F'],
-    avoid: ['#FFD700', '#FFA500', '#FF4500', '#DAA520'],
+    protagonist: [
+      color('#000080', 'Azul Marino', 'Clásico frío'),
+      color('#800020', 'Burdeos', 'Sofisticado'),
+      color('#4169E1', 'Azul Real', 'Intenso'),
+    ],
+    secondary: [
+      color('#0000CD', 'Azul Medio', 'Fresco'),
+      color('#8B0000', 'Rojo Oscuro', 'Drama frío'),
+      color('#2F4F4F', 'Verde Azulado', 'Profundo'),
+    ],
+    accent: [
+      color('#C0C0C0', 'Plata', 'Metal ideal'),
+      color('#87CEEB', 'Azul Cielo', 'Claro frío'),
+      color('#B0C4DE', 'Azul Perla', 'Delicado'),
+    ],
+    neutral: [
+      color('#1C1C1C', 'Negro', 'Base'),
+      color('#333333', 'Gris Oscuro', 'Versátil'),
+      color('#2F4F4F', 'Verde Azulado', 'Complemento'),
+    ],
+    avoid: [
+      color('#FFD700', 'Dorado', 'Muy cálido'),
+      color('#FFA500', 'Naranja', 'Cálido incorrecto'),
+      color('#FF4500', 'Rojo Naranja', 'Cálido'),
+      color('#DAA520', 'Dorado', 'Cálido'),
+    ],
   },
   soft_winter: {
-    protagonist: ['#778899', '#708090', '#696969'],
-    secondary: ['#2F4F4F', '#4A5568', '#5B6B7C'],
-    accent: ['#B0C4DE', '#87CEEB', '#ADD8E6'],
-    neutral: ['#36454F', '#2F4F4F', '#1C2833'],
-    avoid: ['#FFD700', '#FFA500', '#FF4500', '#DAA520'],
+    protagonist: [
+      color('#778899', 'Gris Pizarra', 'Suave frío'),
+      color('#708090', 'Gris Acero', 'Muted frío'),
+      color('#696969', 'Gris Dim', 'Discreto'),
+    ],
+    secondary: [
+      color('#2F4F4F', 'Verde Azulado', 'Profundo suave'),
+      color('#4A5568', 'Gris Azulado', 'Versátil'),
+      color('#5B6B7C', 'Azul Grisáceo', 'Frío suave'),
+    ],
+    accent: [
+      color('#B0C4DE', 'Azul Perla', 'Claro'),
+      color('#87CEEB', 'Azul Cielo', 'Luminoso'),
+      color('#ADD8E6', 'Azul Claro', 'Pastel frío'),
+    ],
+    neutral: [
+      color('#36454F', 'Carbón', 'Base'),
+      color('#2F4F4F', 'Verde Azulado', 'Complemento'),
+      color('#1C2833', 'Negro Azulado', 'Profundidad'),
+    ],
+    avoid: [
+      color('#FFD700', 'Dorado', 'Muy cálido'),
+      color('#FFA500', 'Naranja', 'Cálido'),
+      color('#FF4500', 'Rojo Naranja', 'Intenso cálido'),
+      color('#DAA520', 'Dorado', 'Cálido'),
+    ],
   },
   bright_spring: {
-    protagonist: ['#FF6B35', '#F7C548', '#00BFFF'],
-    secondary: ['#FF8C00', '#FFD700', '#00CED1'],
-    accent: ['#FF69B4', '#32CD32', '#FF6347'],
-    neutral: ['#F5DEB3', '#FAFAD2', '#FFEFD5'],
-    avoid: ['#4B0082', '#800080', '#2F4F4F'],
+    protagonist: [
+      color('#FF6B35', 'Coral Naranja', 'Vibrante cálido'),
+      color('#F7C548', 'Amarillo Dorado', 'Radiante'),
+      color('#00BFFF', 'Azul Cielo', 'Fresco cálido'),
+    ],
+    secondary: [
+      color('#FF8C00', 'Naranja', 'Brillante'),
+      color('#FFD700', 'Dorado', 'Luminoso'),
+      color('#00CED1', 'Turquesa', 'Fresco'),
+    ],
+    accent: [
+      color('#FF69B4', 'Rosa Brillante', 'Vibrante'),
+      color('#32CD32', 'Verde Lima', 'Fresco'),
+      color('#FF6347', 'Rojo Tomate', 'Energético'),
+    ],
+    neutral: [
+      color('#F5DEB3', 'Trigo', 'Claro cálido'),
+      color('#FAFAD2', 'Crema Claro', 'Luminoso'),
+      color('#FFEFD5', 'Papaya', 'Suave'),
+    ],
+    avoid: [
+      color('#4B0082', 'Índigo', 'Muy oscuro'),
+      color('#800080', 'Púrpura', 'Frío'),
+      color('#2F4F4F', 'Verde Azulado', 'Oscuro frío'),
+    ],
   },
   warm_spring: {
-    protagonist: ['#FFB347', '#FFCC67', '#F5DEB3'],
-    secondary: ['#DEB887', '#D2B48C', '#C19A6B'],
-    accent: ['#FF7F50', '#FFA07A', '#E9967A'],
-    neutral: ['#8B7355', '#A0826D', '#7A6B5A'],
-    avoid: ['#000080', '#4B0082', '#800080', '#2F4F4F'],
+    protagonist: [
+      color('#FFB347', 'Melocotón', 'Cálido luminoso'),
+      color('#FFCC67', 'Amarillo Miel', 'Radiante'),
+      color('#F5DEB3', 'Trigo', 'Suave cálido'),
+    ],
+    secondary: [
+      color('#DEB887', 'Beige Arena', 'Versátil'),
+      color('#D2B48C', 'Tan', 'Clásico'),
+      color('#C19A6B', 'Camel', 'Elegante'),
+    ],
+    accent: [
+      color('#FF7F50', 'Coral', 'Vibrante'),
+      color('#FFA07A', 'Salmón', 'Suave'),
+      color('#E9967A', 'Salmón Oscuro', 'Cálido'),
+    ],
+    neutral: [
+      color('#8B7355', 'Marrón Taupe', 'Base'),
+      color('#A0826D', 'Marrón Rosado', 'Suave'),
+      color('#7A6B5A', 'Beige Cálido', 'Versátil'),
+    ],
+    avoid: [
+      color('#000080', 'Azul Marino', 'Muy frío'),
+      color('#4B0082', 'Índigo', 'Frío'),
+      color('#800080', 'Púrpura', 'Frío'),
+      color('#2F4F4F', 'Verde Azulado', 'Oscuro frío'),
+    ],
   },
   light_spring: {
-    protagonist: ['#FFB6C1', '#98FB98', '#87CEEB'],
-    secondary: ['#FFDAB9', '#E6E6FA', '#FFA07A'],
-    accent: ['#00CED1', '#FF69B4', '#98FB98'],
-    neutral: ['#FFF8DC', '#FFEFD5', '#FAFAD2'],
-    avoid: ['#4B0082', '#800080', '#2F4F4F', '#1C1C1C'],
+    protagonist: [
+      color('#FFB6C1', 'Rosa Claro', 'Delicado cálido'),
+      color('#98FB98', 'Verde Menta', 'Fresco claro'),
+      color('#87CEEB', 'Azul Cielo', 'Luminoso'),
+    ],
+    secondary: [
+      color('#FFDAB9', 'Melocotón Pálido', 'Suave'),
+      color('#E6E6FA', 'Lavanda', 'Claro'),
+      color('#FFA07A', 'Salmón Claro', 'Cálido'),
+    ],
+    accent: [
+      color('#00CED1', 'Turquesa Claro', 'Vibrante'),
+      color('#FF69B4', 'Rosa Brillante', 'Acento'),
+      color('#98FB98', 'Verde Menta', 'Fresco'),
+    ],
+    neutral: [
+      color('#FFF8DC', 'Crema', 'Base clara'),
+      color('#FFEFD5', 'Papaya', 'Suave'),
+      color('#FAFAD2', 'Crema Claro', 'Luminoso'),
+    ],
+    avoid: [
+      color('#4B0082', 'Índigo', 'Muy oscuro'),
+      color('#800080', 'Púrpura', 'Frío'),
+      color('#2F4F4F', 'Verde Oscuro', 'Opaco'),
+      color('#1C1C1C', 'Negro', 'Muy oscuro'),
+    ],
   },
   soft_spring: {
-    protagonist: ['#F0E68C', '#DEB887', '#D8BFD8'],
-    secondary: ['#FFDAB9', '#E6E6FA', '#B0E0E6'],
-    accent: ['#98FB98', '#FFB6C1', '#87CEEB'],
-    neutral: ['#F5F5DC', '#FFFAF0', '#FFF8DC'],
-    avoid: ['#000080', '#4B0082', '#800080', '#1C1C1C'],
+    protagonist: [
+      color('#F0E68C', 'Amarillo Canario', 'Suave cálido'),
+      color('#DEB887', 'Beige Arena', 'Muted'),
+      color('#D8BFD8', 'Ciruela', 'Suave'),
+    ],
+    secondary: [
+      color('#FFDAB9', 'Melocotón Pálido', 'Cálido'),
+      color('#E6E6FA', 'Lavanda', 'Claro'),
+      color('#B0E0E6', 'Azul Pulso', 'Fresco'),
+    ],
+    accent: [
+      color('#98FB98', 'Verde Menta', 'Fresco'),
+      color('#FFB6C1', 'Rosa Claro', 'Delicado'),
+      color('#87CEEB', 'Azul Cielo', 'Luminoso'),
+    ],
+    neutral: [
+      color('#F5F5DC', 'Beige', 'Base'),
+      color('#FFFAF0', 'Marfil', 'Claro'),
+      color('#FFF8DC', 'Crema', 'Suave'),
+    ],
+    avoid: [
+      color('#000080', 'Azul Marino', 'Muy frío'),
+      color('#4B0082', 'Índigo', 'Oscuro'),
+      color('#800080', 'Púrpura', 'Frío'),
+      color('#1C1C1C', 'Negro', 'Muy oscuro'),
+    ],
   },
   light_summer: {
-    protagonist: ['#E6E6FA', '#D8BFD8', '#B0C4DE'],
-    secondary: ['#D6EAF8', '#D5DBDB', '#F2F3F4'],
-    accent: ['#85C1E9', '#AED6F1', '#A9CCE3'],
-    neutral: ['#F8F9F9', '#FDFEFE', '#FBFCFC'],
-    avoid: ['#DAA520', '#CD853F', '#8B4513', '#D2691E'],
+    protagonist: [
+      color('#E6E6FA', 'Lavanda', 'Suave frío'),
+      color('#D8BFD8', 'Ciruela', 'Delicado'),
+      color('#B0C4DE', 'Azul Perla', 'Claro'),
+    ],
+    secondary: [
+      color('#D6EAF8', 'Azul Cielo', 'Luminoso'),
+      color('#D5DBDB', 'Gris Claro', 'Neutro'),
+      color('#F2F3F4', 'Blanco Grisáceo', 'Suave'),
+    ],
+    accent: [
+      color('#85C1E9', 'Azul Claro', 'Fresco'),
+      color('#AED6F1', 'Azul Pálido', 'Delicado'),
+      color('#A9CCE3', 'Azul Grisáceo', 'Muted'),
+    ],
+    neutral: [
+      color('#F8F9F9', 'Blanco Suave', 'Base'),
+      color('#FDFEFE', 'Blanco Puro', 'Claro'),
+      color('#FBFCFC', 'Blanco Azulado', 'Frío'),
+    ],
+    avoid: [
+      color('#DAA520', 'Dorado', 'Muy cálido'),
+      color('#CD853F', 'Perú', 'Cálido'),
+      color('#8B4513', 'Marrón Suela', 'Oscuro cálido'),
+      color('#D2691E', 'Chocolate', 'Cálido profundo'),
+    ],
   },
   soft_summer: {
-    protagonist: ['#C4B7A6', '#A89F91', '#9B8579'],
-    secondary: ['#B5A99A', '#CDC0B0', '#C8C0B8'],
-    accent: ['#9B8579', '#A89080', '#B8A090'],
-    neutral: ['#8B8075', '#7A6F63', '#6B6154'],
-    avoid: ['#FFD700', '#FF4500', '#000080', '#4B0082'],
+    protagonist: [
+      color('#C4B7A6', 'Gris Topo', 'Muted cálido'),
+      color('#A89F91', 'Taupe', 'Versátil'),
+      color('#9B8579', 'Marrón Rosado', 'Suave'),
+    ],
+    secondary: [
+      color('#B5A99A', 'Marrón Sandía', 'Cálido'),
+      color('#CDC0B0', 'Beige Rosado', 'Suave'),
+      color('#C8C0B8', 'Gris Béige', 'Neutro'),
+    ],
+    accent: [
+      color('#9B8579', 'Marrón Rosado', 'Acento cálido'),
+      color('#A89080', 'Taupe Dorado', 'Muted'),
+      color('#B8A090', 'Beige Cálido', 'Suave'),
+    ],
+    neutral: [
+      color('#8B8075', 'Gris Cálido', 'Base'),
+      color('#7A6F63', 'Taupe Oscuro', 'Versátil'),
+      color('#6B6154', 'Marrón Medio', 'Profundidad'),
+    ],
+    avoid: [
+      color('#FFD700', 'Dorado', 'Muy brillante'),
+      color('#FF4500', 'Rojo Naranja', 'Intenso'),
+      color('#000080', 'Azul Marino', 'Muy oscuro'),
+      color('#4B0082', 'Índigo', 'Frío oscuro'),
+    ],
   },
   cool_summer: {
-    protagonist: ['#708090', '#778899', '#636363'],
-    secondary: ['#2F4F4F', '#4A5568', '#5B6B7C'],
-    accent: ['#87CEEB', '#ADD8E6', '#B0C4DE'],
-    neutral: ['#36454F', '#2F4F4F', '#1C2833'],
-    avoid: ['#DAA520', '#FFA500', '#FF4500', '#CD853F'],
+    protagonist: [
+      color('#708090', 'Gris Acero', 'Frío medio'),
+      color('#778899', 'Gris Pizarra', 'Muted frío'),
+      color('#636363', 'Gris Medio', 'Neutro'),
+    ],
+    secondary: [
+      color('#2F4F4F', 'Verde Azulado', 'Profundo'),
+      color('#4A5568', 'Gris Azulado', 'Versátil'),
+      color('#5B6B7C', 'Azul Grisáceo', 'Frío'),
+    ],
+    accent: [
+      color('#87CEEB', 'Azul Cielo', 'Claro'),
+      color('#ADD8E6', 'Azul Claro', 'Fresco'),
+      color('#B0C4DE', 'Azul Perla', 'Delicado'),
+    ],
+    neutral: [
+      color('#36454F', 'Carbón', 'Base'),
+      color('#2F4F4F', 'Verde Azulado', 'Complemento'),
+      color('#1C2833', 'Negro Azulado', 'Profundidad'),
+    ],
+    avoid: [
+      color('#DAA520', 'Dorado', 'Muy cálido'),
+      color('#FFA500', 'Naranja', 'Cálido'),
+      color('#FF4500', 'Rojo Naranja', 'Intenso cálido'),
+      color('#CD853F', 'Perú', 'Cálido'),
+    ],
   },
   bright_summer: {
-    protagonist: ['#00BFFF', '#FF69B4', '#FF1493'],
-    secondary: ['#00CED1', '#FF6B6B', '#9B59B6'],
-    accent: ['#F39C12', '#1ABC9C', '#E74C3C'],
-    neutral: ['#FFFFFF', '#F8F9F9', '#ECF0F1'],
-    avoid: ['#8B4513', '#A0522D', '#D2691E', '#CD853F'],
+    protagonist: [
+      color('#00BFFF', 'Azul Cielo Brillante', 'Luminoso frío'),
+      color('#FF69B4', 'Rosa Brillante', 'Vibrante'),
+      color('#FF1493', 'Magenta', 'Impacto'),
+    ],
+    secondary: [
+      color('#00CED1', 'Turquesa', 'Fresco'),
+      color('#FF6B6B', 'Coral Rojo', 'Energético'),
+      color('#9B59B6', 'Púrpura', 'Drama'),
+    ],
+    accent: [
+      color('#F39C12', 'Naranja Brillante', 'Contraste'),
+      color('#1ABC9C', 'Verde Menta', 'Fresco'),
+      color('#E74C3C', 'Rojo Coral', 'Vibrante'),
+    ],
+    neutral: [
+      color('#FFFFFF', 'Blanco Puro', 'Base luminosa'),
+      color('#F8F9F9', 'Blanco Suave', 'Claro'),
+      color('#ECF0F1', 'Gris Muy Claro', 'Neutro'),
+    ],
+    avoid: [
+      color('#8B4513', 'Marrón Suela', 'Muy cálido'),
+      color('#A0522D', 'Siena', 'Cálido'),
+      color('#D2691E', 'Chocolate', 'Profundo cálido'),
+      color('#CD853F', 'Perú', 'Terroso'),
+    ],
   },
 };
 
@@ -266,9 +593,9 @@ const SILHOUETTE_DATA: Record<SilhouetteType, { name: string; bodyShape: string;
   apple: {
     name: 'Manzana',
     bodyShape: 'Curvilínea central',
-    favor: ['Cintura suelta', 'Piezas que fluuyen', 'Escotes que alargan'],
+    favor: ['Cintura suelta', 'Piezas que fluyen', 'Escotes que alargan'],
     avoid: ['Ropa ajustada en medio', 'Cinturones en cintura', 'Tejidos rígidos'],
-    necklines: ['V profundo', 'Des侄alce', 'Columnas verticales'],
+    necklines: ['V profundo', 'Deshalf', 'Columnas verticales'],
     silhouettes: ['Empire', 'A-line', 'Blazers largos'],
   },
   rectangle: {
@@ -292,7 +619,7 @@ const SILHOUETTE_DATA: Record<SilhouetteType, { name: string; bodyShape: string;
     bodyShape: 'Curvilínea media',
     favor: ['Cintura definida', 'Equilibrio arriba y abajo', 'Tejidos fluidos'],
     avoid: ['Ropa muy ajustada', 'Líneas horizontales', 'Volumen extremo'],
-    necklines: ['V', 'Des侄alce', 'Asimétrica'],
+    necklines: ['V', 'Deshalf', 'Asimétrica'],
     silhouettes: ['Fit and flare', 'Trapecio', 'Piezas con movimiento'],
   },
   oval: {
@@ -300,7 +627,7 @@ const SILHOUETTE_DATA: Record<SilhouetteType, { name: string; bodyShape: string;
     bodyShape: 'Curvilínea suave',
     favor: ['Cintura suelta o alta', 'Piezas con estructura', 'Líneas verticales'],
     avoid: ['Ropa muy ajustada', 'Estampados grandes', 'Tejidos muy finos'],
-    necklines: ['V', 'Columna', 'Des侄alce alto'],
+    necklines: ['V', 'Columna', 'Deshalf alto'],
     silhouettes: ['Empire', 'Blazers', 'Capas con estructura'],
   },
 };

@@ -70,8 +70,8 @@ export function analyzeClosetColors(
     'naranja': '#e67e22',
   };
 
-  const protagonistHex = palette.protagonist || [];
-  const avoidHex = palette.avoid || [];
+  const protagonistColors = palette.protagonist || [];
+  const avoidColors = palette.avoid || [];
   const isWarm = seasonTemperature === 'warm';
 
   const colorsThatWork: ClosetAnalysis['colorsThatWork'] = [];
@@ -84,15 +84,15 @@ export function analyzeClosetColors(
     const hex = COLOR_HEX[colorLower] || '#888888';
 
     // Check if this color is in our protagonist palette (or similar)
-    const matchesProtagonist = protagonistHex.some(pHex => {
+    const matchesProtagonist = protagonistColors.some(c => {
       // Simple color distance check would be better, but for now use simple matching
-      return pHex.toLowerCase() === hex.toLowerCase() ||
+      return c.hex.toLowerCase() === hex.toLowerCase() ||
         (isWarm && (colorLower.includes('cafe') || colorLower.includes('beige') || colorLower.includes('rojo'))) ||
         (!isWarm && (colorLower.includes('azul') || colorLower.includes('gris') || colorLower.includes('negro')));
     });
 
     // Check if in avoid list
-    const isAvoid = avoidHex.some(aHex => aHex.toLowerCase() === hex.toLowerCase());
+    const isAvoid = avoidColors.some(c => c.hex.toLowerCase() === hex.toLowerCase());
 
     if (matchesProtagonist || (isWarm && (colorLower.includes('cafe') || colorLower.includes('beige'))) || (!isWarm && (colorLower.includes('azul') || colorLower.includes('gris')))) {
       colorsThatWork.push({
@@ -534,7 +534,7 @@ ${TEST_MODE ? '<div class="test-banner">ANÁLISIS CLIENT-SIDE DE PRUEBA · Los d
     <div class="label" style="color: rgba(255,255,255,0.5); margin-bottom: 10px;">Análisis completado · PRYSM Engine 2026</div>
     <h1 class="cover-title serif">Tu guía<br>personal de<br><em>estilo</em></h1>
     <div class="cover-palette">
-      ${colorimetry.palette.protagonist.slice(0, 6).map(c => `<div class="cover-palette-dot" style="background: ${c}"></div>`).join('')}
+      ${colorimetry.palette.protagonist.slice(0, 6).map(c => `<div class="cover-palette-dot" style="background: ${c.hex}"></div>`).join('')}
     </div>
   </div>
   <div class="cover-name">Documento exclusivo · ${userName || 'Cliente'}</div>
@@ -552,8 +552,8 @@ ${TEST_MODE ? '<div class="test-banner">ANÁLISIS CLIENT-SIDE DE PRUEBA · Los d
     <div class="season-name serif">${colorimetry.season.name.split(' ')[0]}<br>${colorimetry.season.name.split(' ').slice(1).join(' ')}</div>
     <div class="season-type">${colorimetry.season.subtitle}</div>
     <div class="palette-big">
-      ${colorimetry.palette.protagonist.slice(0, 3).map(c => `<div class="palette-swatch" style="background: ${c}"></div>`).join('')}
-      ${colorimetry.palette.secondary.slice(0, 3).map(c => `<div class="palette-swatch" style="background: ${c}"></div>`).join('')}
+      ${colorimetry.palette.protagonist.slice(0, 3).map(c => `<div class="palette-swatch" style="background: ${c.hex}"></div>`).join('')}
+      ${colorimetry.palette.secondary.slice(0, 3).map(c => `<div class="palette-swatch" style="background: ${c.hex}"></div>`).join('')}
     </div>
     <p class="season-desc">Los colores del ${colorimetry.season.name} son ${colorimetry.season.temperature === 'warm' ? 'ricos, cálidos y con saturación media-alta. Los colores tierra quemado, los ocres profundos y los verdes musgo son tus aliados.' : 'fríos, claros y con saturación media. Los tonos azulados, rosados y lavanda complementan tu paleta.'}</p>
   </div>
@@ -578,8 +578,8 @@ ${TEST_MODE ? '<div class="test-banner">ANÁLISIS CLIENT-SIDE DE PRUEBA · Los d
       <div class="hex-grid">
         ${colorimetry.palette.protagonist.slice(0, 6).map(c => `
           <div class="hex-chip">
-            <div class="hex-dot" style="background: ${c}"></div>
-            <div class="hex-code">${c}</div>
+            <div class="hex-dot" style="background: ${c.hex}"></div>
+            <div class="hex-code">${c.hex}</div>
           </div>
         `).join('')}
       </div>
@@ -599,11 +599,11 @@ ${TEST_MODE ? '<div class="test-banner">ANÁLISIS CLIENT-SIDE DE PRUEBA · Los d
   <div class="colors-grid">
     ${allColors.map((color, i) => `
       <div class="color-item">
-        <div class="color-swatch" style="background: ${color}">
+        <div class="color-swatch" style="background: ${color.hex}">
           <div class="color-tag">${i === 0 ? 'Best' : i < 3 ? 'Top' : i < 5 ? 'Favorito' : 'Acento'}</div>
         </div>
-        <div class="color-name">${getColorName(color)}</div>
-        <div class="color-hex">${color}</div>
+        <div class="color-name">${color.nombre}</div>
+        <div class="color-hex">${color.hex}</div>
       </div>
     `).join('')}
   </div>
@@ -614,7 +614,7 @@ ${TEST_MODE ? '<div class="test-banner">ANÁLISIS CLIENT-SIDE DE PRUEBA · Los d
       <p class="avoid-desc">Los colores opposites a tu paleta apagarán tu rostro. Evita colores con subtonos opuestos al tuyo.</p>
     </div>
     <div class="avoid-colors">
-      ${colorimetry.palette.avoid.slice(0, 4).map(c => `<div class="avoid-dot" style="background: ${c}"></div>`).join('')}
+      ${colorimetry.palette.avoid.slice(0, 4).map(c => `<div class="avoid-dot" style="background: ${c.hex}"></div>`).join('')}
     </div>
   </div>
 </div>
@@ -914,19 +914,5 @@ ${TEST_MODE ? '<div class="test-banner">ANÁLISIS CLIENT-SIDE DE PRUEBA · Los d
 // ============================================================================
 // Helper Functions
 // ============================================================================
-
-function getColorName(hex: string): string {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-
-  if (r > 180 && g > 100 && b < 100) return 'Ocre quemado';
-  if (r > 150 && g > 80 && b < 60) return 'Café oscuro';
-  if (r > 200 && g > 150 && b < 100) return 'Naranja quemado';
-  if (g > r && g > b && g > 80) return 'Verde musgo';
-  if (r > 140 && g > 80 && b < 60) return 'Siena tostado';
-  if (r > 180 && g > 130 && b < 80) return 'Caramelo';
-  if (r > 120 && g > 80 && b < 40) return 'Saddle brown';
-  if (g > 80 && r > 60 && b > 60) return 'Verde oliva';
-  return 'Tono';
-}
+// Color names are now stored directly in ColorObject.nombre from SEASON_PALETTES
+// No getColorName function needed - use color.nombre directly
