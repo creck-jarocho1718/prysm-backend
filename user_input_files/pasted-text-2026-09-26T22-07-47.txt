@@ -1,0 +1,329 @@
+[PRYSM API] Using TEST API URL: https://prysm-backend-pipq.onrender.com
+index-CjZvifLv.js:41 [TEST MODE] TEST MODE is ACTIVE 
+index-CjZvifLv.js:603 [TEST MODE] Running in test environment
+/favicon.ico:1 
+        
+        
+       Failed to load resource: the server responded with a status of 404 (Not Found)
+index-CjZvifLv.js:41 [Analyzing] Starting photo analysis with 1 photos...
+index-CjZvifLv.js:41 [Analyzing] Photo analysis complete: Object
+index-CjZvifLv.js:41 [Analyzing] Calling backend API...
+index-CjZvifLv.js:41 [PRYSM API] analyzeImage called
+index-CjZvifLv.js:41 [PRYSM API] Photos included: true
+index-CjZvifLv.js:41 [PRYSM API] Photos count: 1
+index-CjZvifLv.js:41 [PRYSM API] Quiz answers included: true
+index-CjZvifLv.js:41 [PRYSM API] API URL: https://prysm-backend-pipq.onrender.com
+index-CjZvifLv.js:41 [PRYSM API] Response status: 200
+index-CjZvifLv.js:41 [PRYSM API] Response success: true
+index-CjZvifLv.js:41 [PRYSM] GPT season: Verano
+index-CjZvifLv.js:41 [PRYSM] GPT palette colors: 2
+index-CjZvifLv.js:41 [PRYSM] GPT silhouette: diamante
+index-CjZvifLv.js:41 [PRYSM] GPT style: Romántico Chic
+index-CjZvifLv.js:41 [TEST MODE] Backend analysis successful 
+index-CjZvifLv.js:41 [ANALYZING] Backend result success
+index-CjZvifLv.js:41 [ANALYZING] Calling onComplete with success result
+index-CjZvifLv.js:603 [App] handleAnalysisComplete received: {
+  "success": true,
+  "data": {
+    "analisisColor": {
+      "subtono": "frío",
+      "profundidad": "medio",
+      "contraste": "medio",
+      "saturacion": "media",
+      "estacion": "Verano",
+      "subestacion": "n/a",
+      "confianza": 0.85,
+      "explicacion": "La combinación del tono de piel, cabello y ojos indica un subtono frío con una profundidad media, ideal para la estación de verano.",
+      "paleta": {
+        "protagonistas": [
+          {
+            "hex": "#FF6F61",
+            "nombre": "Coral",
+            "explicacion": "Realza la calidez del tono de piel y resalta las características faciales."
+          },
+          {
+            "hex": "#6DA3D6",
+            "nombre": "Azul Cielo",
+            "explicacion": "Aporta frescura y luminosidad, ideal para crear outfits equilibrados."
+          }
+        ],
+        "secundarios": [
+          {
+            "hex": "#F5B9B4",
+            "nombre": "Rosa Claro",
+            "explicacion": "Versátil y romántico, complementa bien los tonos de piel fríos."
+          },
+          {
+            "hex": "#A8D7E1",
+            "nombre": "Turquesa",
+            "explicacion": "Aporta un toque vibrante y fresco a los looks."
+          }
+        ],
+        "neutros": [
+          {
+            "hex": "#FFFFFF",
+            "nombre": "Blanco",
+            "explicacion": "Un clásico que combina con todo y aporta luminosidad."
+          },
+          {
+            "hex": "#C0C0C0",
+            "nombre": "Gris Claro",
+            "explicacion": "Ideal para prendas básicas, permite combinaciones elegantes."
+          }
+        ],
+        "acento": [
+          {
+            "hex": "#D50032",
+            "nombre": "Rojo Intenso",
+            "explicacion": "Perfecto para destacar en eventos y ocasiones especiales."
+          }
+        ],
+        "evitar": [
+          {
+            "hex": "#B5A995",
+            "nombre": "Marrón Suave",
+            "explicacion": "Puede opacar el brillo del tono de piel y crear un efecto apagado."
+          }
+        ]
+      }
+    },
+    "silueta": {
+      "tipoCuerpo": "diamante",
+      "cortes": [
+        "cortes imperio",
+        "cortes en A"
+      ],
+      "proporciones": "Ideal para equilibrar la parte superior con la inferior, acentuando la cintura.",
+      "escotes": [
+        "escote en V",
+        "escote cuadrado"
+      ],
+      "largos": {
+        "pantalones": "pantalones de pierna recta o ligeramente acampanados",
+        "faldas": "faldas largas o midi"
+      },
+      "prendasFavorecen": [
+        "blusas con detalles en la cintura",
+        "chaquetas entalladas"
+      ],
+      "prendasEvitar": [
+        "prendas demasiado ajustadas en la cadera",
+        "faldas muy cortas"
+      ],
+      "explicacion": "Estas prendas ayudan a crear una figura más equilibrada y resaltan la cintura."
+    },
+    "estilo": {
+      "principal": {
+        "nombre": "Romántico Chic",
+        "descripcion": "Un estilo que mezcla elementos románticos con toques modernos y sofisticados, ideal para ocasiones especiales.",
+        "palabrasClave": [
+          "sofisticada",
+          "glamurosa",
+          "natural"
+        ]
+      },
+      "secundarios": [
+        "Casual",
+        "Romántico"
+      ],
+      "arquetipo": "Romántica",
+      "sensacionProyectar": "Desea sentirse elegante y segura en eventos sociales."
+    },
+    "presupuesto": {
+      "nivel": "alto",
+      "comprasPrioritarias": [
+        {
+          "prenda": "Vestido de noche",
+          "razon": "Ideal para eventos y fiestas",
+          "rangoPrecio": "$300-$800"
+        },
+        {
+          "prenda": "Chaqueta de cuero",
+          "razon": "Versátil y chic para ocasiones casuales",
+          "rangoPrecio": "$200-$600"
+        }
+      ],
+      "invertir": [
+        {
+          "prenda": "Zapatos de tacón elegantes",
+          "razon": "Duraderos y necesarios para eventos",
+          "rangoPrecio": "$150-$400"
+        },
+        {
+          "prenda": "Bolso de diseño",
+          "razon": "Accesorio clave para completar looks",
+          "rangoPrecio": "$500-$1000"
+        }
+      ],
+      "economicas": [
+        {
+          "prenda": "Blusas básicas",
+          "dondeAhorrar": "Buscar en tiendas asequibles",
+          "rangoPrecio": "$20-$50"
+        },
+        {
+          "prenda": "Accesorios de moda",
+          "dondeAhorrar": "Optar por bisutería",
+          "rangoPrecio": "$10-$30"
+        }
+      ],
+      "puedeEsperar": [
+        "abrigo de invierno",
+        "pantalones de vestir"
+      ]
+    },
+    "closet": {
+      "yaTienes": [
+        {
+          "prenda": "Camisa blanca",
+          "comoUsar": "Combínala con faldas midi y tacones",
+          "combinaCon": [
+            "rojo",
+            "coral"
+          ]
+        },
+        {
+          "prenda": "Vestido rojo",
+          "comoUsar": "Perfecto para eventos, añadir accesorios plateados",
+          "combinaCon": [
+            "blanco",
+            "gris claro"
+          ]
+        }
+      ],
+      "teSirve": [
+        {
+          "prenda": "Chaqueta negra",
+          "comoAdaptar": "Agregar un cinturón para acentuar la cintura"
+        }
+      ],
+      "combinaloAsi": [
+        {
+          "prenda": "Falda negra",
+          "combinacion": "Con blusa blanca y tacones coral",
+          "colores": [
+            "#FFFFFF",
+            "#FF6F61"
+          ]
+        }
+      ],
+      "teFalta": [
+        "pantalones de tiro alto",
+        "blusa con detalles en la cintura"
+      ],
+      "noEsPrioridad": [
+        "abrigo de lana",
+        "botas altas"
+      ]
+    },
+    "ocasiones": [
+      {
+        "nombre": "Eventos",
+        "prioridad": 1,
+        "looks": [
+          {
+            "nombre": "Elegancia Romántica",
+            "piezas": "Vestido coral, tacones plateados, clutch plateado",
+            "colores": [
+              "#FF6F61",
+              "#C0C0C0"
+            ],
+            "sensacion": "Elegante y sofisticada",
+            "descripcion": "Un look que combina la frescura del coral con la sofisticación de los accesorios plateados."
+          }
+        ]
+      },
+      {
+        "nombre": "Reuniones Familiares",
+        "prioridad": 2,
+        "looks": [
+          {
+            "nombre": "Casual Chic",
+            "piezas": "Camisa blanca, pantalones de tiro alto, sandalias planas",
+            "colores": [
+              "#FFFFFF",
+              "#A8D7E1"
+            ],
+            "sensacion": "Cómoda y elegante",
+            "descripcion": "Un look relajado pero estilizado, perfecto para pasar tiempo en familia."
+          }
+        ]
+      },
+      {
+        "nombre": "Fiestas",
+        "prioridad": 3,
+        "looks": [
+          {
+            "nombre": "Glamour Nocturno",
+            "piezas": "Vestido rojo, zapatos de tacón, accesorios plateados",
+            "colores": [
+              "#FF0000",
+              "#C0C0C0"
+            ],
+            "sensacion": "Deslumbrante y segura",
+            "descripcion": "Un look impactante que asegura todas las miradas en la fiesta."
+          }
+        ]
+      }
+    ],
+    "joyeria": {
+      "metal": "plata",
+      "acabados": [
+        "pulido",
+        "mate"
+      ],
+      "tipos": [
+        "aretes",
+        "pulseras",
+        "collares"
+      ],
+      "piedras": [
+        "diamantes",
+        "sapphires"
+      ],
+      "explicacion": "La plata complementa el tono frío del usuario y añade un toque elegante a cada look."
+    },
+    "perfil": {
+      "descubrimiento": "El usuario busca un estilo que combine sofisticación con un toque romántico y glamuroso.",
+      "explicacion": "La elección de colores y prendas se alinea con su deseo de verse elegante en diversas ocasiones.",
+      "coloresFavorecen": "Los colores seleccionados resaltan su tono de piel y aportan frescura.",
+      "coloresConservar": "Blanco y rojo son colores clave en su clóset.",
+      "coloresDejar": "Evitar tonos marrones que no favorecen su paleta.",
+      "prendasFavorecen": "Vestidos que acentúan la cintura y blusas con cortes favorecedores.",
+      "prendasComprar": "Incorporar prendas como pantalones de tiro alto y blusas con detalles.",
+      "prioridadCompras": "Priorizar la compra de un vestido de noche y una chaqueta de cuero.",
+      "looksPrincipales": "Looks elegantes y casuales para eventos y reuniones familiares.",
+      "imagenDeseada": "Proyectar una imagen de elegancia y confianza en cada ocasión."
+    }
+  },
+  "processingTime": 13937,
+  "verification": {
+    "photosIncluded": true,
+    "photosCount": 1,
+    "answersIncluded": true,
+    "season": "Verano",
+    "paletteColors": 2,
+    "silhouette": "diamante",
+    "style": "Romántico Chic"
+  }
+}
+index-CjZvifLv.js:603 [App] analysis.season: undefined
+index-CjZvifLv.js:603 [App] analysis.palette: undefined
+index-CjZvifLv.js:41 [ResultPreview] Props and State: Object
+index-CjZvifLv.js:41 [ResultPreview] Extracted data: Object
+index-CjZvifLv.js:41 [ResultPreview] Props and State: Object
+index-CjZvifLv.js:41 [ResultPreview] Extracted data: Object
+index-CjZvifLv.js:41 [TEST MODE] TEST MODE: Starting PDF generation... 
+index-CjZvifLv.js:41 [TEST MODE] PersonalStyleProfile generated: "Analysis data retrieved from localStorage"
+index-CjZvifLv.js:41 [TEST MODE] Building profile - GPT analysis available: true
+index-CjZvifLv.js:41 [TEST MODE] PersonalStyleProfile generated: "PersonalStyleProfile built from quiz answers"
+index-CjZvifLv.js:41 [TEST MODE] Answers used: Object
+index-CjZvifLv.js:41 [TEST MODE] PDF Generation: Object
+index-CjZvifLv.js:41 [TEST MODE] Generating personalized looks... 
+index-CjZvifLv.js:41 [TEST MODE] Generated looks: Array(3)
+index-CjZvifLv.js:41 [TEST MODE] PDF Generation: Object
+index-CjZvifLv.js:41 [TEST MODE] PDF Generation: Object
+index-CjZvifLv.js:41 [TEST MODE] Using testPdfData for report - SAME data as PDF 
+index-CjZvifLv.js:41 [TEST MODE] PersonalStyleProfile generated: "Report component using PersonalStyleProfile from PDF generator"
+index-CjZvifLv.js:41 [TEST MODE] Report component loaded with testPdfData: AVAILABLE
+index-CjZvifLv.js:41 [TEST MODE] User photo available: true

@@ -159,6 +159,8 @@ export interface AnalysisResponse {
   success: boolean;
   reportId?: string;
   pdfUrl?: string;
+  // Direct GPT data from backend (matches backend response structure)
+  data?: GPTAnalysisData;
   analysis?: {
     season: SeasonInfo;
     palette: PaletteColors;
@@ -209,10 +211,10 @@ export async function analyzeImage(request: AnalysisRequest): Promise<AnalysisRe
     console.log('[PRYSM API] Response success:', data.success);
 
     if (data.success) {
-      console.log('[PRYSM] GPT season:', data.verification?.season);
-      console.log('[PRYSM] GPT palette colors:', data.verification?.paletteColors);
-      console.log('[PRYSM] GPT silhouette:', data.verification?.silhouette);
-      console.log('[PRYSM] GPT style:', data.verification?.style);
+      console.log('[PRYSM] GPT season:', data.data?.analisisColor?.estacion);
+      console.log('[PRYSM] GPT palette colors:', data.data?.analisisColor?.paleta?.protagonistas?.length);
+      console.log('[PRYSM] GPT silhouette:', data.data?.silueta?.tipoCuerpo);
+      console.log('[PRYSM] GPT style:', data.data?.estilo?.principal?.nombre);
     } else {
       console.log('[PRYSM API] Error:', data.error);
     }
