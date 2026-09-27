@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { AnalysisResponse } from '../services/api';
 import { TEST_MODE, testLog } from '../config';
 import { downloadPdf } from '../services/pdfDownloader';
+import { processAnalysisResult, ValidatedAnalysisResult, ValidatedColor } from '../services/analysisValidator';
+import { getColorNameFromHex } from '../services/colorCatalog';
 
 interface ReportProps {
   userName: string;
@@ -11,26 +13,19 @@ interface ReportProps {
   testPdfData?: any;
 }
 
-// Fallback data for demo
+// Fallback data for demo (solamente cuando NO hay datos de análisis)
 const fallbackData = {
   season: {
-    name: 'Otoño Profundo',
-    subtitle: 'Deep Autumn · Warm · Rich',
+    name: 'Primavera Brillante',
+    subtitle: 'Bright Spring · Warm · Bright',
     undertone: 'Cálido',
-    depth: 'Media-alta',
+    depth: 'Media',
     contrast: 'Alto',
-    temperature: 'Cálida sin excepción'
+    temperature: 'Cálida'
   },
-  prysmScore: 9.4,
+  prysmScore: 8.5,
   bodyType: 'Reloj de arena',
   bodyShape: 'Curvilínea',
-  palette: {
-    protagonist: ['#B5691B', '#6E2C00', '#E07B39'],
-    secondary: ['#2F4F1E', '#A0522D'],
-    accent: ['#C68642', '#8B4513'],
-    neutral: ['#567568'],
-    avoid: ['#a8c8d8', '#d8a8b8', '#c8c8d8', '#e8e0d8', '#88aacc']
-  },
   silhouette: {
     shoulders: 'Hombros anchos',
     bust: 'Busto prominente',
@@ -51,27 +46,27 @@ const fallbackData = {
     { name: 'Lino de calidad', desc: 'Perfecto para primavera-verano' }
   ],
   hairColors: [
-    { name: 'Castaño chocolate', color: '#4A2810', desc: 'Base cálida, profundidad media' },
-    { name: 'Rojo caoba', color: '#7B3F00', desc: 'Acentúa el subtono cálido' },
-    { name: 'Marrón cálido miel', color: '#C68642', desc: 'Ilumina el rostro' }
+    { name: 'Caramelo cálido', color: '#C49A6C', desc: 'Base dorada que ilumina el rostro' },
+    { name: 'Miel dorado', color: '#DAA520', desc: 'Reflejos cálidos que complementan el subtono' },
+    { name: 'Caoba suave', color: '#A0522D', desc: 'Profundidad cálida sin ser muy oscura' }
   ],
-  haircuts: ['Largo medios', 'Corte en V', 'Bucle suave', 'Flequillo lateral'],
+  haircuts: ['Largo con ondas suaves', 'Lob hasta los hombros', 'Corte en capas', 'Flequillo lateral'],
   faceShape: 'Ovalada',
   outfits: [
-    { occasion: 'Día a día', icon: '☀', pieces: 'Camisa de seda ocre · Pantalón palazzo camel · Sneakers blancas · Bolso tote cuero marrón · Abrigo largo verde musgo', colors: ['#B5691B', '#C68642', '#f5f0e8', '#2F4F1E'] },
-    { occasion: 'Oficina', icon: '✦', pieces: 'Blazer sastre café · Blusa seda beige · Pantalón slim navy oscuro · Stiletto camel · Reloj dorado minimalista', colors: ['#6E2C00', '#A0522D', '#f5f0e8', '#1a1a2e'] },
-    { occasion: 'Citas', icon: '♥', pieces: 'Vestido slip satinado ocre · Abrigo男友 · Sandalias tacón bloque dorado · Pendientes aro dorado · Mini bolso cadena', colors: ['#E07B39', '#B5691B', '#D4A473', '#f5f0e8'] },
-    { occasion: 'Viajes', icon: '✈', pieces: 'Vestido midi fluido verde musgo · Denim oscuro skinny · Gaban camel · Sneakers blancas · Sombrero floppy beige', colors: ['#2F4F1E', '#C68642', '#d4c8b8', '#f5f0e8'] }
+    { occasion: 'Día a día', icon: '☀', pieces: 'Blusa seda coral · Pantalón camel · Sneakers blancas · Bolso tote cuero', colors: ['#FF6F61', '#C19A6B', '#FFFFFF', '#8B7355'] },
+    { occasion: 'Oficina', icon: '✦', pieces: 'Blazer ocre · Blusa blanca · Pantalón navy · Tacón camel', colors: ['#D2691E', '#FFFFFF', '#1E3A5F', '#C19A6B'] },
+    { occasion: 'Citas', icon: '♥', pieces: 'Vestido rojo tomate · Abrigo camel · Sandalias doradas', colors: ['#FF6347', '#C19A6B', '#FFD700'] },
+    { occasion: 'Eventos', icon: '★', pieces: 'Vestido dorado · Bolso clutch · Joyería dorada', colors: ['#FFD700', '#D4A574', '#FFFFFF'] }
   ],
   jewelry: [
-    { name: 'Oro cálido / Bronce', desc: 'Evita plata o acero. El oro amarillo y el bronze complementan tu subtono cálido.' },
+    { name: 'Oro cálido / Bronce', desc: 'El oro amarillo y el bronce complementan tu subtono cálido.' },
     { name: 'Aros colgantes', desc: 'De longitud media. Las gotas o aros complejos favorecen tu rostro.' },
     { name: 'Collares en V', desc: 'Alargan el cuello. Los charms discretos en oro cálido son perfectos.' }
   ],
   bags: [
-    { name: 'Tote de cuero suave', desc: 'Formato amplio, asas cortas. En café, camel o cognac.' },
-    { name: 'Crossbody pequeña', desc: 'Para evenings. Cadena dorada con cuerpo de cuero o paja.' },
-    { name: 'Clutch estructurada', desc: 'Para eventos formales. En verde profundo o dorado.' }
+    { name: 'Tote de cuero suave', desc: 'Formato amplio, asas cortas. En tonos cálidos.' },
+    { name: 'Crossbody pequeña', desc: 'Para evenings. Cadena dorada con cuerpo de cuero.' },
+    { name: 'Clutch estructurada', desc: 'Para eventos formales. En tonos metálicos.' }
   ]
 };
 
@@ -89,11 +84,119 @@ export default function Report({
   const userPhoto = testPdfData?.profile?.userPhotos?.[0] || '';
   const hasUserPhoto = !!userPhoto;
 
+  // NUEVO: Procesar y normalizar el resultado usando el módulo de validación
+  const processResult = (): ValidatedAnalysisResult | null => {
+    if (testPdfData?.profile) {
+      // Usar datos del PDF generator que ya pasó por normalización
+      const profile = testPdfData.profile;
+
+      // Extraer datos normalizados
+      const season = profile.colorimetry?.season;
+      const palette = profile.colorimetry?.palette;
+
+      testLog.info('[PRYSM ANALYSIS]', {
+        season: season?.name,
+        subtype: season?.primary,
+        undertone: season?.temperature,
+        depth: season?.depth,
+        contrast: season?.contrast,
+        saturation: season?.saturation
+      });
+
+      testLog.info('[PRYSM COLORS]', {
+        seasonalColors: palette?.protagonist?.length || 0,
+        personalColors: (palette?.protagonist?.length || 0) + (palette?.secondary?.length || 0),
+        avoidColors: palette?.avoid?.length || 0
+      });
+
+      return {
+        season: season?.primary || 'bright_spring',
+        seasonName: season?.name || 'Primavera',
+        seasonSubtitle: season?.subtitle || '',
+        undertone: season?.temperature === 'warm' ? 'Cálido' : 'Frío',
+        depth: season?.depth || 'media',
+        contrast: season?.contrast || 'medio',
+        saturation: season?.saturation || 'media',
+        seasonDescription: season?.temperature === 'warm'
+          ? 'Los colores cálidos con base amarilla u ocre resuenan con tu piel.'
+          : 'Los colores fríos con base rosa o azul complementan tu paleta.',
+        seasonalColors: (palette?.protagonist || []).slice(0, 6).map((c: any, i: number) => ({
+          hex: typeof c === 'string' ? c : c.hex,
+          name: typeof c === 'string' ? getColorNameFromHex(c) : (c.nombre || getColorNameFromHex(c.hex)),
+          category: i === 0 ? 'best' : i < 3 ? 'top' : 'favorite',
+          explanation: typeof c === 'string' ? '' : (c.explicacion || '')
+        })),
+        personalColors: [
+          ...(palette?.protagonist || []).map((c: any) => ({
+            hex: typeof c === 'string' ? c : c.hex,
+            name: typeof c === 'string' ? getColorNameFromHex(c) : (c.nombre || getColorNameFromHex(c.hex)),
+            category: 'favorite' as const,
+            explanation: typeof c === 'string' ? '' : (c.explicacion || '')
+          })),
+          ...(palette?.secondary || []).map((c: any) => ({
+            hex: typeof c === 'string' ? c : c.hex,
+            name: typeof c === 'string' ? getColorNameFromHex(c) : (c.nombre || getColorNameFromHex(c.hex)),
+            category: 'accent' as const,
+            explanation: typeof c === 'string' ? '' : (c.explicacion || '')
+          }))
+        ].slice(0, 8),
+        avoidColors: (palette?.avoid || []).map((c: any) => ({
+          hex: typeof c === 'string' ? c : c.hex,
+          name: typeof c === 'string' ? getColorNameFromHex(c) : (c.nombre || getColorNameFromHex(c.hex)),
+          category: 'avoid' as const,
+          explanation: typeof c === 'string' ? 'Color que puede generar menor armonía con tu paleta.' : (c.explicacion || 'Color que puede generar menor armonía con tu paleta.')
+        })),
+        bodyShape: profile.silhouette?.name || 'Silueta',
+        bodyShapeSource: 'user_selected',
+        faceShape: null,
+        hair: {
+          recommended: testPdfData?.hair?.recommended?.map((h: any) => ({
+            hex: h.hex || '#000000',
+            name: h.name || 'Color',
+            category: 'favorite' as const,
+            explanation: h.desc || ''
+          })) || [],
+          avoid: [],
+          cuts: testPdfData?.hair?.cuts || []
+        },
+        outfits: (testPdfData?.looks || []).slice(0, 4).map((l: any) => ({
+          occasion: l.occasion || 'Día a día',
+          occasionIcon: l.occasionIcon || '✦',
+          pieces: l.pieces || '',
+          colors: Array.isArray(l.colors) ? l.colors : []
+        })),
+        jewelry: [
+          { name: profile.preferences?.metal === 'gold' ? 'Oro cálido' : profile.preferences?.metal === 'silver' ? 'Plata' : 'Oro y Plata', desc: 'Metal que complementa tu subtono.' }
+        ],
+        bags: [
+          { name: 'Tote de cuero', desc: 'Formato amplio en tonos cálidos.' },
+          { name: 'Crossbody', desc: 'Para occasions casuales.' }
+        ],
+        accessories: [],
+        score: profile.prysmScore || 8.5
+      };
+    }
+
+    return null;
+  };
+
   // Log test mode status
   useEffect(() => {
     if (TEST_MODE) {
       testLog.info('Report component loaded with testPdfData:', testPdfData ? 'AVAILABLE' : 'NOT AVAILABLE');
       testLog.info('User photo available:', hasUserPhoto);
+
+      const processed = processResult();
+      if (processed) {
+        testLog.info('[PRYSM HAIR]', {
+          recommended: processed.hair.recommended.length,
+          avoid: processed.hair.avoid.length,
+          cuts: processed.hair.cuts.length
+        });
+        testLog.info('[PRYSM OUTFITS]', {
+          count: processed.outfits.length
+        });
+      }
     }
   }, [testPdfData, hasUserPhoto]);
 
@@ -126,143 +229,61 @@ export default function Report({
     }
   };
 
-  // Get data from testPdfData, analysisResult, or fallback
+  // Get data from testPdfData (normalizado) o fallback
   const getReportData = () => {
-    // If we have test PDF data, use it - SAME data as PDF generator
-    if (testPdfData?.profile) {
-      const profile = testPdfData.profile;
-
-      testLog.info('Using testPdfData for report - SAME data as PDF');
-      testLog.profile('Report component using PersonalStyleProfile from PDF generator');
-
-      // Get looks from testPdfData (direct, not nested)
-      const looks = testPdfData.looks || [];
-
-      // Get hair from testPdfData (direct, not nested)
-      const hair = testPdfData.hair;
-
-      // Get fabrics from testPdfData (direct, not nested)
-      const fabrics = testPdfData.fabrics || [];
-
-      return {
-        season: {
-          name: profile.colorimetry?.season?.name || 'Temporada',
-          subtitle: profile.colorimetry?.season?.subtitle || '',
-          undertone: profile.colorimetry?.season?.temperature || '',
-          depth: profile.colorimetry?.season?.depth || '',
-          contrast: profile.colorimetry?.season?.contrast || '',
-          temperature: profile.colorimetry?.season?.temperature || ''
-        },
-        prysmScore: profile.prysmScore || 8.5,
-        bodyType: profile.silhouette?.name || 'Silueta',
-        bodyShape: profile.silhouette?.bodyShape || '',
-        palette: profile.colorimetry?.palette || fallbackData.palette,
-        silhouette: profile.silhouette || fallbackData.silhouette,
-        tips: profile.silhouette?.recommendations?.favor || fallbackData.tips,
-        fabrics: fabrics.map((f: any) => ({
-          name: f.name,
-          desc: f.desc
-        })) || fallbackData.fabrics,
-        hairColors: hair?.recommended?.map((h: any) => ({
-          name: h.name,
-          color: h.hex,
-          desc: h.desc
-        })) || fallbackData.hairColors,
-        haircuts: hair?.cuts || fallbackData.haircuts,
-        faceShape: 'Ovalada',
-        outfits: looks.map((look: any) => ({
-          occasion: look.occasion,
-          icon: look.occasionIcon || '✦',
-          pieces: look.pieces,
-          colors: look.colors || []
-        })) || fallbackData.outfits,
-        // For jewelry and bags, use generic recommendations based on metal preference
-        jewelry: [
-          {
-            name: profile.preferences?.metal === 'gold' ? 'Oro cálido / Bronce' :
-                  profile.preferences?.metal === 'silver' ? 'Plata / Acero' : 'Oro y Plata combinados',
-            desc: 'El metal correcto complementa tu subtono. Evita el metal opuesto.'
-          },
-          {
-            name: 'Aros colgantes',
-            desc: 'De longitud media. Las gotas o aros complejos favorecen tu rostro.'
-          },
-          {
-            name: 'Collares en V',
-            desc: 'Alargan el cuello. Los charms discretos son perfectos.'
-          }
-        ],
-        bags: [
-          {
-            name: 'Tote de cuero suave',
-            desc: `Formato amplio, asas cortas. En tonos ${profile.colorimetry?.season?.depth === 'deep' ? 'oscuros' : 'neutros'}.`
-          },
-          {
-            name: 'Crossbody pequeña',
-            desc: 'Para evenings. Cadena dorada con cuerpo de cuero.'
-          },
-          {
-            name: 'Clutch estructurada',
-            desc: 'Para eventos formales. En verde profundo o dorado.'
-          }
-        ]
-      };
+    const processed = processResult();
+    if (processed) {
+      return processed;
     }
 
-    // Otherwise use analysis result or fallback
-    return (analysisResult?.analysis || fallbackData) as typeof fallbackData;
+    // Usar fallback solo si no hay datos
+    return fallbackData;
   };
 
   const data = getReportData();
-  const seasonName = data.season?.name || fallbackData.season.name;
-  const score = data.prysmScore || fallbackData.prysmScore;
+  const seasonName = data.seasonName || fallbackData.season.name;
+  const score = data.score || fallbackData.prysmScore;
 
-  // Get body type as string (could be BodyTypeInfo object or string)
-  const getBodyTypeName = (bt: string | { name: string }) => {
-    return typeof bt === 'string' ? bt : (bt.name || fallbackData.bodyType);
-  };
-  const bodyTypeName = getBodyTypeName(data.bodyType);
-  const bodyShapeName = data.bodyShape || fallbackData.bodyShape;
+  // Usar directamente los datos normalizados
+  const isNormalized = 'season' in data && 'seasonalColors' in data;
+  const normalizedData = data as ValidatedAnalysisResult;
 
-  // Get palette from analysis or fallback
-  const palette = data.palette || fallbackData.palette;
-  const protagonistColors = palette.protagonist || fallbackData.palette.protagonist;
-  const secondaryColors = palette.secondary || fallbackData.palette.secondary;
-  const accentColors = palette.accent || fallbackData.palette.accent;
-  const avoidColors = palette.avoid || fallbackData.palette.avoid;
-
-  // Helper to normalize color (handles both string hex and ColorObject from GPT)
-  const normalizeColor = (c: string | { hex: string; nombre?: string }, tag: string) => {
+  // Helper para normalizar color
+  const normalizeColorDisplay = (c: ValidatedColor | string) => {
     if (typeof c === 'string') {
-      return { hex: c, tag, nombre: '' };
+      return { hex: c, name: getColorNameFromHex(c) };
     }
-    return { hex: c.hex, tag, nombre: c.nombre || '' };
+    return { hex: c.hex, name: c.name };
   };
 
-  // All 8 colors for the report
-  const allColors = [
-    ...(Array.isArray(protagonistColors) ? protagonistColors.map((c: any, i: number) => normalizeColor(c, i === 0 ? 'Best' : 'Top')) : []),
-    ...(Array.isArray(secondaryColors) ? secondaryColors.map((c: any) => normalizeColor(c, 'Favorito')) : []),
-    ...(Array.isArray(accentColors) ? accentColors.map((c: any) => normalizeColor(c, 'Acento')) : []),
-    ...(Array.isArray(palette.neutral) ? palette.neutral.map((c: any) => normalizeColor(c, 'Neutro')) : [])
-  ].slice(0, 8);
+  // Colores para el reporte
+  const seasonalColors = isNormalized
+    ? normalizedData.seasonalColors
+    : (data as any).palette?.protagonist?.slice(0, 6) || fallbackData.palette.protagonist;
 
-  // Get hex name
-  const getColorName = (hex: string): string => {
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
+  const personalColors = isNormalized
+    ? normalizedData.personalColors
+    : [
+        ...(data as any).palette?.protagonist || [],
+        ...(data as any).palette?.secondary || [],
+        ...(data as any).palette?.accent || [],
+      ].slice(0, 8);
 
-    if (r > 180 && g > 100 && b < 100) return 'Ocre quemado';
-    if (r > 150 && g > 80 && b < 60) return 'Café oscuro';
-    if (r > 200 && g > 150 && b < 100) return 'Naranja quemado';
-    if (g > r && g > b && g > 80) return 'Verde musgo';
-    if (r > 140 && g > 80 && b < 60) return 'Siena tostado';
-    if (r > 180 && g > 130 && b < 80) return 'Caramelo';
-    if (r > 120 && g > 80 && b < 40) return 'Saddle brown';
-    if (g > 80 && r > 60 && b > 60) return 'Verde oliva';
-    return 'Tono';
-  };
+  const avoidColors = isNormalized
+    ? normalizedData.avoidColors
+    : (data as any).palette?.avoid || fallbackData.palette.avoid;
+
+  // Preparar colores para display
+  const allDisplayColors = [
+    ...seasonalColors.map((c, i) => ({ ...normalizeColorDisplay(c as any), tag: i === 0 ? 'Best' : i < 3 ? 'Top' : 'Favorite' })),
+  ].slice(0, 6);
+
+  const allPersonalColors = personalColors.slice(0, 8).map((c, i) => {
+    const tags = ['Best', 'Top', 'Top', 'Favorite', 'Favorite', 'Accent', 'Accent', 'Neutral'];
+    return { ...normalizeColorDisplay(c as any), tag: tags[i] || 'Favorite' };
+  });
+
+  const avoidDisplayColors = avoidColors.slice(0, 4).map(c => normalizeColorDisplay(c as any));
 
   const pages = [
     { id: 'cover', label: 'Portada' },
@@ -304,25 +325,49 @@ export default function Report({
   }, [activePage, pages.length]);
 
   // Get tips from silhouette recommendations
-  const tips = data.tips || fallbackData.tips;
+  const tips = (data as any).tips || fallbackData.tips;
 
   // Get hair colors
-  const hairColors = data.hairColors || fallbackData.hairColors;
+  const hairColors = isNormalized
+    ? normalizedData.hair.recommended.map(h => ({
+        name: h.name,
+        color: h.hex,
+        desc: h.explanation
+      }))
+    : (data as any).hairColors || fallbackData.hairColors;
 
   // Get haircuts
-  const haircuts = data.haircuts || fallbackData.haircuts;
+  const haircuts = isNormalized
+    ? normalizedData.hair.cuts
+    : (data as any).haircuts || fallbackData.haircuts;
 
   // Get outfits
-  const outfits = data.outfits || fallbackData.outfits;
+  const outfits = isNormalized
+    ? normalizedData.outfits
+    : (data as any).outfits || fallbackData.outfits;
 
   // Get jewelry
-  const jewelry = data.jewelry || fallbackData.jewelry;
+  const jewelry = isNormalized
+    ? normalizedData.jewelry
+    : (data as any).jewelry || fallbackData.jewelry;
 
   // Get bags
-  const bags = data.bags || fallbackData.bags;
+  const bags = isNormalized
+    ? normalizedData.bags
+    : (data as any).bags || fallbackData.bags;
 
   // Get fabrics
-  const fabrics = data.fabrics || fallbackData.fabrics;
+  const fabrics = (data as any).fabrics || fallbackData.fabrics;
+
+  // Get body type
+  const bodyTypeName = (data as any).bodyType || (data as any).bodyShape || fallbackData.bodyType;
+  const bodyShapeName = (data as any).bodyShape || fallbackData.bodyShape;
+
+  // Get undertone, depth, contrast
+  const undertone = isNormalized ? normalizedData.undertone : ((data as any).season?.undertone || fallbackData.season.undertone);
+  const depth = isNormalized ? normalizedData.depth : ((data as any).season?.depth || fallbackData.season.depth);
+  const contrast = isNormalized ? normalizedData.contrast : ((data as any).season?.contrast || fallbackData.season.contrast);
+  const temperature = isNormalized ? normalizedData.undertone : ((data as any).season?.temperature || fallbackData.season.temperature);
 
   return (
     <div className="report-editorial-container" ref={containerRef}>
@@ -351,7 +396,7 @@ export default function Report({
           </h1>
           <div className="re-cover-subtitle">Documento exclusivo · {userName || 'Cliente'}</div>
           <div className="re-cover-palette">
-            {allColors.slice(0, 6).map((color, i) => (
+            {allDisplayColors.slice(0, 6).map((color, i) => (
               <div key={i} className="re-palette-dot" style={{ background: color.hex }} />
             ))}
           </div>
@@ -371,23 +416,23 @@ export default function Report({
           <div>
             <div className="re-label re-label-light">Tu estación</div>
             <div className="re-season-name">{seasonName.split(' ')[0]}<br />{seasonName.split(' ').slice(1).join(' ')}</div>
-            <div className="re-season-type">{data.season?.subtitle || fallbackData.season.subtitle}</div>
+            <div className="re-season-type">{isNormalized ? normalizedData.seasonSubtitle : ((data as any).season?.subtitle || fallbackData.season.subtitle)}</div>
           </div>
           <div className="re-palette-big">
             <div className="re-palette-row">
-              <div className="re-palette-swatch" style={{ background: protagonistColors[0] }} />
-              <div className="re-palette-swatch" style={{ background: protagonistColors[1] || '#6E2C00' }} />
-              <div className="re-palette-swatch" style={{ background: accentColors[0] || '#E07B39' }} />
+              <div className="re-palette-swatch" style={{ background: allDisplayColors[0]?.hex || '#FF6F61' }} />
+              <div className="re-palette-swatch" style={{ background: allDisplayColors[1]?.hex || '#D2691E' }} />
+              <div className="re-palette-swatch" style={{ background: allDisplayColors[2]?.hex || '#DAA520' }} />
             </div>
             <div className="re-palette-row">
-              <div className="re-palette-swatch" style={{ background: secondaryColors[0] || '#2F4F1E' }} />
-              <div className="re-palette-swatch" style={{ background: secondaryColors[1] || '#A0522D' }} />
-              <div className="re-palette-swatch" style={{ background: accentColors[1] || '#8B4513' }} />
+              <div className="re-palette-swatch" style={{ background: allDisplayColors[3]?.hex || '#CD853F' }} />
+              <div className="re-palette-swatch" style={{ background: allDisplayColors[4]?.hex || '#8B4513' }} />
+              <div className="re-palette-swatch" style={{ background: allDisplayColors[5]?.hex || '#556B2F' }} />
             </div>
           </div>
           <div>
             <div className="re-season-desc">
-              Los colores del {seasonName} son ricos, cálidos y con saturación media-alta. Los colores tierra quemado, los ocres profundos y los verdes musgo son tus aliados. El dorado, el cobre y el bronce complementan perfectamente tu paleta.
+              {isNormalized ? normalizedData.seasonDescription : `Los colores del ${seasonName} son ricos y cálidos con saturación media-alta. Los tonos tierra y los ocres profundos son tus aliados.`}
             </div>
           </div>
           <div className="re-number-bg">02</div>
@@ -397,31 +442,27 @@ export default function Report({
             <div className="re-label" style={{ marginBottom: '8px' }}>Tu análisis de color</div>
             <h2 className="re-section-title">¿Por qué estos<br />colores son los tuyos?</h2>
             <div className="re-section-sub">
-              Tu piel tiene subtono {data.season?.undertone || fallbackData.season.undertone} con profundidad {data.season?.depth || fallbackData.season.depth}. Esta combinación es clásica del {seasonName} — los colores tierra y los tonos quemados son los que naturalmente iluminan tu rostro.
+              Tu piel tiene subtono {undertone} con profundidad {depth}. Esta combinación es clásica del {seasonName}.
             </div>
           </div>
           <div className="re-characteristics">
             <div className="re-char-item">
               <div className="re-char-title">Subtono</div>
-              <div className="re-char-desc">{data.season?.undertone || fallbackData.season.undertone} (golden undertone). Los colores con base amarilla u ocre resuenan con tu piel.</div>
+              <div className="re-char-desc">{undertone}. Los colores {temperature === 'Cálido' ? 'con base amarilla u ocre resuenan con tu piel' : 'con base rosa o azul complementan tu paleta'}.</div>
             </div>
             <div className="re-char-item">
               <div className="re-char-title">Profundidad</div>
-              <div className="re-char-desc">{data.season?.depth || fallbackData.season.depth}. Tus colores tienen presencia y saturación moderada — ni pastel ni neón.</div>
+              <div className="re-char-desc">{depth}. Tus colores tienen presencia {depth === 'Alta' || depth === 'alta' || depth === 'deep' ? 'marcada' : depth === 'Baja' || depth === 'baja' || depth === 'light' ? 'suave' : 'moderada'}.</div>
             </div>
             <div className="re-char-item">
               <div className="re-char-title">Contraste</div>
-              <div className="re-char-desc">{data.season?.contrast || fallbackData.season.contrast}. El cabello oscuro y los ojos claros crean contraste natural que favorece colores saturados.</div>
-            </div>
-            <div className="re-char-item">
-              <div className="re-char-title">Temperatura</div>
-              <div className="re-char-desc">{data.season?.temperature || fallbackData.season.temperature}. Los subtonos fríos (azules, rosados) apagarán tu rostro.</div>
+              <div className="re-char-desc">Contraste {contrast}. {contrast === 'Alto' || contrast === 'alto' || contrast === 'high' ? 'Los colores saturados favorecen tu look.' : 'Los colores pastel funcionan bien con tu paleta.'}</div>
             </div>
           </div>
           <div>
             <div className="re-label-gold" style={{ marginBottom: '12px' }}>Tus 6 colores temporada</div>
             <div className="re-hex-grid">
-              {allColors.slice(0, 6).map((color, i) => (
+              {allDisplayColors.slice(0, 6).map((color, i) => (
                 <div key={i} className="re-hex-chip">
                   <div className="re-hex-dot" style={{ background: color.hex }} />
                   <div className="re-hex-code">{color.hex}</div>
@@ -442,13 +483,13 @@ export default function Report({
         <div>
           <div className="re-section-label">Colores protagonistas</div>
           <div className="re-colors-grid">
-            {allColors.map((color, i) => (
+            {allPersonalColors.map((color, i) => (
               <div key={i} className="re-color-item">
                 <div className="re-color-swatch" style={{ background: color.hex }}>
                   <div className="re-color-tag">{color.tag}</div>
                 </div>
                 <div className="re-color-info">
-                  <div className="re-color-name">{getColorName(color.hex)}</div>
+                  <div className="re-color-name">{color.name}</div>
                   <div className="re-color-hex">{color.hex}</div>
                 </div>
               </div>
@@ -458,11 +499,11 @@ export default function Report({
         <div className="re-avoid-section">
           <div>
             <div className="re-avoid-title">Colores que debes evitar</div>
-            <div className="re-avoid-desc">Los subtonos fríos apagarán tu rostro. Estos colores crean palidez o sombra grisácea que no favorece tu tonalidad.</div>
+            <div className="re-avoid-desc">Los colores opposites a tu paleta pueden apagar tu rostro. Se recomienda priorizar versiones más cálidas o frías según tu subtono.</div>
           </div>
           <div className="re-avoid-colors">
-            {avoidColors.map((color, i) => (
-              <div key={i} className="re-avoid-dot" style={{ background: color }} />
+            {avoidDisplayColors.map((color, i) => (
+              <div key={i} className="re-avoid-dot" style={{ background: color.hex }} title={color.name} />
             ))}
           </div>
         </div>
@@ -528,22 +569,13 @@ export default function Report({
             <div className="re-hair-colors">
               {hairColors.map((hair, i) => (
                 <div key={i} className="re-hair-item">
-                  <div className="re-hair-swatch" style={{ background: hair.color || hair.hex }} />
+                  <div className="re-hair-swatch" style={{ background: hair.color || hair.hex || '#000000' }} />
                   <div>
                     <div className="re-hair-name">{hair.name}</div>
                     <div className="re-hair-desc">{hair.desc}</div>
                   </div>
                 </div>
               ))}
-            </div>
-            <div style={{ marginTop: '24px' }}>
-              <div className="re-label" style={{ marginBottom: '12px' }}>Evitar</div>
-              <div style={{ display: 'flex', gap: '12px' }}>
-                <div className="re-hair-swatch" style={{ background: '#2a1a10', opacity: 0.5 }} />
-                <div className="re-hair-swatch" style={{ background: '#c8c8d8', opacity: 0.5 }} />
-                <div className="re-hair-swatch" style={{ background: '#e8c8c8', opacity: 0.5 }} />
-              </div>
-              <div className="re-hair-desc" style={{ marginTop: '8px' }}>Negro azabache, rubio cenizo, rosa o lila — apagan tu complexion.</div>
             </div>
           </div>
           <div className="re-hair-section">
@@ -557,12 +589,12 @@ export default function Report({
               ))}
             </div>
             <div style={{ marginTop: '24px' }}>
-              <div className="re-face-title">Tu forma de rostro: {data.faceShape || fallbackData.faceShape}</div>
+              <div className="re-face-title">Tu forma de rostro: {isNormalized && normalizedData.faceShape ? normalizedData.faceShape : (data as any).faceShape || fallbackData.faceShape}</div>
               <div className="re-face-shape">
                 <div className="re-face-icon">◯</div>
                 <div>
-                  <div className="re-face-name">Rostro {data.faceShape || fallbackData.faceShape}</div>
-                  <div className="re-face-desc">La forma más simétrica. Casi todos los cortes y peinados te favorecen. Elige según la textura de tu pelo y tu estilo de vida.</div>
+                  <div className="re-face-name">Rostro ovalado</div>
+                  <div className="re-face-desc">La forma más simétrica. Casi todos los cortes y peinados te favorecen.</div>
                 </div>
               </div>
             </div>
@@ -577,10 +609,10 @@ export default function Report({
           <h2 className="re-outfits-title">Looks para<br /><em>cada momento</em></h2>
         </div>
         <div className="re-outfits-grid">
-          {outfits.map((outfit, i) => (
+          {outfits.slice(0, 4).map((outfit, i) => (
             <div key={i} className="re-outfit-card">
               <div className={`re-outfit-header ${i % 2 === 0 ? 're-outfit-green' : 're-outfit-gold'}`}>
-                <div className="re-outfit-icon">{outfit.icon}</div>
+                <div className="re-outfit-icon">{outfit.icon || '✦'}</div>
                 <div className="re-outfit-name">{outfit.occasion}</div>
               </div>
               <div className="re-outfit-body">
@@ -588,7 +620,7 @@ export default function Report({
                 <div className="re-outfit-pieces">{outfit.pieces}</div>
                 <div className="re-outfit-color-row">
                   {(outfit.colors || []).map((color, j) => (
-                    <div key={j} className="re-outfit-color-dot" style={{ background: color }} />
+                    <div key={j} className="re-outfit-color-dot" style={{ background: typeof color === 'string' ? color : color.hex }} />
                   ))}
                 </div>
               </div>
@@ -619,7 +651,7 @@ export default function Report({
             </div>
             <div className="re-summary-item">
               <div className="re-summary-check">✓</div>
-              <div className="re-summary-text">Tonos de cabello + cortes recomendados + forma de rostro</div>
+              <div className="re-summary-text">Tonos de cabello + cortes recomendados</div>
             </div>
             <div className="re-summary-item">
               <div className="re-summary-check">✓</div>
@@ -736,12 +768,6 @@ export default function Report({
             </>
           )}
         </button>
-        <style>{`
-          @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-          }
-        `}</style>
         <button
           onClick={onShare}
           style={{
@@ -791,6 +817,12 @@ export default function Report({
           Nuevo Análisis
         </button>
       </div>
+      <style>{`
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 }

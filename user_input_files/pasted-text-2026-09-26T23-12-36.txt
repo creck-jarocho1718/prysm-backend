@@ -1,0 +1,901 @@
+QUIERO QUE HAGAS UNA CORRECCIÓN COMPLETA DEL MOTOR DE RESULTADOS Y DEL REPORTE DE PRYSM.
+
+IMPORTANTE:
+NO rehagas la aplicación desde cero.
+NO cambies el diseño general.
+NO elimines funcionalidades que ya funcionan.
+NO inventes datos.
+NO cambies arbitrariamente el resultado del test.
+Primero inspecciona el código actual, identifica dónde se generan, transforman y renderizan los resultados y después realiza los cambios.
+
+FLUJO ACTUAL:
+
+Landing
+→ Quiz de 12 preguntas
+→ Upload de 3 fotos
+→ Analyzing
+→ Backend/GPT
+→ ResultPreview
+→ Report
+→ PDF
+
+El problema actual NO es solamente normalizeColor().
+normalizeColor() ya fue añadido para aceptar tanto strings como objetos:
+
+{
+  hex,
+  nombre,
+  explicacion
+}
+
+El nuevo objetivo es corregir la lógica completa de resultados, validación, paletas y reporte.
+
+==================================================
+1. CREAR UNA ÚNICA FUENTE DE VERDAD PARA EL RESULTADO
+==================================================
+
+El resultado del análisis debe tener una estructura única y consistente.
+
+Crear o adaptar un objeto equivalente a:
+
+analysisResult = {
+  season,
+  subtype,
+  undertone,
+  depth,
+  contrast,
+
+  seasonalColors,
+  personalColors,
+  avoidColors,
+
+  bodyShape,
+  bodyShapeSource,
+
+  faceShape,
+
+  hair: {
+    recommendedColors,
+    avoidColors,
+    cuts
+  },
+
+  outfits,
+
+  jewelry,
+
+  bags,
+
+  accessories,
+
+  score
+}
+
+Report.tsx, ResultPreview y PDF deben consumir ESTE MISMO objeto.
+
+NO permitir que cada pantalla vuelva a interpretar el resultado de GPT de forma diferente.
+
+OBJETIVO:
+
+TEST
+→ ANALYSIS RESULT
+→ VALIDATION
+→ NORMALIZATION
+→ RESULT PREVIEW
+→ PDF
+
+==================================================
+2. CORREGIR "VERANO NINGUNA"
+==================================================
+
+Actualmente aparece:
+
+VERANO NINGUNA
+
+Esto es incorrecto.
+
+La estación y la subestación deben ser valores controlados.
+
+Nunca permitir:
+
+subtype = "ninguna"
+subtype = "none"
+subtype = ""
+subtype = null
+
+sin una lógica de fallback válida.
+
+Si el análisis solamente determina:
+
+season = "Verano"
+
+y no puede determinar una subestación, mostrar simplemente:
+
+"Verano"
+
+NO mostrar:
+
+"Verano ninguna"
+
+IMPORTANTE:
+
+NO inventar una subestación.
+
+Si existe una clasificación de subestaciones en el sistema, utiliza únicamente valores válidos de esa clasificación.
+
+==================================================
+3. CREAR ENUM/CONFIGURACIÓN DE ESTACIONES
+==================================================
+
+Crear una configuración centralizada para las estaciones.
+
+Ejemplo:
+
+SPRING
+- warm
+- light
+- bright
+
+SUMMER
+- cool
+- light
+- soft
+
+AUTUMN
+- warm
+- soft
+- deep
+
+WINTER
+- cool
+- bright
+- deep
+
+Adaptar esto a la taxonomía real que ya utiliza PRYSM si es diferente.
+
+NO mezclar nombres arbitrarios.
+
+La interfaz debe utilizar nombres traducidos correctamente:
+
+Primavera Cálida
+Primavera Clara
+Primavera Brillante
+
+Verano Frío
+Verano Claro
+Verano Suave
+
+etc.
+
+==================================================
+4. NO PERMITIR DESCRIPCIONES CONTRADICTORIAS
+==================================================
+
+Actualmente el resultado puede decir:
+
+VERANO
+SUBTONO COOL
+
+pero después explicar:
+
+"Los colores con base amarilla u ocre resuenan con tu piel."
+
+Eso debe desaparecer.
+
+La descripción debe generarse a partir de:
+
+season
+subtype
+undertone
+depth
+contrast
+
+y debe ser coherente con ellos.
+
+NO utilizar textos hardcodeados que pertenecen a otra estación.
+
+Crear una función equivalente a:
+
+getSeasonDescription(analysisResult)
+
+La descripción debe corresponder a la clasificación real.
+
+==================================================
+5. CREAR CATÁLOGO CONTROLADO DE COLORES
+==================================================
+
+ESTE CAMBIO ES MUY IMPORTANTE.
+
+NO permitir que GPT invente libremente el nombre de un color a partir del HEX.
+
+Crear un catálogo interno de colores.
+
+Ejemplo:
+
+{
+  hex: "#FF6F61",
+  name: "Coral",
+  temperature: "warm",
+  family: "coral",
+  seasonCompatibility: [...]
+}
+
+Otro ejemplo:
+
+{
+  hex: "#FFB6C1",
+  name: "Rosa claro",
+  temperature: "cool-neutral",
+  family: "pink",
+  seasonCompatibility: [...]
+}
+
+El HEX debe ser la fuente principal de identificación.
+
+Si GPT devuelve:
+
+{
+  hex: "#FFB6C1",
+  nombre: "Verde oliva"
+}
+
+el sistema NO debe aceptar el nombre de GPT.
+
+Debe buscar el HEX en el catálogo y utilizar el nombre correcto.
+
+REGLA:
+
+HEX → CATÁLOGO → NOMBRE OFICIAL
+
+NO:
+
+GPT → HEX + nombre libre
+
+==================================================
+6. VALIDAR LOS HEX
+==================================================
+
+Crear una función:
+
+validateColor(color)
+
+Debe comprobar:
+
+- HEX válido
+- nombre correcto
+- temperatura
+- familia
+- compatibilidad
+
+Si el HEX no existe en el catálogo:
+
+1. intentar normalizarlo correctamente
+2. si no es posible, generar un color válido según la paleta correspondiente
+3. NO inventar un nombre incompatible
+
+Nunca permitir casos como:
+
+#FFB6C1 = Verde oliva
+
+o:
+
+#32CD32 = Verde musgo
+
+==================================================
+7. CORREGIR LOS 6 COLORES DE TEMPORADA
+==================================================
+
+El reporte dice:
+
+"TUS 6 COLORES TEMPORADA"
+
+pero actualmente pueden aparecer solamente 5.
+
+La aplicación debe garantizar:
+
+seasonalColors.length === 6
+
+ANTES de renderizar.
+
+Si hay menos de 6:
+
+NO mostrar el título "6 colores".
+
+Primero completar la lista correctamente desde el catálogo compatible con la estación.
+
+Si hay más de 6:
+
+seleccionar exactamente 6.
+
+El usuario debe ver siempre exactamente:
+
+6 colores de temporada.
+
+Cada uno debe mostrar:
+
+- muestra de color
+- nombre
+- HEX
+- categoría
+- explicación breve
+
+==================================================
+8. CORREGIR LOS 8 COLORES PERSONALIZADOS
+==================================================
+
+El reporte dice:
+
+"Tus 8 colores que te favorecen"
+
+pero actualmente solo muestra 5.
+
+Debe garantizar:
+
+personalColors.length === 8
+
+Mostrar exactamente 8.
+
+Cada color debe contener:
+
+- muestra visual
+- nombre
+- HEX
+- categoría
+
+Ejemplo de categorías:
+
+BEST
+TOP
+FAVORITO
+ACENTO
+NEUTRO
+
+Pero si hay 8 colores, NO limitar el renderizado a 5.
+
+Crear categorías apropiadas para los 8 colores.
+
+==================================================
+9. COLORES QUE DEBES EVITAR
+==================================================
+
+Actualmente solamente aparece texto.
+
+Debe convertirse en una sección visual.
+
+Mostrar por cada color:
+
+[ MUESTRA ] Nombre
+HEX
+¿Por qué es menos compatible?
+
+Ejemplo:
+
+[cuadro de color]
+Azul muy frío
+#XXXXXX
+Menor armonía con una paleta cálida.
+
+NO decir:
+
+"Todos los azules son malos."
+
+Las recomendaciones deben ser específicas.
+
+==================================================
+10. NO UTILIZAR REGLAS ABSOLUTAS
+==================================================
+
+Evitar frases como:
+
+"Todos los rosas te quedan mal."
+"Todos los azules te apagan."
+"Debes evitar completamente..."
+
+Utilizar:
+
+"Los tonos muy fríos pueden generar menor armonía..."
+"Se recomienda priorizar versiones cálidas..."
+"Estos tonos suelen ser menos compatibles con esta paleta..."
+
+==================================================
+11. CABELLO PERSONALIZADO
+==================================================
+
+Actualmente los tonos de cabello parecen demasiado genéricos.
+
+Crear:
+
+hair.recommendedColors
+
+hair.avoidColors
+
+Cada recomendación debe depender de:
+
+- season
+- subtype
+- undertone
+- depth
+- contrast
+
+NO utilizar un bloque fijo para todos los usuarios.
+
+Además, separar:
+
+TONOS DE CABELLO RECOMENDADOS
+
+y
+
+TONOS DE CABELLO MENOS COMPATIBLES
+
+Cada tono debe tener:
+
+- nombre
+- muestra de color
+- HEX cuando sea posible
+- explicación
+
+==================================================
+12. CORTES DE CABELLO
+==================================================
+
+Actualmente solamente aparecen nombres:
+
+- Largo recto
+- Bob clásico
+- Ondas suaves
+- Lob
+
+Quiero que el reporte también tenga una referencia visual.
+
+Crear una sección:
+
+"Cortes que pueden favorecerte"
+
+Cada corte debe mostrar:
+
+- imagen/referencia visual
+- nombre
+- explicación
+- por qué puede favorecer
+- opcionalmente nivel de mantenimiento
+
+Ejemplo:
+
+Lob
+[imagen]
+
+"Favorece porque..."
+
+IMPORTANTE:
+
+Las imágenes deben representar realmente el tipo de corte.
+
+NO usar imágenes aleatorias que no correspondan.
+
+Si el sistema no tiene acceso a imágenes externas, preparar la estructura de datos para que pueda recibir una URL/asset de referencia.
+
+Ejemplo:
+
+{
+  name: "Lob",
+  image: "...",
+  description: "...",
+  suitabilityReason: "..."
+}
+
+==================================================
+13. FORMA DEL ROSTRO
+==================================================
+
+Si:
+
+faceShape = "Ovalada"
+
+mostrar:
+
+"Rostro ovalado"
+
+NO:
+
+"Rostro Ovalada"
+
+Corregir automáticamente género y gramática.
+
+No inventar faceShape.
+
+Si no existe análisis facial real:
+
+no presentar una forma de rostro como un hecho.
+
+==================================================
+14. SILUETA
+==================================================
+
+Separar:
+
+bodyShape
+bodyShapeSource
+
+Si viene de la pregunta del usuario:
+
+bodyShapeSource = "user_selected"
+
+Si viene de análisis fotográfico:
+
+bodyShapeSource = "image_analysis"
+
+NO afirmar que fue detectado por IA si realmente fue seleccionado por el usuario.
+
+==================================================
+15. OUTFITS
+==================================================
+
+Actualmente el reporte dice:
+
+"4 ocasiones"
+
+pero solamente aparecen 3.
+
+Esto debe corregirse.
+
+Debe haber exactamente:
+
+4 outfits/ocasiones
+
+Cada outfit debe contener:
+
+- ocasión
+- estilo
+- top
+- bottom
+- tercera pieza
+- zapatos
+- accesorios
+- explicación
+
+Además debe utilizar:
+
+- presupuesto
+- closet
+- estilo
+- ocasiones seleccionadas
+- estación
+- morfología
+
+No repetir "Día a día" dos veces salvo que realmente sean dos looks diferentes y estén claramente diferenciados.
+
+==================================================
+16. PRESUPUESTO
+==================================================
+
+Si el usuario seleccionó presupuesto:
+
+utilizarlo para las recomendaciones.
+
+NO decir:
+
+"Adaptado a tu presupuesto"
+
+si realmente no se utilizó el dato.
+
+Si existe:
+
+budget = "$1K-$3K"
+
+el sistema debe procurar que las recomendaciones respeten ese nivel.
+
+==================================================
+17. IDIOMA
+==================================================
+
+Si el idioma seleccionado es español:
+
+TODO debe estar en español.
+
+Corregir términos como:
+
+evenings
+skirt
+cool
+warm
+medium
+complexion
+
+cuando no sea necesario mostrar el término inglés.
+
+Ejemplo:
+
+Subtono: Cálido (Warm)
+
+Esto sí puede mantenerse como referencia técnica.
+
+==================================================
+18. VALIDACIÓN ANTES DEL PDF
+==================================================
+
+ANTES de generar el PDF ejecutar:
+
+validateReport(analysisResult)
+
+Debe comprobar:
+
+✓ estación válida
+✓ subestación válida o ausente
+✓ subtono válido
+✓ profundidad válida
+✓ contraste válido
+✓ exactamente 6 colores de temporada
+✓ exactamente 8 colores personalizados
+✓ colores a evitar con muestras
+✓ HEX válidos
+✓ nombres de colores correctos
+✓ nombres y HEX coinciden
+✓ cabello personalizado
+✓ cortes disponibles
+✓ referencias visuales de cortes si están disponibles
+✓ forma de rostro válida
+✓ silueta válida
+✓ exactamente 4 outfits
+✓ presupuesto utilizado correctamente
+✓ idioma consistente
+✓ no existen textos contradictorios
+
+Si falla:
+
+NO generar el PDF.
+
+Mostrar un error interno de validación para desarrollo.
+
+==================================================
+19. TEST MODE
+==================================================
+
+IMPORTANTE:
+
+TEST MODE puede simular datos, pero debe simularlos con la MISMA estructura que utilizará producción.
+
+NO crear un resultado falso con campos diferentes.
+
+El flujo debe ser:
+
+TEST MODE
+→ mockAnalysisResult
+→ validation
+→ normalization
+→ Report
+→ PDF
+
+PRODUCTION
+→ GPT/backend
+→ analysisResult
+→ validation
+→ normalization
+→ Report
+→ PDF
+
+Ambos deben utilizar exactamente la misma interfaz de datos.
+
+==================================================
+20. RESPETAR LAS 12 PREGUNTAS
+==================================================
+
+No eliminar ninguna pregunta.
+
+Utilizar correctamente:
+
+1 feeling
+2 skin-tone
+3 silhouette
+4 budget
+5 colors-closet
+6 closet
+7 metal
+8 style
+9 occasions
+10 archetype
+11 photos
+12 name-email
+
+Separar claramente:
+
+DATOS PARA ANÁLISIS
+vs
+PREFERENCIAS DEL USUARIO
+
+Por ejemplo:
+
+Análisis:
+- fotos
+- características visuales
+
+Preferencias:
+- estilo
+- presupuesto
+- closet
+- ocasiones
+- metal
+- feeling
+- archetype
+
+No presentar una preferencia como si fuera un diagnóstico.
+
+==================================================
+21. CORREGIR LA SECCIÓN DE JOYERÍA
+==================================================
+
+La joyería debe utilizar:
+
+undertone
+season
+metal preference
+
+Si el usuario seleccionó dorado pero el análisis indica una paleta fría, no borrar la preferencia.
+
+Mostrar:
+
+"Tu preferencia: dorado"
+
+y
+
+"Para mayor armonía con tu paleta: plata/acero"
+
+De esta manera se distingue análisis de preferencia personal.
+
+==================================================
+22. NO CAMBIAR LA CLASIFICACIÓN SOLO PARA QUE EL REPORTE SE VEA BONITO
+==================================================
+
+Esto es CRÍTICO.
+
+No cambiar:
+
+Verano → Primavera
+Primavera → Otoño
+etc.
+
+solamente para que los colores generados parezcan mejores.
+
+Primero validar el análisis.
+
+Después generar la paleta correspondiente.
+
+==================================================
+23. ELIMINAR HARD-CODED FALLBACKS INCORRECTOS
+
+Buscar en TODO el proyecto:
+
+- "Primavera"
+- "Verano"
+- "Otoño"
+- "Invierno"
+- "ninguna"
+- "#FF6F61"
+- "#FFD700"
+- "#FFB6C1"
+- "#32CD32"
+- "#FF4500"
+
+y cualquier fallback similar.
+
+Identificar si alguno está siendo utilizado como valor predeterminado incorrectamente.
+
+No eliminar valores legítimos del catálogo.
+
+Pero impedir que un fallback sustituya silenciosamente el resultado real del análisis.
+
+==================================================
+24. LOGS DE DEBUG
+
+Durante desarrollo agregar logs claros:
+
+[PRYSM ANALYSIS]
+season:
+subtype:
+undertone:
+depth:
+contrast:
+
+[PRYSM COLORS]
+seasonalColors:
+personalColors:
+avoidColors:
+
+[PRYSM HAIR]
+recommended:
+avoid:
+cuts:
+
+[PRYSM OUTFITS]
+count:
+
+[PRYSM VALIDATION]
+status:
+errors:
+
+Esto permitirá encontrar rápidamente dónde se está dañando la información.
+
+==================================================
+25. CRITERIO FINAL DE ACEPTACIÓN
+
+NO consideres el trabajo terminado hasta que un resultado de prueba pueda mostrar correctamente:
+
+ESTACIÓN
+"Verano"
+o
+"Verano Suave"
+etc.
+
+6 COLORES DE TEMPORADA
+→ exactamente 6
+
+8 COLORES QUE TE FAVORECEN
+→ exactamente 8
+
+COLORES A EVITAR
+→ muestras visuales + nombre + HEX + explicación
+
+CABELLO
+→ colores recomendados + muestras + explicación
+
+CORTES
+→ nombres + muestras/referencias visuales + explicación
+
+SILUETA
+→ resultado + fuente del dato
+
+ROSTRO
+→ resultado real, sin inventar
+
+OUTFITS
+→ exactamente 4
+
+PRESUPUESTO
+→ utilizado realmente
+
+PDF
+→ exactamente los mismos datos que ResultPreview
+
+==================================================
+26. MUY IMPORTANTE: NO HACER UN SIMPLE PARCHE VISUAL
+
+No quiero que simplemente cambies textos como:
+
+"6 colores" → "5 colores"
+
+o:
+
+"8 colores" → "5 colores"
+
+Eso ocultaría el problema.
+
+Quiero que corrijas la fuente de datos para que realmente existan:
+
+6 colores de temporada
+8 colores personalizados
+4 outfits
+
+y que posteriormente el frontend los renderice correctamente.
+
+Tampoco quiero que dupliques colores para llenar espacios.
+
+Los colores deben ser distintos y válidos para la clasificación correspondiente.
+
+==================================================
+
+AL TERMINAR:
+
+1. Inspecciona los archivos involucrados.
+2. Identifica exactamente dónde se genera el resultado.
+3. Identifica dónde se transforma el resultado.
+4. Identifica dónde se renderiza.
+5. Implementa las correcciones.
+6. Ejecuta/realiza una prueba del flujo TEST MODE.
+7. Comprueba que ResultPreview y PDF reciben exactamente el mismo analysisResult.
+8. Reporta los archivos modificados.
+9. Reporta los errores encontrados.
+10. Reporta qué validaciones nuevas se añadieron.
+
+NO inventes que una prueba pasó si no la ejecutaste.
+
+NO me digas simplemente "listo".
+Quiero un resumen técnico de qué cambiaste y qué quedó validado.
