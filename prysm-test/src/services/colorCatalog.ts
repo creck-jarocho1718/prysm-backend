@@ -3,6 +3,8 @@
  * HEX es la clave principal, nombres son oficiales del catálogo
  */
 
+import { SEASON_CONFIG } from './seasonConfig';
+
 export type ColorTemperature = 'warm' | 'cool' | 'neutral' | 'warm-neutral' | 'cool-neutral';
 export type ColorFamily =
   | 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'pink' | 'brown'
@@ -126,7 +128,6 @@ export const COLOR_CATALOG: Record<string, CatalogColor> = {
 
   // ROSAS
   'FF69B4': { hex: 'FF69B4', name: 'Hot Pink', nameEs: 'Rosa Brillante', temperature: 'warm-neutral', family: 'pink', seasonCompatibility: ['bright_spring', 'bright_summer', 'bright_winter'], description: 'Rosa vibrante y moderno' },
-  'FF1493': { hex: 'FF1493', name: 'Deep Pink', nameEs: 'Rosa Intenso', temperature: 'warm-neutral', family: 'pink', seasonCompatibility: ['bright_spring', 'bright_winter', 'bright_summer'], description: 'Rosa profundo e intenso' },
   'FFB6C1': { hex: 'FFB6C1', name: 'Light Pink', nameEs: 'Rosa Claro', temperature: 'warm-neutral', family: 'pink', seasonCompatibility: ['bright_spring', 'light_spring', 'soft_spring', 'light_summer'], description: 'Rosa pastel muy delicado' },
   'FFC0CB': { hex: 'FFC0CB', name: 'Pink', nameEs: 'Rosa', temperature: 'warm-neutral', family: 'pink', seasonCompatibility: ['bright_spring', 'soft_spring', 'light_spring', 'light_summer'], description: 'Rosa clásico y suave' },
   'F8BBD9': { hex: 'F8BBD9', name: 'Pink', nameEs: 'Rosa Suave', temperature: 'warm-neutral', family: 'pink', seasonCompatibility: ['light_spring', 'soft_spring', 'light_summer'], description: 'Rosa pastel muy suave' },
@@ -177,7 +178,6 @@ export const COLOR_CATALOG: Record<string, CatalogColor> = {
   '636363': { hex: '636363', name: 'Gray', nameEs: 'Gris Medio', temperature: 'neutral', family: 'gray', seasonCompatibility: ['soft_summer', 'soft_winter', 'cool_summer'], description: 'Gris medio' },
   '36454F': { hex: '36454F', name: 'Charcoal', nameEs: 'Carbón', temperature: 'cool', family: 'gray', seasonCompatibility: ['deep_winter', 'cool_winter', 'soft_winter'], description: 'Gris carbón oscuro' },
   '333333': { hex: '333333', name: 'Dark Charcoal', nameEs: 'Gris Carbón', temperature: 'cool', family: 'gray', seasonCompatibility: ['deep_winter', 'cool_winter', 'soft_winter'], description: 'Gris carbón medio' },
-  '2F4F4F': { hex: '2F4F4F', name: 'Dark Slate Gray', nameEs: 'Verde Azulado', temperature: 'cool', family: 'gray', seasonCompatibility: ['deep_winter', 'cool_winter', 'soft_winter'], description: 'Gris verdoso oscuro' },
 
   // BLANCOS Y NEGROS
   'FFFFFF': { hex: 'FFFFFF', name: 'White', nameEs: 'Blanco', temperature: 'neutral', family: 'white', seasonCompatibility: ['light_spring', 'light_summer', 'bright_spring', 'bright_summer'], description: 'Blanco puro' },

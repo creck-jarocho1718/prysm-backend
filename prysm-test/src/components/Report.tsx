@@ -241,12 +241,17 @@ export default function Report({
   };
 
   const data = getReportData();
-  const seasonName = data.seasonName || fallbackData.season.name;
-  const score = data.score || fallbackData.prysmScore;
 
   // Usar directamente los datos normalizados
   const isNormalized = 'season' in data && 'seasonalColors' in data;
   const normalizedData = data as ValidatedAnalysisResult;
+
+  const seasonName = isNormalized
+    ? normalizedData.seasonName
+    : fallbackData.season.name;
+  const score = isNormalized
+    ? normalizedData.score
+    : fallbackData.prysmScore;
 
   // Helper para normalizar color
   const normalizeColorDisplay = (c: ValidatedColor | string) => {
@@ -259,19 +264,15 @@ export default function Report({
   // Colores para el reporte
   const seasonalColors = isNormalized
     ? normalizedData.seasonalColors
-    : (data as any).palette?.protagonist?.slice(0, 6) || fallbackData.palette.protagonist;
+    : [];
 
   const personalColors = isNormalized
     ? normalizedData.personalColors
-    : [
-        ...(data as any).palette?.protagonist || [],
-        ...(data as any).palette?.secondary || [],
-        ...(data as any).palette?.accent || [],
-      ].slice(0, 8);
+    : [];
 
   const avoidColors = isNormalized
     ? normalizedData.avoidColors
-    : (data as any).palette?.avoid || fallbackData.palette.avoid;
+    : [];
 
   // Preparar colores para display
   const allDisplayColors = [
