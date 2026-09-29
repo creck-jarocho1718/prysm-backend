@@ -550,28 +550,44 @@ ${TEST_MODE ? '<div class="test-banner">ANÁLISIS CLIENT-SIDE DE PRUEBA · Los d
   <div class="season-left">
     <div class="label">Tu estación</div>
     <div class="season-name serif">${colorimetry.season.name.split(' ')[0]}<br>${colorimetry.season.name.split(' ').slice(1).join(' ')}</div>
-    <div class="season-type">${colorimetry.season.subtitle}</div>
+    <div class="season-type">${
+  (() => {
+    const subtitle = colorimetry.season.subtitle || '';
+    // Remove duplicate words (e.g., "Verano Verano Profundo" -> "Verano Profundo")
+    if (!subtitle || subtitle === 'N/A' || subtitle === 'n/a' || subtitle.toLowerCase() === 'n/a') {
+      return ''; // Hide if N/A or empty
+    }
+    const words = subtitle.split(' ');
+    const uniqueWords = [];
+    for (const word of words) {
+      if (uniqueWords[uniqueWords.length - 1]?.toLowerCase() !== word.toLowerCase()) {
+        uniqueWords.push(word);
+      }
+    }
+    return uniqueWords.join(' ');
+  })()
+}</div>
     <div class="palette-big">
       ${colorimetry.palette.protagonist.slice(0, 3).map(c => `<div class="palette-swatch" style="background: ${c.hex}"></div>`).join('')}
       ${colorimetry.palette.secondary.slice(0, 3).map(c => `<div class="palette-swatch" style="background: ${c.hex}"></div>`).join('')}
     </div>
-    <p class="season-desc">Los colores del ${colorimetry.season.name} son ${colorimetry.season.temperature === 'warm' ? 'ricos, cálidos y con saturación media-alta. Los colores tierra quemado, los ocres profundos y los verdes musgo son tus aliados.' : 'fríos, claros y con saturación media. Los tonos azulados, rosados y lavanda complementan tu paleta.'}</p>
+    <p class="season-desc">Los colores del ${colorimetry.season.name} son ${colorimetry.season.temperature === 'warm' ? 'cálidos y con saturación media-alta. Los colores tierra quemado, los ocres profundos y los verdes musgo son tus aliados.' : 'fríos y con saturación media. Los tonos azulados, rosados y lavanda complementan tu paleta.'}</p>
   </div>
   <div class="season-right">
     <div class="label">Tu análisis de color</div>
     <h2 class="section-title serif">¿Por qué estos<br>colores son los tuyos?</h2>
-    <p class="section-sub">Tu piel tiene subtono ${colorimetry.season.temperature} con profundidad ${colorimetry.season.depth}. Esta combinación es clásica del ${colorimetry.season.name}.</p>
+    <p class="section-sub">Tu piel tiene subtono ${colorimetry.season.temperature === 'warm' ? 'cálido' : 'frío'} con profundidad ${colorimetry.season.depth === 'deep' ? 'alta' : colorimetry.season.depth === 'light' ? 'ligera' : 'media'}. Esta combinación es clásica del ${colorimetry.season.name}.</p>
     <div class="char-item">
       <div class="char-title">Subtono</div>
-      <div class="char-desc">${colorimetry.season.temperature === 'warm' ? 'Golden undertone. Los colores con base amarilla u ocre resuenan con tu piel.' : 'Cool undertone. Los colores con base azul o rosa complementan tu piel.'}</div>
+      <div class="char-desc">${colorimetry.season.temperature === 'warm' ? 'Cálido. Los colores con base amarilla u ocre resuenan con tu piel.' : 'Frío. Los colores con base azul o rosa complementan tu piel.'}</div>
     </div>
     <div class="char-item">
       <div class="char-title">Profundidad</div>
-      <div class="char-desc">${colorimetry.season.depth === 'deep' ? 'Profundidad alta. Tus colores tienen presencia máxima.' : colorimetry.season.depth === 'light' ? 'Profundidad clara. Tus colores son delicados y luminosos.' : 'Profundidad media. Un balance perfecto entre presencia y sutileza.'}</div>
+      <div class="char-desc">${colorimetry.season.depth === 'deep' ? 'Alta. Tus colores tienen presencia máxima.' : colorimetry.season.depth === 'light' ? 'Ligera. Tus colores son delicados y luminosos.' : 'Media. Un balance perfecto entre presencia y sutileza.'}</div>
     </div>
     <div class="char-item">
       <div class="char-title">Contraste</div>
-      <div class="char-desc">Contraste ${colorimetry.season.contrast}. El cabello y los ojos crean ${colorimetry.season.contrast === 'high' ? 'un contraste marcado que favorece colores saturados.' : 'un contraste suave que funciona bien con colores pastel.'}</div>
+      <div class="char-desc">${colorimetry.season.contrast === 'high' ? 'Alto. El cabello y los ojos crean un contraste marcado que favorece colores saturados.' : colorimetry.season.contrast === 'low' ? 'Bajo. Funciona bien con colores pastel.' : 'Medio. Un balance equilibrado.'}</div>
     </div>
     <div style="margin-top: 20px;">
       <div class="label-gold">Tus 6 colores temporada</div>
@@ -600,7 +616,7 @@ ${TEST_MODE ? '<div class="test-banner">ANÁLISIS CLIENT-SIDE DE PRUEBA · Los d
     ${allColors.map((color, i) => `
       <div class="color-item">
         <div class="color-swatch" style="background: ${color.hex}">
-          <div class="color-tag">${i === 0 ? 'Best' : i < 3 ? 'Top' : i < 5 ? 'Favorito' : 'Acento'}</div>
+          <div class="color-tag">${i === 0 ? 'Mejor' : i < 3 ? 'Destacado' : i < 5 ? 'Favorito' : 'Acento'}</div>
         </div>
         <div class="color-name">${color.nombre}</div>
         <div class="color-hex">${color.hex}</div>

@@ -87,10 +87,15 @@ export default function ResultPreview({
   // Use actual analysis data from backend (GPT), NOT fallback values
   // Backend returns: { success, data: { analisisColor, silueta, estilo, ... } }
   const gptData = analysis?.data;
-  const seasonName = hasRealData ? (gptData?.analisisColor?.estacion || 'Temporada personalizada') : 'Temporada personalizada';
-  // Unified score: Use analysis.prysmScore only, show loading dots while analyzing
-  const prysmScore = hasRealData ? (analysis?.analysis?.prysmScore?.toFixed(1) || '...') : '...';
-  const bodyTypeName = hasRealData ? (gptData?.silueta?.tipoCuerpo || 'Tu silueta') : 'Tu silueta';
+  // Show season from real data, or a default until real data arrives (no placeholder text)
+  const seasonName = gptData?.analisisColor?.estacion || (analysis?.success === false ? 'Temporada personalizada' : 'Temporada personalizada');
+  // Unified score: Use analysis.prysmScore only, NO placeholders - use default score in TEST_MODE
+  const prysmScore = hasRealData && analysis?.analysis?.prysmScore
+    ? analysis.analysis.prysmScore.toFixed(1)
+    : (TEST_MODE ? '8.5' : '...');
+
+  // Body type - format properly for display
+  const rawBodyType = hasRealData ? (gptData?.silueta?.tipoCuerpo || '') : '';
 
   // Transform GPT palette format to component format
   const gptPalette = gptData?.analisisColor?.paleta;
@@ -104,7 +109,7 @@ export default function ResultPreview({
 
   // Format silhouette display with proper spacing (e.g., "RELOJ-ARENA" -> "Reloj de Arena")
   const formatSilhouette = (sil: string): string => {
-    if (!sil) return 'Tu silueta';
+    if (!sil || sil === 'Tu silueta') return '';
     // Add spaces before capital letters and replace hyphens
     const formatted = sil
       .replace(/-/g, ' ')
@@ -115,7 +120,8 @@ export default function ResultPreview({
     return formatted.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
   };
 
-  const formattedBodyType = formatSilhouette(bodyTypeName);
+  const formattedBodyType = formatSilhouette(rawBodyType);
+  const displayBodyType = formattedBodyType || 'Tu silueta';
 
   // Debug log
   console.log('[ResultPreview] Extracted data:', {
@@ -123,7 +129,7 @@ export default function ResultPreview({
     success: analysis?.success,
     seasonName,
     prysmScore,
-    bodyTypeName,
+    displayBodyType,
     paletteKeys: palette ? Object.keys(palette) : [],
     protagonistCount: palette?.protagonist?.length || 0,
     protagonistColors: palette?.protagonist || []
@@ -313,7 +319,7 @@ export default function ResultPreview({
                       <div style={{ width: '30px', height: '36px', background: 'rgba(212,164,115,.15)', borderRadius: '3px 3px 0 0', border: '1px solid rgba(212,164,115,.2)' }} />
                       <div style={{ width: '20px', height: '30px', background: 'rgba(255,255,255,.06)', borderRadius: '3px 3px 0 0' }} />
                     </div>
-                    <div style={{ fontSize: '8px', letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.2)' }}>Silueta {bodyTypeName}</div>
+                    <div style={{ fontSize: '8px', letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.2)' }}>Silueta {displayBodyType}</div>
                   </div>
                   <div className="rp-color-strip-bottom">
                     <div className="rp-strip-segment" style={{ background: 'linear-gradient(90deg,#d4a473,#205E53)' }} />
@@ -324,7 +330,7 @@ export default function ResultPreview({
                   <div className="rp-color-title">Guía de estilo y silueta</div>
                   <div className="rp-color-desc">Qué siluetas, telas y proporciones realzan tu figura. Qué cortar, qué evitar y cómo dressing tu cuerpo.</div>
                   <div className="rp-color-hex-row">
-                    <div className="rp-color-hex-chip">Silueta: {formattedBodyType}</div>
+                    <div className="rp-color-hex-chip">Silueta: {displayBodyType}</div>
                     <div className="rp-color-hex-chip">Telas adaptadas</div>
                   </div>
                 </div>
@@ -349,7 +355,7 @@ export default function ResultPreview({
                   <div className="rp-color-title">Color y corte de cabello</div>
                   <div className="rp-color-desc">Tonos que iluminan tu rostro y el corte que mejor se adapta a tu forma de cara y textura de pelo.</div>
                   <div className="rp-color-hex-row">
-                    <div className="rp-color-hex-chip">Silueta: {formattedBodyType}</div>
+                    <div className="rp-color-hex-chip">Silueta: {displayBodyType}</div>
                     <div className="rp-color-hex-chip">{seasonName}</div>
                   </div>
                 </div>

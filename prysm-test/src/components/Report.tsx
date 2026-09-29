@@ -571,6 +571,10 @@ export default function Report({
             <div className="re-season-type">
               {(() => {
                 const subtitle = isNormalized ? normalizedData.seasonSubtitle : ((data as any).season?.subtitle || fallbackData.season.subtitle);
+                // Hide if N/A or empty
+                if (!subtitle || subtitle === 'N/A' || subtitle === 'n/a' || subtitle.toLowerCase() === 'n/a') {
+                  return null;
+                }
                 // Remove duplicate words (e.g., "Verano Verano Profundo" -> "Verano Profundo")
                 const words = subtitle.split(' ');
                 const uniqueWords: string[] = [];

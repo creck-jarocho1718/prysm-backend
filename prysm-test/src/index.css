@@ -4531,34 +4531,62 @@ body {
    DEFENSIVE STYLES - Platform Badge Protection
    ═══════════════════════════════════════════════════════════ */
 
+/* CRITICAL: Maximum z-index protection for buttons against platform badges */
+.card-screen,
+.card-screen * {
+  isolation: isolate;
+}
+
+.card-screen {
+  position: relative;
+  z-index: 1;
+}
+
 /* Defensive padding for continue button to prevent platform badge overlap */
 .card-screen .continue-row {
-  padding-bottom: max(120px, env(safe-area-inset-bottom, 120px)) !important;
+  padding-bottom: max(160px, env(safe-area-inset-bottom, 160px)) !important;
   margin-bottom: env(safe-area-inset-bottom, 0) !important;
+  position: relative;
+  z-index: 2147483647 !important;
 }
 
 @media (max-width: 640px) {
   .card-screen .continue-row {
-    padding-bottom: max(100px, env(safe-area-inset-bottom, 100px)) !important;
+    padding-bottom: max(180px, env(safe-area-inset-bottom, 180px)) !important;
   }
 }
 
-/* Ensure continue button is always above platform-injected badges */
+/* CRITICAL: Ensure continue button is ALWAYS above platform-injected badges */
 .continue-btn,
 .card-screen .continue-btn,
 .result-preview-screen .rp-buy-btn {
-  position: relative;
-  z-index: 9999 !important;
+  position: relative !important;
+  z-index: 2147483647 !important;
+  /* Force above any platform injected element */
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 /* Additional protection for action buttons */
 .re-actions {
-  padding-bottom: max(24px, env(safe-area-inset-bottom, 24px)) !important;
+  padding-bottom: max(60px, env(safe-area-inset-bottom, 60px)) !important;
+  position: relative;
+  z-index: 2147483647 !important;
+}
+
+/* Ensure entire card screen is above platform elements */
+.screen.card-screen {
+  z-index: 2147483646 !important;
 }
 
 /* Prevent any platform badge from overlapping important UI elements */
 @media (max-height: 700px) {
   .continue-row {
-    padding-bottom: max(140px, env(safe-area-inset-bottom, 140px)) !important;
+    padding-bottom: max(200px, env(safe-area-inset-bottom, 200px)) !important;
   }
+}
+
+/* Final defense - ensure button is always clickable */
+.continue-btn {
+  pointer-events: auto !important;
 }

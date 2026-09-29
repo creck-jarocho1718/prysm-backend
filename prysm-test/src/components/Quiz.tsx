@@ -586,7 +586,7 @@ export default function Quiz({
       </div>
 
       <div className="stage-label">
-        {isNameEmailQuestion ? 'Final' : `${questionIndex + 1} de ${questions.length - 1}`}
+        {isNameEmailQuestion ? 'Final' : `${questionIndex + 1} de ${questions.length}`}
       </div>
     </div>
   );

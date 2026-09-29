@@ -92,16 +92,16 @@ const LOOK_TEMPLATES: Record<OccasionType, LookTemplate> = {
 const STYLE_ADJECTIVES: Record<StyleType, string[]> = {
   classic: ['clásico', 'atemporal', 'elegante', 'pulido', 'sofisticado'],
   romantic: ['femenino', 'delicado', 'suave', 'romántico', 'florido'],
-  dramatic: ['bold', 'impactante', 'audaz', 'statement', 'poderoso'],
-  natural: ['relax', 'casual', 'cómodo', 'auténtico', 'sin esfuerzo'],
+  dramatic: ['impactante', 'audaz', 'poderoso', 'bold', 'dramático'],
+  natural: ['relajado', 'casual', 'cómodo', 'auténtico', 'sin esfuerzo'],
   glamorous: ['lujoso', 'brillante', 'glamuroso', 'espléndido', 'estelar'],
   minimalist: ['limpio', 'simple', 'esencial', 'puro', 'sin adornos'],
   boho: ['bohemio', 'artístico', 'étereo', 'free spirit', 'artístico'],
-  sporty: ['atlético', 'dinámico', 'enérgico', 'activo', 'functional'],
-  elegant: ['refinado', 'distinguido', 'grácil', 'sofi sticado', 'noble'],
-  casual: ['relajado', 'informal', 'easy', 'cómodo', 'natural'],
+  sporty: ['atlético', 'dinámico', 'enérgico', 'activo', 'funcional'],
+  elegant: ['refinado', 'distinguido', 'grácil', 'sofisticado', 'noble'],
+  casual: ['relajado', 'informal', 'cómodo', 'cómodo', 'natural'],
   artistic: ['avant-garde', 'experimental', 'artístico', 'único', 'creativo'],
-  professional: ['corporativo', 'formal', 'business', 'serio', 'competente'],
+  professional: ['corporativo', 'formal', 'profesional', 'serio', 'competente'],
 };
 
 // ============================================================================
@@ -110,20 +110,20 @@ const STYLE_ADJECTIVES: Record<StyleType, string[]> = {
 
 const BUDGET_PIECE_MODIFIERS: Record<BudgetLevel, { quality: string[]; affordable: string[] }> = {
   low: {
-    quality: ['de buena calidad', 'básico bien cortado', 'esencial'],
-    affordable: ['accesible', 'cómodo', 'functional'],
+    quality: ['básico de calidad', 'esencial bien cortado', 'versátil'],
+    affordable: ['accesible', 'cómodo', 'funcional'],
   },
   medium: {
     quality: ['de buena calidad', 'con detalles', 'bien terminado'],
-    affordable: ['relación calidad-precio', 'versátil', 'cómodo'],
+    affordable: ['excelente relación calidad-precio', 'versátil', 'cómodo'],
   },
   high: {
     quality: ['de alta calidad', 'bien cortado', 'con acabados premium'],
     affordable: ['buena inversión', 'atemporal', 'de diseñador'],
   },
   luxury: {
-    quality: ['de lujo', 'de diseñador', 'exclusivo', 'made to measure'],
-    affordable: ['inversión', 'piezas de colección', 'prácticamente único'],
+    quality: ['de lujo', 'de diseñador', 'exclusivo', 'premium'],
+    affordable: ['inversión segura', 'piezas de colección', 'único'],
   },
 };
 
@@ -282,13 +282,19 @@ export function generateLooks(profile: PersonalStyleProfile): PersonalizedLook[]
     const outer = selectPiece(template.outerwear);
     const shoe = selectPiece(template.shoes);
 
-    // Build pieces string with style adjectives
+    // Build pieces string with style adjectives - natural Spanish order
     const piecesArray = [top, bottom, outer, shoe];
     const piecesString = piecesArray
       .map((p, i) => {
-        const adj = i === 0 ? styleAdjectives[Math.floor(Math.random() * 2)] :
-                    budgetMod.quality[Math.floor(Math.random() * budgetMod.quality.length)];
-        return `${adj} ${p}`;
+        // For first piece (top), use style adjective; for others, use budget quality
+        const adj = i === 0
+          ? styleAdjectives[Math.floor(Math.random() * styleAdjectives.length)]
+          : budgetMod.quality[Math.floor(Math.random() * budgetMod.quality.length)];
+        // Put adjective BEFORE the piece name for natural flow
+        // "Blusa de seda refinada" not "refinada Blusa de seda"
+        const words = p.split(' ');
+        // Insert adjective at end for most pieces
+        return `${p} ${adj}`;
       })
       .join(' · ');
 
