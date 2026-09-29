@@ -492,9 +492,8 @@ export default function ResultPreview({
         {/* CAROUSEL */}
         <div className="rp-carousel-section">
           <div className="rp-carousel-header">
-            <div className="rp-carousel-label">Resultados reales</div>
-            <h3 className="rp-carousel-title">Lo que dicen <em>nuestras clientas</em></h3>
-            <div className="rp-carousel-sub">Valoración promedio 4.9/5 · Más de 2,400 mujeres en México</div>
+            <div className="rp-carousel-label">Testimonios</div>
+            <h3 className="rp-carousel-title">Lo que dicen <em>quienes lo han probado</em></h3>
           </div>
           <div className="rp-carousel-track-wrap">
             <div className="rp-carousel-track">

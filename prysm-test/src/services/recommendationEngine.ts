@@ -48,9 +48,9 @@ interface LookTemplate {
 
 const LOOK_TEMPLATES: Record<OccasionType, LookTemplate> = {
   office: {
-    tops: ['Blusa de seda', 'Camisa blanca', 'Blusa romántica', 'Top estruturado', 'Camiseta de cuello plano'],
-    bottoms: ['Pantalón de vestir', 'Falda midi', 'Pantalón palazzo', 'Skirt lápiz', 'Pantalón slim'],
-    outerwear: ['Blazer sak', 'Cardigan largo', 'Gaban camel', 'Blazer negro', 'Cárdigan estruturado'],
+    tops: ['Blusa de seda', 'Camisa blanca', 'Blusa romántica', 'Top estructurado', 'Camiseta de cuello plano'],
+    bottoms: ['Pantalón de vestir', 'Falda midi', 'Pantalón palazzo', 'Falda lápiz', 'Pantalón slim'],
+    outerwear: ['Blazer clásico', 'Cardigan largo', 'Gabán camel', 'Blazer negro', 'Cárdigan estructurado'],
     shoes: ['Zapato de tacón', 'Mocasín elegante', 'Bailarina', 'Zapato plano', 'Botín bajo'],
   },
   date: {
@@ -67,7 +67,7 @@ const LOOK_TEMPLATES: Record<OccasionType, LookTemplate> = {
   },
   event: {
     tops: ['Blusa statement', 'Top con detalles', 'Blusa de seda', 'Top brillante', 'Blusa con print'],
-    bottoms: ['Pantalón de vestir', 'Falda midi elegante', 'Palazzo', 'Pantalón con brillo', 'Skirt estruturado'],
+    bottoms: ['Pantalón de vestir', 'Falda midi elegante', 'Palazzo', 'Pantalón con brillo', 'Falda estructurado'],
     outerwear: ['Gaban largo', 'Abrigo elegante', 'Capa', 'Chaqueta estructurada', 'Blazer drapeado'],
     shoes: ['Tacón stiletto', 'Zapato metálico', 'Sandalia de tacón', 'Zapato charol', 'Botín elegante'],
   },
@@ -182,7 +182,7 @@ const HAIR_RECOMMENDATIONS: Record<string, HairRecommendation> = {
       { name: 'Rojo vivo', reason: 'Sobresatura tu paleta suave' },
       { name: 'Naranja', reason: 'Demasiado brillante para tu tono' },
     ],
-    cuts: ['Largo recto', 'Bob clássico', 'Ondas suaves', 'Lob redondeado'],
+    cuts: ['Largo recto', 'Bob clásico', 'Ondas suaves', 'Lob redondeado'],
   },
 };
 

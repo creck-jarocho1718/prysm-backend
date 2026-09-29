@@ -514,6 +514,10 @@ export default function Quiz({
             <p style={{ marginTop: '16px', fontSize: '11px', color: 'var(--grey-5)', textAlign: 'center' }}>
               Necesitas al menos 1 foto para continuar
             </p>
+            <p style={{ marginTop: '12px', fontSize: '10px', color: 'var(--grey-5)', textAlign: 'center' }}>
+              Tus fotos se usan únicamente para el análisis y se eliminan tras generar tu informe.{' '}
+              <a href="#" style={{ color: 'var(--grey-4)', textDecoration: 'underline' }}>Aviso de Privacidad</a>
+            </p>
           </div>
         );
 

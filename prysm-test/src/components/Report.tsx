@@ -170,7 +170,7 @@ export default function Report({
         ],
         bags: [
           { name: 'Tote de cuero', desc: 'Formato amplio en tonos cálidos.' },
-          { name: 'Crossbody', desc: 'Para occasions casuales.' }
+          { name: 'Crossbody', desc: 'Para ocasiones casuales.' }
         ],
         accessories: [],
         score: profile.prysmScore || 8.5
@@ -500,7 +500,7 @@ export default function Report({
         <div className="re-avoid-section">
           <div>
             <div className="re-avoid-title">Colores que debes evitar</div>
-            <div className="re-avoid-desc">Los colores opposites a tu paleta pueden apagar tu rostro. Se recomienda priorizar versiones más cálidas o frías según tu subtono.</div>
+            <div className="re-avoid-desc">Los colores opuestos a tu paleta pueden apagar tu rostro. Se recomienda priorizar versiones más cálidas o más frías según tu subtono.</div>
           </div>
           <div className="re-avoid-colors">
             {avoidDisplayColors.map((color, i) => (
@@ -694,10 +694,10 @@ export default function Report({
               ))}
             </div>
           </div>
-          <div className="re-brand-tag">PRYSM · prysmstyle.art</div>
+          <div className="re-brand-tag">PRYSM · Tu Guía de Estilo</div>
           <div className="re-close-footer">
             <div className="re-footer-brand">PRYSM</div>
-            <div className="re-footer-url">prysmstyle.art · Premium Style Guide 2026</div>
+            <div className="re-footer-url">Análisis Personalizado · Guía de Estilo Premium 2026</div>
           </div>
         </div>
       </section>

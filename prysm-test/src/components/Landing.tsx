@@ -44,11 +44,16 @@ export default function Landing({ onStart }: LandingProps) {
         </div>
       </div>
       <div className="landing-footer" style={{ opacity: loaded ? 1 : 0, transition: 'all 1s cubic-bezier(0.16,1,0.3,1) 1.6s' }}>
-        <span className="landing-promise">+10,000 personas han descubierto su estilo</span>
         <div className="landing-modules">
           <span className="landing-module">Colores</span>
           <span className="landing-module">Siluetas</span>
           <span className="landing-module">Tendencias</span>
+        </div>
+        <div style={{ marginTop: '12px', fontSize: '10px', color: 'rgba(255,255,255,0.4)', textAlign: 'center' }}>
+          Al continuar, aceptas nuestros{' '}
+          <a href="#" style={{ color: 'rgba(255,255,255,0.6)', textDecoration: 'underline' }}>Términos de Servicio</a>
+          {' '}y{' '}
+          <a href="#" style={{ color: 'rgba(255,255,255,0.6)', textDecoration: 'underline' }}>Aviso de Privacidad</a>
         </div>
       </div>
     </div>
