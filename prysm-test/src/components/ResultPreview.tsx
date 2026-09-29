@@ -85,7 +85,7 @@ export default function ResultPreview({
   // Backend returns: { success, data: { analisisColor, silueta, estilo, ... } }
   const gptData = analysis?.data;
   const seasonName = gptData?.analisisColor?.estacion || (analysis?.success === false ? 'Análisis en progreso...' : 'Temporada personalizada');
-  const prysmScore = analysis?.success === false ? '...' : '8.5';
+  const prysmScore = analysis?.analysis?.prysmScore?.toFixed(1) || (analysis?.success === false ? '...' : '8.5');
   const bodyTypeName = gptData?.silueta?.tipoCuerpo || 'Tu silueta';
 
   // Transform GPT palette format to component format
@@ -330,8 +330,8 @@ export default function ResultPreview({
                   <div className="rp-color-title">Color y corte de cabello</div>
                   <div className="rp-color-desc">Tonos que iluminan tu rostro y el corte que mejor se adapta a tu forma de cara y textura de pelo.</div>
                   <div className="rp-color-hex-row">
-                    <div className="rp-color-hex-chip">Castaño cálido</div>
-                    <div className="rp-color-hex-chip">Corte en V</div>
+                    <div className="rp-color-hex-chip">{gptData?.silueta?.tipoCuerpo ? `Silueta ${bodyTypeName}` : 'Tu silueta'}</div>
+                    <div className="rp-color-hex-chip">{seasonName}</div>
                   </div>
                 </div>
               </div>
@@ -355,7 +355,7 @@ export default function ResultPreview({
                 <div className="rp-color-content">
                   <div className="rp-color-number">05</div>
                   <div className="rp-color-title">4 outfits por ocasión</div>
-                  <div className="rp-color-desc">Día a día, oficina, citas y viajes. Cada uno adaptado a tu presupuesto real y fácil de replicar.</div>
+                  <div className="rp-color-desc">Día a día, oficina, citas y eventos. Cada uno adaptado a tu presupuesto real y fácil de replicar.</div>
                   <div className="rp-color-hex-row">
                     <div className="rp-color-hex-chip">4 looks completos</div>
                     <div className="rp-color-hex-chip">Adaptados</div>

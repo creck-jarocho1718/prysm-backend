@@ -149,7 +149,7 @@ export default function Paywall({ onBack, onPaymentComplete, profile }: PaywallP
           primary: 'Verse bien',
           blockers: []
         },
-        prysmScore: analysis.analysis?.prysmScore || 8.5,
+        prysmScore: analysis.analysis?.prysmScore || analysis.analysis?.prysmScore || 8.5,
         analysisConfidence: 0.8
       });
 

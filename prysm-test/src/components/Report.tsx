@@ -274,14 +274,14 @@ export default function Report({
     ? normalizedData.avoidColors
     : [];
 
-  // Preparar colores para display
+  // Preparar colores para display (en español)
   const allDisplayColors = [
-    ...seasonalColors.map((c, i) => ({ ...normalizeColorDisplay(c as any), tag: i === 0 ? 'Best' : i < 3 ? 'Top' : 'Favorite' })),
+    ...seasonalColors.map((c, i) => ({ ...normalizeColorDisplay(c as any), tag: i === 0 ? 'Mejor' : i < 3 ? 'Destacado' : 'Favorito' })),
   ].slice(0, 6);
 
   const allPersonalColors = personalColors.slice(0, 8).map((c, i) => {
-    const tags = ['Best', 'Top', 'Top', 'Favorite', 'Favorite', 'Accent', 'Accent', 'Neutral'];
-    return { ...normalizeColorDisplay(c as any), tag: tags[i] || 'Favorite' };
+    const tags = ['Mejor', 'Destacado', 'Destacado', 'Favorito', 'Favorito', 'Acento', 'Acento', 'Neutro'];
+    return { ...normalizeColorDisplay(c as any), tag: tags[i] || 'Favorito' };
   });
 
   const avoidDisplayColors = avoidColors.slice(0, 4).map(c => normalizeColorDisplay(c as any));
@@ -443,7 +443,7 @@ export default function Report({
             <div className="re-label" style={{ marginBottom: '8px' }}>Tu análisis de color</div>
             <h2 className="re-section-title">¿Por qué estos<br />colores son los tuyos?</h2>
             <div className="re-section-sub">
-              Tu piel tiene subtono {undertone} con profundidad {depth}. Esta combinación es clásica del {seasonName}.
+              Tu piel tiene subtono {undertone}, con profundidad {depth}. Esta combinación es clásica del {seasonName}.
             </div>
           </div>
           <div className="re-characteristics">
@@ -457,7 +457,7 @@ export default function Report({
             </div>
             <div className="re-char-item">
               <div className="re-char-title">Contraste</div>
-              <div className="re-char-desc">Contraste {contrast}. {contrast === 'Alto' || contrast === 'alto' || contrast === 'high' ? 'Los colores saturados favorecen tu look.' : 'Los colores pastel funcionan bien con tu paleta.'}</div>
+              <div className="re-char-desc">{contrast}. {contrast === 'Alto' || contrast === 'alto' || contrast === 'high' ? 'Los colores saturados favorecen tu look.' : 'Los colores pastel funcionan bien con tu paleta.'}</div>
             </div>
           </div>
           <div>
@@ -516,7 +516,7 @@ export default function Report({
           <div>
             <div className="re-label" style={{ marginBottom: '8px' }}>Tu morfología</div>
             <div className="re-silhouette-title">Tu silueta ideal</div>
-            <div className="re-silhouette-name">{bodyTypeName} · {bodyShapeName}</div>
+            <div className="re-silhouette-name">{bodyTypeName}{bodyShapeName !== bodyTypeName ? ` · ${bodyShapeName}` : ''}</div>
           </div>
           <div className="re-silhouette-visual">
             <div className="re-silhouette-body">
