@@ -551,7 +551,7 @@ export default function Quiz({
         {renderQuestion()}
       </div>
 
-      <div className="continue-row" style={{ padding: '0 48px 60px', width: '100%' }}>
+      <div className="continue-row" style={{ padding: '0 48px 120px', width: '100%' }}>
         {isNameEmailQuestion ? (
           <button
             className="continue-btn ready"

@@ -81,12 +81,16 @@ export default function ResultPreview({
     analysis: analysis
   });
 
+  // Check if we have real analysis data to avoid showing placeholder/flash
+  const hasRealData = analysis?.success === true && analysis?.analysis;
+
   // Use actual analysis data from backend (GPT), NOT fallback values
   // Backend returns: { success, data: { analisisColor, silueta, estilo, ... } }
   const gptData = analysis?.data;
-  const seasonName = gptData?.analisisColor?.estacion || (analysis?.success === false ? 'Análisis en progreso...' : 'Temporada personalizada');
-  const prysmScore = analysis?.analysis?.prysmScore?.toFixed(1) || (analysis?.success === false ? '...' : '8.5');
-  const bodyTypeName = gptData?.silueta?.tipoCuerpo || 'Tu silueta';
+  const seasonName = hasRealData ? (gptData?.analisisColor?.estacion || 'Temporada personalizada') : 'Temporada personalizada';
+  // Unified score: Use analysis.prysmScore only, show loading dots while analyzing
+  const prysmScore = hasRealData ? (analysis?.analysis?.prysmScore?.toFixed(1) || '...') : '...';
+  const bodyTypeName = hasRealData ? (gptData?.silueta?.tipoCuerpo || 'Tu silueta') : 'Tu silueta';
 
   // Transform GPT palette format to component format
   const gptPalette = gptData?.analisisColor?.paleta;
@@ -97,6 +101,21 @@ export default function ResultPreview({
     accent: gptPalette.acento?.map((c: { hex: string }) => c.hex) || [],
     avoid: gptPalette.evitar?.map((c: { hex: string }) => c.hex) || []
   } : (analysis?.success === false ? { protagonist: [], secondary: [], neutral: [], accent: [], avoid: [] } : fallbackPalette);
+
+  // Format silhouette display with proper spacing (e.g., "RELOJ-ARENA" -> "Reloj de Arena")
+  const formatSilhouette = (sil: string): string => {
+    if (!sil) return 'Tu silueta';
+    // Add spaces before capital letters and replace hyphens
+    const formatted = sil
+      .replace(/-/g, ' ')
+      .replace(/([A-ZÁÉÍÓÚ])/g, ' $1')
+      .replace(/\s+/g, ' ')
+      .trim();
+    // Capitalize first letter of each word
+    return formatted.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+  };
+
+  const formattedBodyType = formatSilhouette(bodyTypeName);
 
   // Debug log
   console.log('[ResultPreview] Extracted data:', {
@@ -305,8 +324,8 @@ export default function ResultPreview({
                   <div className="rp-color-title">Guía de estilo y silueta</div>
                   <div className="rp-color-desc">Qué siluetas, telas y proporciones realzan tu figura. Qué cortar, qué evitar y cómo dressing tu cuerpo.</div>
                   <div className="rp-color-hex-row">
-                    <div className="rp-color-hex-chip">{bodyTypeName}</div>
-                    <div className="rp-color-hex-chip">Algodón · Seda</div>
+                    <div className="rp-color-hex-chip">Silueta: {formattedBodyType}</div>
+                    <div className="rp-color-hex-chip">Telas adaptadas</div>
                   </div>
                 </div>
               </div>
@@ -330,7 +349,7 @@ export default function ResultPreview({
                   <div className="rp-color-title">Color y corte de cabello</div>
                   <div className="rp-color-desc">Tonos que iluminan tu rostro y el corte que mejor se adapta a tu forma de cara y textura de pelo.</div>
                   <div className="rp-color-hex-row">
-                    <div className="rp-color-hex-chip">{gptData?.silueta?.tipoCuerpo ? `Silueta ${bodyTypeName}` : 'Tu silueta'}</div>
+                    <div className="rp-color-hex-chip">Silueta: {formattedBodyType}</div>
                     <div className="rp-color-hex-chip">{seasonName}</div>
                   </div>
                 </div>

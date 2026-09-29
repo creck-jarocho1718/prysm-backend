@@ -4526,3 +4526,39 @@ body {
     height: 280px;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   DEFENSIVE STYLES - Platform Badge Protection
+   ═══════════════════════════════════════════════════════════ */
+
+/* Defensive padding for continue button to prevent platform badge overlap */
+.card-screen .continue-row {
+  padding-bottom: max(120px, env(safe-area-inset-bottom, 120px)) !important;
+  margin-bottom: env(safe-area-inset-bottom, 0) !important;
+}
+
+@media (max-width: 640px) {
+  .card-screen .continue-row {
+    padding-bottom: max(100px, env(safe-area-inset-bottom, 100px)) !important;
+  }
+}
+
+/* Ensure continue button is always above platform-injected badges */
+.continue-btn,
+.card-screen .continue-btn,
+.result-preview-screen .rp-buy-btn {
+  position: relative;
+  z-index: 9999 !important;
+}
+
+/* Additional protection for action buttons */
+.re-actions {
+  padding-bottom: max(24px, env(safe-area-inset-bottom, 24px)) !important;
+}
+
+/* Prevent any platform badge from overlapping important UI elements */
+@media (max-height: 700px) {
+  .continue-row {
+    padding-bottom: max(140px, env(safe-area-inset-bottom, 140px)) !important;
+  }
+}

@@ -35,7 +35,7 @@ const fallbackData = {
   tips: [
     'Cintura definida',
     'Escotes V y redonda',
-    'Stirrup pants',
+    'Pantalones de talle alto',
     'Evitar líneas rectas'
   ],
   fabrics: [
@@ -68,6 +68,100 @@ const fallbackData = {
     { name: 'Crossbody pequeña', desc: 'Para evenings. Cadena dorada con cuerpo de cuero.' },
     { name: 'Clutch estructurada', desc: 'Para eventos formales. En tonos metálicos.' }
   ]
+};
+
+// Personalized tips and fabrics by silhouette type
+const silhouetteRecommendations: Record<string, { tips: string[], fabrics: { name: string, desc: string }[] }> = {
+  'reloj-de-arena': {
+    tips: [
+      'Cintura definida - tu mayor activo',
+      'Escotes en V y redondos favorecen',
+      'Pantalones de talle alto con caída recta',
+      'Evitar líneas rectas que escondan curvas'
+    ],
+    fabrics: [
+      { name: 'Seda natural', desc: 'Caída perfecta que realza tus curvas' },
+      { name: 'Algodón premium', desc: 'Fresco y estructurado' },
+      { name: 'Punto fino', desc: 'Máquinas y wraps que marcan cintura' },
+      { name: 'Crepé fluid', desc: 'Caída elegante sin añadir volumen' },
+      { name: 'Encaje sutil', desc: 'Para ocasiones especiales' }
+    ]
+  },
+  'triangulo': {
+    tips: [
+      'Ampliar hombros con volumen superior',
+      'Favorecen blazers y chaquetas estructuradas',
+      'Pantalones rectos o acampanados equilibraran',
+      'Evitar detalles en cadera y muslos'
+    ],
+    fabrics: [
+      { name: 'Tweed estructurado', desc: 'Para blazers que dan forma' },
+      { name: 'Algodón rígido', desc: 'Camisas y blusas con cuerpo' },
+      { name: 'Denim premium', desc: 'Pantalones con caída recta' },
+      { name: 'Lana ligera', desc: 'Capas que equilibran proporciones' },
+      { name: 'Organza', desc: 'Detalles en hombros sin peso' }
+    ]
+  },
+  'triangulo-invertido': {
+    tips: [
+      'Crear volumen en la parte inferior',
+      'Favorecen faldas con vuelo y detalles',
+      'Pantalones anchos o acampanados equilibraran',
+      'Evitar detalles en hombros y cuello'
+    ],
+    fabrics: [
+      { name: 'Gasa fluida', desc: 'Faldas con movimiento elegante' },
+      { name: 'Encaje romántico', desc: 'Detalles en parte inferior' },
+      { name: 'Satén', desc: 'Faldas que caen con gracia' },
+      { name: 'Viscosa', desc: 'Vestidos fluidos que streamline' },
+      { name: 'Lino premium', desc: 'Pantalones anchos summer' }
+    ]
+  },
+  'rectangulo': {
+    tips: [
+      'Crear ilusión de cintura con cinturones',
+      'Capas y texturas dan volumen',
+      'Prendas que marcan silueta hourglass',
+      'Evitar tallas muy ajustadas o muy holgadas'
+    ],
+    fabrics: [
+      { name: 'Punto de seda', desc: 'Jerseys que marcan sin ajustar' },
+      { name: 'Cashmere', desc: 'Capas finas que añaden textura' },
+      { name: 'Terciopelo', desc: 'Para ocasiones especiales' },
+      { name: 'Gabardina', desc: 'Abrigos con cinturón incluido' },
+      { name: 'Popelín', desc: 'Camisas con estructura sutil' }
+    ]
+  },
+  'ovalada': {
+    tips: [
+      'Líneas verticales alargan la figura',
+      'Escotes en V y boat necks favorecen',
+      'Talles Empire y A-line son aliados',
+      'Evitar volúmenes en zona media'
+    ],
+    fabrics: [
+      { name: 'Viscosa fluida', desc: 'Caída que no marca zonas' },
+      { name: 'Modal', desc: 'Suave y favorecedor' },
+      { name: 'Algodón orgánico', desc: 'Transpirable y cómodo' },
+      { name: 'Chiffón', desc: 'Capas que alargan sin añadir' },
+      { name: 'Franela', desc: 'Abrigos con caída suave' }
+    ]
+  },
+  'diamante': {
+    tips: [
+      'Destacar escote y piernas como activos',
+      'Favorecen blusas con detalle en hombros',
+      'Pantalones rectos equilibran zona media',
+      'Evitar prendas que aprieten cintura'
+    ],
+    fabrics: [
+      { name: 'Seda salvaje', desc: 'Blusas con caída favorecedora' },
+      { name: 'Muselina', desc: 'Capas ligeras que streamline' },
+      { name: 'Pana fina', desc: 'Pantalones con textura sutil' },
+      { name: 'Punto bouclé', desc: 'Chaquetas ligeras con cuerpo' },
+      { name: 'Lino belgesa', desc: 'Verano con estilo' }
+    ]
+  }
 };
 
 export default function Report({
@@ -325,8 +419,23 @@ export default function Report({
     return () => container.removeEventListener('scroll', handleScroll);
   }, [activePage, pages.length]);
 
-  // Get tips from silhouette recommendations
-  const tips = (data as any).tips || fallbackData.tips;
+  // Get body type for silhouette-based personalization
+  const bodyTypeRaw = (data as any).bodyType || (data as any).bodyShape || fallbackData.bodyType;
+  const bodyShapeName = (data as any).bodyShape || fallbackData.bodyShape;
+
+  // Normalize silhouette key for lookup (e.g., "Reloj de arena" -> "reloj-de-arena")
+  const normalizeSilhouetteKey = (s: string): string => {
+    if (!s) return 'reloj-de-arena';
+    return s.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  };
+
+  const silhouetteKey = normalizeSilhouetteKey(bodyTypeRaw);
+  const silhouetteRecs = silhouetteRecommendations[silhouetteKey] || silhouetteRecommendations['reloj-de-arena'];
+
+  // Get tips - use personalized if available, otherwise fallback
+  const tips = isNormalized
+    ? ((data as any).tips || silhouetteRecs.tips)
+    : (silhouetteRecs.tips);
 
   // Get hair colors
   const hairColors = isNormalized
@@ -357,18 +466,60 @@ export default function Report({
     ? normalizedData.bags
     : (data as any).bags || fallbackData.bags;
 
-  // Get fabrics
-  const fabrics = (data as any).fabrics || fallbackData.fabrics;
+  // Get fabrics - use personalized if available, otherwise fallback
+  const fabrics = isNormalized
+    ? ((data as any).fabrics || silhouetteRecs.fabrics)
+    : (silhouetteRecs.fabrics);
 
-  // Get body type
-  const bodyTypeName = (data as any).bodyType || (data as any).bodyShape || fallbackData.bodyType;
-  const bodyShapeName = (data as any).bodyShape || fallbackData.bodyShape;
+  // Body type display name (without shape suffix)
+  const bodyTypeName = bodyTypeRaw.split(' ')[0] + (bodyTypeRaw.includes(' ') ? ' ' + bodyTypeRaw.split(' ')[1] : '');
 
-  // Get undertone, depth, contrast
+  // Get undertone, depth, contrast (with Spanish translation)
   const undertone = isNormalized ? normalizedData.undertone : ((data as any).season?.undertone || fallbackData.season.undertone);
-  const depth = isNormalized ? normalizedData.depth : ((data as any).season?.depth || fallbackData.season.depth);
-  const contrast = isNormalized ? normalizedData.contrast : ((data as any).season?.contrast || fallbackData.season.contrast);
-  const temperature = isNormalized ? normalizedData.undertone : ((data as any).season?.temperature || fallbackData.season.temperature);
+
+  // Translate depth values from English to Spanish
+  const translateDepth = (d: string): string => {
+    const depthMap: Record<string, string> = {
+      'deep': 'Profunda',
+      'medium': 'Media',
+      'light': 'Ligera',
+      'Deep': 'Profunda',
+      'Medium': 'Media',
+      'Light': 'Ligera',
+      'alta': 'Alta',
+      'media': 'Media',
+      'baja': 'Baja',
+      'Alta': 'Alta',
+      'Media': 'Media',
+      'Baja': 'Baja'
+    };
+    return depthMap[d] || d;
+  };
+
+  // Translate contrast values from English to Spanish
+  const translateContrast = (c: string): string => {
+    const contrastMap: Record<string, string> = {
+      'high': 'Alto',
+      'medium': 'Medio',
+      'low': 'Bajo',
+      'High': 'Alto',
+      'Medium': 'Medio',
+      'Low': 'Bajo',
+      'alto': 'Alto',
+      'medio': 'Medio',
+      'bajo': 'Bajo',
+      'Alto': 'Alto',
+      'Medio': 'Medio',
+      'Bajo': 'Bajo'
+    };
+    return contrastMap[c] || c;
+  };
+
+  const rawDepth = isNormalized ? normalizedData.depth : ((data as any).season?.depth || fallbackData.season.depth);
+  const rawContrast = isNormalized ? normalizedData.contrast : ((data as any).season?.contrast || fallbackData.season.contrast);
+  const depth = translateDepth(rawDepth);
+  const contrast = translateContrast(rawContrast);
+  const temperature = undertone;
 
   return (
     <div className="report-editorial-container" ref={containerRef}>
@@ -417,7 +568,20 @@ export default function Report({
           <div>
             <div className="re-label re-label-light">Tu estación</div>
             <div className="re-season-name">{seasonName.split(' ')[0]}<br />{seasonName.split(' ').slice(1).join(' ')}</div>
-            <div className="re-season-type">{isNormalized ? normalizedData.seasonSubtitle : ((data as any).season?.subtitle || fallbackData.season.subtitle)}</div>
+            <div className="re-season-type">
+              {(() => {
+                const subtitle = isNormalized ? normalizedData.seasonSubtitle : ((data as any).season?.subtitle || fallbackData.season.subtitle);
+                // Remove duplicate words (e.g., "Verano Verano Profundo" -> "Verano Profundo")
+                const words = subtitle.split(' ');
+                const uniqueWords: string[] = [];
+                for (const word of words) {
+                  if (uniqueWords[uniqueWords.length - 1]?.toLowerCase() !== word.toLowerCase()) {
+                    uniqueWords.push(word);
+                  }
+                }
+                return uniqueWords.join(' ');
+              })()}
+            </div>
           </div>
           <div className="re-palette-big">
             <div className="re-palette-row">
@@ -449,15 +613,15 @@ export default function Report({
           <div className="re-characteristics">
             <div className="re-char-item">
               <div className="re-char-title">Subtono</div>
-              <div className="re-char-desc">{undertone}. Los colores {temperature === 'Cálido' ? 'con base amarilla u ocre resuenan con tu piel' : 'con base rosa o azul complementan tu paleta'}.</div>
+              <div className="re-char-desc">{undertone}. Los colores {undertone === 'Cálido' ? 'con base amarilla u ocre resuenan con tu piel' : 'con base rosa o azul complementan tu paleta'}.</div>
             </div>
             <div className="re-char-item">
               <div className="re-char-title">Profundidad</div>
-              <div className="re-char-desc">{depth}. Tus colores tienen presencia {depth === 'Alta' || depth === 'alta' || depth === 'deep' ? 'marcada' : depth === 'Baja' || depth === 'baja' || depth === 'light' ? 'suave' : 'moderada'}.</div>
+              <div className="re-char-desc">{depth}. Tus colores tienen presencia {depth === 'Profunda' ? 'marcada' : depth === 'Ligera' ? 'suave' : 'moderada'}.</div>
             </div>
             <div className="re-char-item">
               <div className="re-char-title">Contraste</div>
-              <div className="re-char-desc">{contrast}. {contrast === 'Alto' || contrast === 'alto' || contrast === 'high' ? 'Los colores saturados favorecen tu look.' : 'Los colores pastel funcionan bien con tu paleta.'}</div>
+              <div className="re-char-desc">{contrast}. {contrast === 'Alto' ? 'Los colores saturados favorecen tu look.' : contrast === 'Bajo' ? 'Los colores pastel funcionan bien con tu paleta.' : 'Los colores equilibrado funcionan bien con tu paleta.'}</div>
             </div>
           </div>
           <div>
@@ -610,23 +774,48 @@ export default function Report({
           <h2 className="re-outfits-title">Looks para<br /><em>cada momento</em></h2>
         </div>
         <div className="re-outfits-grid">
-          {outfits.slice(0, 4).map((outfit, i) => (
-            <div key={i} className="re-outfit-card">
-              <div className={`re-outfit-header ${i % 2 === 0 ? 're-outfit-green' : 're-outfit-gold'}`}>
-                <div className="re-outfit-icon">{outfit.icon || '✦'}</div>
-                <div className="re-outfit-name">{outfit.occasion}</div>
-              </div>
-              <div className="re-outfit-body">
-                <div className="re-outfit-label">Piezas recomendadas</div>
-                <div className="re-outfit-pieces">{outfit.pieces}</div>
-                <div className="re-outfit-color-row">
-                  {(outfit.colors || []).map((color, j) => (
-                    <div key={j} className="re-outfit-color-dot" style={{ background: typeof color === 'string' ? color : color.hex }} />
-                  ))}
+          {/* 4 fixed occasions: Día a día, Oficina, Citas, Eventos */}
+          {(() => {
+            const fixedOccasions = [
+              { occasion: 'Día a día', icon: '☀', fallbackPieces: 'Blusa seda coral · Pantalón camel · Sneakers blancas · Bolso tote cuero', fallbackColors: ['#FF6F61', '#C19A6B', '#FFFFFF', '#8B7355'] },
+              { occasion: 'Oficina', icon: '✦', fallbackPieces: 'Blazer ocre · Blusa blanca · Pantalón navy · Tacón camel', fallbackColors: ['#D2691E', '#FFFFFF', '#1E3A5F', '#C19A6B'] },
+              { occasion: 'Citas', icon: '♥', fallbackPieces: 'Vestido rojo tomate · Abrigo camel · Sandalias doradas', fallbackColors: ['#FF6347', '#C19A6B', '#FFD700'] },
+              { occasion: 'Eventos', icon: '★', fallbackPieces: 'Vestido dorado · Bolso clutch · Joyería dorada', fallbackColors: ['#FFD700', '#D4A574', '#FFFFFF'] }
+            ];
+
+            return fixedOccasions.map((fixed, i) => {
+              // Find matching outfit from data or use fallback
+              const matchingOutfit = outfits.find(o =>
+                o.occasion.toLowerCase().includes(fixed.occasion.toLowerCase().split(' ')[0]) ||
+                fixed.occasion.toLowerCase().includes(o.occasion.toLowerCase().split(' ')[0])
+              );
+
+              const outfit = matchingOutfit || {
+                occasion: fixed.occasion,
+                icon: fixed.icon,
+                pieces: fixed.fallbackPieces,
+                colors: fixed.fallbackColors
+              };
+
+              return (
+                <div key={i} className="re-outfit-card">
+                  <div className={`re-outfit-header ${i % 2 === 0 ? 're-outfit-green' : 're-outfit-gold'}`}>
+                    <div className="re-outfit-icon">{outfit.icon || fixed.icon}</div>
+                    <div className="re-outfit-name">{outfit.occasion}</div>
+                  </div>
+                  <div className="re-outfit-body">
+                    <div className="re-outfit-label">Piezas recomendadas</div>
+                    <div className="re-outfit-pieces">{outfit.pieces}</div>
+                    <div className="re-outfit-color-row">
+                      {(outfit.colors || []).map((color, j) => (
+                        <div key={j} className="re-outfit-color-dot" style={{ background: typeof color === 'string' ? color : color.hex }} />
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
+              );
+            });
+          })()}
         </div>
       </section>
 
