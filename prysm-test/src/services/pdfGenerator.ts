@@ -235,7 +235,7 @@ export function generatePurchasePriorities(
 
   // Add silhouette-critical pieces first
   gaps.slice(0, 2).forEach(gap => {
-    addPriority('Silueta', gap, `Essential para definir tu silueta ${silhouetteType}`);
+    addPriority('Silueta', gap, `Esencial para definir tu silueta ${silhouetteType}`);
   });
 
   // Add occasion-based pieces
@@ -243,8 +243,8 @@ export function generatePurchasePriorities(
     const occasionPieces: Record<string, string[]> = {
       office: ['Blazer profesional', 'Camisa de calidad', 'Pantalón de vestir'],
       date: ['Top elegante', 'Accesorio especial', 'Zapato especial'],
-      event: ['Prenda statement', 'Complemento de impacto', 'Look completo'],
-      casual: ['Denim de calidad', 'Basic bien cortado', 'Sneakers versátil'],
+      event: ['Prenda protagonista', 'Complemento de impacto', 'Look completo'],
+      casual: ['Mezclilla de calidad', 'Básico bien cortado', 'Tenis versátiles'],
       travel: ['Prenda cómoda y elegante', 'Capa versátil', 'Zapato caminata']
     };
     const occPieces = occasionPieces[topOccasion.type] || occasionPieces.casual;
@@ -540,7 +540,7 @@ ${TEST_MODE ? '<div class="test-banner">ANÁLISIS CLIENT-SIDE DE PRUEBA · Los d
   <div class="cover-name">Documento exclusivo · ${userName || 'Cliente'}</div>
   <div class="cover-score">
     <div class="cover-score-label">PRYSM Score</div>
-    <div class="cover-score-num">${profile.prysmScore.toFixed(1)}</div>
+    <div class="cover-score-num">${parseFloat(profile.prysmScore.toFixed(1))}</div>
   </div>
 </div>
 
@@ -627,7 +627,7 @@ ${TEST_MODE ? '<div class="test-banner">ANÁLISIS CLIENT-SIDE DE PRUEBA · Los d
   <div class="avoid-section">
     <div>
       <div class="avoid-title">Colores que debes evitar</div>
-      <p class="avoid-desc">Los colores opposites a tu paleta apagarán tu rostro. Evita colores con subtonos opuestos al tuyo.</p>
+      <p class="avoid-desc">Los colores opuestos a tu paleta apagarán tu rostro. Evita colores con subtonos opuestos al tuyo.</p>
     </div>
     <div class="avoid-colors">
       ${colorimetry.palette.avoid.slice(0, 4).map(c => `<div class="avoid-dot" style="background: ${c.hex}"></div>`).join('')}
@@ -884,7 +884,7 @@ ${TEST_MODE ? '<div class="test-banner">ANÁLISIS CLIENT-SIDE DE PRUEBA · Los d
       <span class="jewelry-icon">✦</span>
       <div>
         <div class="jewelry-name">${profile.preferences.metal === 'gold' ? 'Oro cálido / Bronce' : profile.preferences.metal === 'silver' ? 'Plata / Acero' : 'Oro y Plata combinados'}</div>
-        <div class="jewelry-desc">El metal correcto complementa tu subtono ${colorimetry.season.temperature}. Evita el metal opuesto.</div>
+        <div class="jewelry-desc">El metal correcto complementa tu subtono ${colorimetry.season.temperature === 'warm' ? 'cálido' : colorimetry.season.temperature === 'cool' ? 'frío' : 'neutro'}. Evita el metal opuesto.</div>
       </div>
     </div>
     <div class="jewelry-item">

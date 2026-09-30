@@ -9,6 +9,7 @@ import Share from './components/Share';
 import { AnalysisResponse, QuizAnswers } from './services/api';
 import { TEST_MODE, testLog } from './config';
 import { generatePdfHtml } from './services/pdfGenerator';
+import { cleanSeasonLabel, normalizeKey } from './services/seasonFormat';
 import { PersonalStyleProfile, SilhouetteType, BudgetLevel, StyleType, OccasionType, MetalPreference, SeasonType } from './services/styleGenome';
 
 export type Screen = 'landing' | 'quiz' | 'analyzing' | 'result' | 'report' | 'paywall' | 'share' | 'processing';
@@ -296,17 +297,19 @@ function buildProfileFromAnswers(
   let silhouetteRecommendations = getSilhouetteRecommendations(silhouetteData.type);
 
   if (hasGPTAnalysis) {
-    // GPT determines the silhouette type
+    // GPT determines the silhouette type — lookup is case/accent/format-insensitive
+    // (GPT may return "reloj-arena", "Reloj de Arena", "RECTANGULO", etc.)
     const gptSilhouetteMap: Record<string, typeof silhouetteData> = {
-      'Reloj de arena': { type: 'hourglass', name: 'Reloj de Arena' },
-      'Triángulo': { type: 'pear', name: 'Triángulo' },
-      'Triángulo invertido': { type: 'inverted_triangle', name: 'Triángulo Invertido' },
-      'Rectángulo': { type: 'rectangle', name: 'Rectángulo' },
-      'Ovalada': { type: 'oval', name: 'Ovalada' },
-      'Diamante': { type: 'diamond', name: 'Diamante' },
-      'Manzana': { type: 'apple', name: 'Manzana' }
+      'reloj de arena': { type: 'hourglass', name: 'Reloj de Arena' },
+      'triangulo': { type: 'pear', name: 'Triángulo' },
+      'triangulo invertido': { type: 'inverted_triangle', name: 'Triángulo Invertido' },
+      'rectangulo': { type: 'rectangle', name: 'Rectángulo' },
+      'ovalada': { type: 'oval', name: 'Ovalada' },
+      'ovalado': { type: 'oval', name: 'Ovalada' },
+      'diamante': { type: 'diamond', name: 'Diamante' },
+      'manzana': { type: 'apple', name: 'Manzana' }
     };
-    silhouetteData = gptSilhouetteMap[gptData.silueta.tipoCuerpo] || silhouetteData;
+    silhouetteData = gptSilhouetteMap[normalizeKey(gptData.silueta.tipoCuerpo)] || silhouetteData;
     silhouetteRecommendations = {
       favor: gptData.silueta.prendasFavorecen || [],
       avoid: gptData.silueta.prendasEvitar || [],
@@ -427,8 +430,9 @@ function buildProfileFromAnswers(
   if (hasGPTAnalysis) {
     // Use GPT's color analysis
     const gptSeason = gptData.analisisColor;
+    // Clean label: dedupes ("OTOÑO OTOÑO PROFUNDO" -> "Otoño Profundo") and hides N/A substations
+    const seasonName = cleanSeasonLabel(gptSeason.estacion, gptSeason.subestacion);
     const substation = gptSeason.subestacion || '';
-    const seasonName = substation ? `${gptSeason.estacion} ${substation}` : gptSeason.estacion;
 
     // Map season to internal format
     const seasonTypeMap: Record<string, string> = {
@@ -459,7 +463,7 @@ function buildProfileFromAnswers(
     season = {
       primary: seasonPrimary as any,
       name: seasonName,
-      subtitle: `${gptSeason.estacion} · ${gptSeason.subtono} · ${gptSeason.profundidad}`,
+      subtitle: `${seasonName} · ${gptSeason.subtono} · ${gptSeason.profundidad}`,
       temperature: gptSeason.subtono === 'cálido' ? 'warm' :
                    gptSeason.subtono === 'frío' ? 'cool' : 'neutral',
       depth: gptSeason.profundidad === 'claro' ? 'light' :
@@ -661,7 +665,7 @@ function getSilhouetteRecommendations(type: SilhouetteType) {
     },
     inverted_triangle: {
       favor: ['Colores oscuros arriba', 'Piezas simples en torso', 'Falda con volumen'],
-      avoid: ['Hombreras grandes', 'Estampados arriba', 'Capas que add volume arriba'],
+      avoid: ['Hombreras grandes', 'Estampados arriba', 'Capas que añaden volumen arriba'],
       necklines: ['Barco', 'Redondeada', 'Cuadrado'],
       silhouettes: ['A-line', 'Pantalones anchos', 'Skirts con volumen'],
     },
@@ -674,19 +678,19 @@ function getSilhouetteRecommendations(type: SilhouetteType) {
     oval: {
       favor: ['Cintura suelta o alta', 'Piezas con estructura', 'Líneas verticales'],
       avoid: ['Ropa muy ajustada', 'Estampados grandes', 'Tejidos muy finos'],
-      necklines: ['V', 'Columna', 'Des侄alce alto'],
+      necklines: ['V', 'Columna', 'Escote alto'],
       silhouettes: ['Empire', 'Blazers', 'Capas con estructura'],
     },
     diamond: {
       favor: ['Cintura definida', 'Equilibrio arriba y abajo', 'Tejidos fluidos'],
       avoid: ['Ropa muy ajustada', 'Líneas horizontales', 'Volumen extremo'],
-      necklines: ['V', 'Des侄alce', 'Asimétrica'],
+      necklines: ['V', 'Escote redondo', 'Asimétrica'],
       silhouettes: ['Fit and flare', 'Trapecio', 'Piezas con movimiento'],
     },
     apple: {
       favor: ['Cintura suelta', 'Piezas que fluyen', 'Escotes que alargan'],
       avoid: ['Ropa ajustada en medio', 'Cinturones en cintura', 'Tejidos rígidos'],
-      necklines: ['V profundo', 'Des侄alce', 'Columnas verticales'],
+      necklines: ['V profundo', 'Escote barco', 'Columnas verticales'],
       silhouettes: ['Empire', 'A-line', 'Blazers largos'],
     },
   };

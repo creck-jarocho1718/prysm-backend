@@ -82,8 +82,8 @@ const silhouetteRecommendations: Record<string, { tips: string[], fabrics: { nam
     fabrics: [
       { name: 'Seda natural', desc: 'Caída perfecta que realza tus curvas' },
       { name: 'Algodón premium', desc: 'Fresco y estructurado' },
-      { name: 'Punto fino', desc: 'Máquinas y wraps que marcan cintura' },
-      { name: 'Crepé fluid', desc: 'Caída elegante sin añadir volumen' },
+      { name: 'Punto fino', desc: 'Tejidos de punto y wraps que marcan cintura' },
+      { name: 'Crepé fluido', desc: 'Caída elegante sin añadir volumen' },
       { name: 'Encaje sutil', desc: 'Para ocasiones especiales' }
     ]
   },
@@ -113,7 +113,7 @@ const silhouetteRecommendations: Record<string, { tips: string[], fabrics: { nam
       { name: 'Gasa fluida', desc: 'Faldas con movimiento elegante' },
       { name: 'Encaje romántico', desc: 'Detalles en parte inferior' },
       { name: 'Satén', desc: 'Faldas que caen con gracia' },
-      { name: 'Viscosa', desc: 'Vestidos fluidos que streamline' },
+      { name: 'Viscosa', desc: 'Vestidos fluidos que estilizan' },
       { name: 'Lino premium', desc: 'Pantalones anchos summer' }
     ]
   },
@@ -156,10 +156,10 @@ const silhouetteRecommendations: Record<string, { tips: string[], fabrics: { nam
     ],
     fabrics: [
       { name: 'Seda salvaje', desc: 'Blusas con caída favorecedora' },
-      { name: 'Muselina', desc: 'Capas ligeras que streamline' },
+      { name: 'Muselina', desc: 'Capas ligeras que estilizan' },
       { name: 'Pana fina', desc: 'Pantalones con textura sutil' },
       { name: 'Punto bouclé', desc: 'Chaquetas ligeras con cuerpo' },
-      { name: 'Lino belgesa', desc: 'Verano con estilo' }
+      { name: 'Lino natural', desc: 'Verano con estilo' }
     ]
   }
 };
@@ -423,10 +423,16 @@ export default function Report({
   const bodyTypeRaw = (data as any).bodyType || (data as any).bodyShape || fallbackData.bodyType;
   const bodyShapeName = (data as any).bodyShape || fallbackData.bodyShape;
 
-  // Normalize silhouette key for lookup (e.g., "Reloj de arena" -> "reloj-de-arena")
+  // Normalize silhouette key for lookup (e.g., "Reloj de Arena" -> "reloj-de-arena",
+  // "Rectángulo" -> "rectangulo"). Accents are stripped so accented names match.
   const normalizeSilhouetteKey = (s: string): string => {
     if (!s) return 'reloj-de-arena';
-    return s.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    return s
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '');
   };
 
   const silhouetteKey = normalizeSilhouetteKey(bodyTypeRaw);
@@ -471,8 +477,9 @@ export default function Report({
     ? ((data as any).fabrics || silhouetteRecs.fabrics)
     : (silhouetteRecs.fabrics);
 
-  // Body type display name (without shape suffix)
-  const bodyTypeName = bodyTypeRaw.split(' ')[0] + (bodyTypeRaw.includes(' ') ? ' ' + bodyTypeRaw.split(' ')[1] : '');
+  // Body type display name — full clean name, shown exactly once
+  // (previously took only the first two words, producing "Reloj de · Reloj de Arena")
+  const bodyTypeName = bodyTypeRaw;
 
   // Get undertone, depth, contrast (with Spanish translation)
   const undertone = isNormalized ? normalizedData.undertone : ((data as any).season?.undertone || fallbackData.season.undertone);

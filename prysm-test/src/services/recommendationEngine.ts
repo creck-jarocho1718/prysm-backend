@@ -54,27 +54,27 @@ const LOOK_TEMPLATES: Record<OccasionType, LookTemplate> = {
     shoes: ['Zapato de tacón', 'Mocasín elegante', 'Bailarina', 'Zapato plano', 'Botín bajo'],
   },
   date: {
-    tops: ['Blusa satinada', 'Top halter', 'Body elegante', 'Blusa con detalle', 'Camisa oversize'],
-    bottoms: ['Falda midi', 'Pantalón slim', 'Skirt with movimiento', 'Pantalón de vestir', 'Falda con vuelito'],
+    tops: ['Blusa satinada', 'Top halter', 'Body elegante', 'Blusa con detalle', 'Camisa holgada'],
+    bottoms: ['Falda midi', 'Pantalón slim', 'Falda con movimiento', 'Pantalón de vestir', 'Falda con vuelito'],
     outerwear: ['Abrigo corto', 'Chaqueta de cuero', 'Chal de punto', 'Blazer femenino', 'Cardigan drapeado'],
     shoes: ['Tacón stiletto', 'Sandalia elegante', 'Botín con tacón', 'Zapato de tiras', 'Mule de tacón'],
   },
   casual: {
-    tops: ['Camiseta básica', 'Suéter fino', 'Camisa oversize', 'Top holgado', 'Polo'],
-    bottoms: ['Denim oscuro', 'Pantalón wide leg', 'Leggings', 'Jogger elegante', 'Pantalón cargo'],
-    outerwear: ['Denim jacket', 'Cardigan', 'Cazadora', 'Abrigo largo', 'Suéter oversized'],
+    tops: ['Camiseta básica', 'Suéter fino', 'Camisa holgada', 'Top holgado', 'Polo'],
+    bottoms: ['Denim oscuro', 'Pantalón de pierna ancha', 'Leggings', 'Jogger elegante', 'Pantalón cargo'],
+    outerwear: ['Chaqueta de mezclilla', 'Cardigan', 'Cazadora', 'Abrigo largo', 'Suéter holgado'],
     shoes: ['Sneakers blancas', 'Bailarina plana', 'Sandalia plana', 'Mocasín', 'Tenis limpios'],
   },
   event: {
-    tops: ['Blusa statement', 'Top con detalles', 'Blusa de seda', 'Top brillante', 'Blusa con print'],
+    tops: ['Blusa protagonista', 'Top con detalles', 'Blusa de seda', 'Top brillante', 'Blusa con print'],
     bottoms: ['Pantalón de vestir', 'Falda midi elegante', 'Palazzo', 'Pantalón con brillo', 'Falda estructurado'],
     outerwear: ['Gaban largo', 'Abrigo elegante', 'Capa', 'Chaqueta estructurada', 'Blazer drapeado'],
     shoes: ['Tacón stiletto', 'Zapato metálico', 'Sandalia de tacón', 'Zapato charol', 'Botín elegante'],
   },
   travel: {
     tops: ['Camisa cómoda', 'Top fácil', 'Suéter fino', 'Camiseta de calidad', 'Blusa fluida'],
-    bottoms: ['Denim oscuro', 'Pantalón cargo', 'Jogger de viaje', 'Pantalón convertible', 'Skirt casual'],
-    outerwear: ['Cazadora ligera', 'Cardigan', 'Impermeable', 'Abrigo plegable', 'Denim jacket'],
+    bottoms: ['Denim oscuro', 'Pantalón cargo', 'Jogger de viaje', 'Pantalón convertible', 'Falda casual'],
+    outerwear: ['Cazadora ligera', 'Cardigan', 'Impermeable', 'Abrigo plegable', 'Chaqueta de mezclilla'],
     shoes: ['Sneakers cómodas', 'Bailarina plana', 'Sandalia caminata', 'Mocasín de viaje', 'Zapato elástico'],
   },
   sport: {
@@ -92,15 +92,15 @@ const LOOK_TEMPLATES: Record<OccasionType, LookTemplate> = {
 const STYLE_ADJECTIVES: Record<StyleType, string[]> = {
   classic: ['clásico', 'atemporal', 'elegante', 'pulido', 'sofisticado'],
   romantic: ['femenino', 'delicado', 'suave', 'romántico', 'florido'],
-  dramatic: ['impactante', 'audaz', 'poderoso', 'bold', 'dramático'],
+  dramatic: ['impactante', 'audaz', 'poderoso', 'atrevido', 'dramático'],
   natural: ['relajado', 'casual', 'cómodo', 'auténtico', 'sin esfuerzo'],
   glamorous: ['lujoso', 'brillante', 'glamuroso', 'espléndido', 'estelar'],
   minimalist: ['limpio', 'simple', 'esencial', 'puro', 'sin adornos'],
-  boho: ['bohemio', 'artístico', 'étereo', 'free spirit', 'artístico'],
+  boho: ['bohemio', 'artístico', 'étereo', 'espíritu libre', 'artístico'],
   sporty: ['atlético', 'dinámico', 'enérgico', 'activo', 'funcional'],
   elegant: ['refinado', 'distinguido', 'grácil', 'sofisticado', 'noble'],
   casual: ['relajado', 'informal', 'cómodo', 'cómodo', 'natural'],
-  artistic: ['avant-garde', 'experimental', 'artístico', 'único', 'creativo'],
+  artistic: ['vanguardista', 'experimental', 'artístico', 'único', 'creativo'],
   professional: ['corporativo', 'formal', 'profesional', 'serio', 'competente'],
 };
 
@@ -156,7 +156,7 @@ const HAIR_RECOMMENDATIONS: Record<string, HairRecommendation> = {
       { name: 'Rojo cobrizo', reason: 'Demasiada calidez para tu paleta' },
       { name: 'Rubio muy claro', reason: 'Falta contraste con tu piel' },
     ],
-    cuts: ['Corte recto', 'Pixie corto', 'Largo straight', 'Bob estructurado'],
+    cuts: ['Corte recto', 'Pixie corto', 'Largo lacio', 'Bob estructurado'],
   },
   spring: {
     recommended: [
@@ -227,9 +227,9 @@ const ACCESSORY_RECOMMENDATIONS = {
   },
   silver: {
     jewelry: [
-      { name: 'Aretes plateados', desc: 'Geometric, modernos' },
+      { name: 'Aretes plateados', desc: 'Geométricos y modernos' },
       { name: 'Collar minimalista', desc: 'Cadena fina plateada' },
-      { name: 'Anillo statement', desc: 'Plateado con detalles' },
+      { name: 'Anillo protagonista', desc: 'Plateado con detalles' },
     ],
     bags: [
       { name: 'Clutch metálica', desc: 'Plateada para eventos' },
@@ -250,6 +250,35 @@ const ACCESSORY_RECOMMENDATIONS = {
     ],
   },
 };
+
+// ============================================================================
+// Gender agreement for Spanish adjectives
+// Adjectives in the tables above are stored in masculine form ("lujoso",
+// "bien terminado"). When the piece noun is feminine ("Blusa", "Falda",
+// "Chaqueta"...), feminize them: "Blusa satinada lujosa".
+// ============================================================================
+
+const FEMININE_PIECE_NOUNS = new Set([
+  'blusa', 'camisa', 'camiseta', 'falda', 'chaqueta', 'sandalia', 'bailarina',
+  'mule', 'capa', 'cazadora', 'sudadera', 'zapatilla', 'gabardina', 'tote', 'clutch',
+]);
+
+function feminizeAdjective(adj: string): string {
+  return adj
+    .split(' ')
+    .map((w) => {
+      if (/os$/i.test(w)) return w.slice(0, -2) + 'as';
+      if (/o$/i.test(w)) return w.slice(0, -1) + 'a';
+      return w;
+    })
+    .join(' ');
+}
+
+function agreeAdjective(piece: string, adj: string): string {
+  const firstWord = (piece.split(' ')[0] || '').toLowerCase();
+  if (FEMININE_PIECE_NOUNS.has(firstWord)) return feminizeAdjective(adj);
+  return adj;
+}
 
 // ============================================================================
 // Engine Functions
@@ -283,6 +312,8 @@ export function generateLooks(profile: PersonalStyleProfile): PersonalizedLook[]
     const shoe = selectPiece(template.shoes);
 
     // Build pieces string with style adjectives - natural Spanish order
+    // Adjective goes AFTER the piece ("Blusa de seda refinada") and agrees
+    // in gender with it ("Blusa satinada lujosa", "Chaqueta de cuero bien terminada")
     const piecesArray = [top, bottom, outer, shoe];
     const piecesString = piecesArray
       .map((p, i) => {
@@ -290,11 +321,7 @@ export function generateLooks(profile: PersonalStyleProfile): PersonalizedLook[]
         const adj = i === 0
           ? styleAdjectives[Math.floor(Math.random() * styleAdjectives.length)]
           : budgetMod.quality[Math.floor(Math.random() * budgetMod.quality.length)];
-        // Put adjective BEFORE the piece name for natural flow
-        // "Blusa de seda refinada" not "refinada Blusa de seda"
-        const words = p.split(' ');
-        // Insert adjective at end for most pieces
-        return `${p} ${adj}`;
+        return `${p} ${agreeAdjective(p, adj)}`;
       })
       .join(' · ');
 

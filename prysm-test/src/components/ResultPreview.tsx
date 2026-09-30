@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { AnalysisResponse } from '../services/api';
 import { TEST_MODE } from '../config';
+import { cleanSeasonLabel, normalizeKey } from '../services/seasonFormat';
 
 interface ResultPreviewProps {
   userName: string;
@@ -82,17 +83,22 @@ export default function ResultPreview({
   });
 
   // Check if we have real analysis data to avoid showing placeholder/flash
-  const hasRealData = analysis?.success === true && analysis?.analysis;
+  // Backend returns { success, data: {...} } — NOT analysis.analysis, so check both shapes
+  const hasRealData = analysis?.success === true && !!(analysis?.analysis || analysis?.data);
 
   // Use actual analysis data from backend (GPT), NOT fallback values
   // Backend returns: { success, data: { analisisColor, silueta, estilo, ... } }
   const gptData = analysis?.data;
-  // Show season from real data, or a default until real data arrives (no placeholder text)
-  const seasonName = gptData?.analisisColor?.estacion || (analysis?.success === false ? 'Temporada personalizada' : 'Temporada personalizada');
-  // Unified score: Use analysis.prysmScore only, NO placeholders - use default score in TEST_MODE
-  const prysmScore = hasRealData && analysis?.analysis?.prysmScore
-    ? analysis.analysis.prysmScore.toFixed(1)
-    : (TEST_MODE ? '8.5' : '...');
+  // Clean season label: dedupes ("OTOÑO OTOÑO PROFUNDO" -> "Otoño Profundo"), hides N/A
+  const seasonName = gptData?.analisisColor
+    ? cleanSeasonLabel(gptData.analisisColor.estacion, gptData.analisisColor.subestacion)
+    : 'Tu temporada';
+  // Unified score: SAME formula as the report (App.tsx profile.prysmScore),
+  // so teaser, report and PDF always show the identical value.
+  // GPT confianza (0-1) * 10, e.g. 0.9 -> 9, 0.85 -> 8.5
+  const prysmScore: number | string = gptData?.analisisColor
+    ? parseFloat(((gptData.analisisColor.confianza || 0.85) * 10).toFixed(1))
+    : (TEST_MODE ? 8.5 : '...');
 
   // Body type - format properly for display
   const rawBodyType = hasRealData ? (gptData?.silueta?.tipoCuerpo || '') : '';
@@ -107,21 +113,35 @@ export default function ResultPreview({
     avoid: gptPalette.evitar?.map((c: { hex: string }) => c.hex) || []
   } : (analysis?.success === false ? { protagonist: [], secondary: [], neutral: [], accent: [], avoid: [] } : fallbackPalette);
 
-  // Format silhouette display with proper spacing (e.g., "RELOJ-ARENA" -> "Reloj de Arena")
+  // Format silhouette display with proper spacing (e.g., "reloj-arena" -> "Reloj de Arena")
+  // Known silhouettes map to their canonical display names; anything else gets
+  // a generic title-case formatting. Lookup is case/accent/format-insensitive.
+  const SILHOUETTE_DISPLAY: Record<string, string> = {
+    'reloj de arena': 'Reloj de Arena',
+    'triangulo': 'Triángulo',
+    'triangulo invertido': 'Triángulo Invertido',
+    'rectangulo': 'Rectángulo',
+    'ovalada': 'Ovalada',
+    'ovalado': 'Ovalada',
+    'diamante': 'Diamante',
+    'manzana': 'Manzana',
+  };
   const formatSilhouette = (sil: string): string => {
     if (!sil || sil === 'Tu silueta') return '';
-    // Add spaces before capital letters and replace hyphens
-    const formatted = sil
-      .replace(/-/g, ' ')
-      .replace(/([A-ZÁÉÍÓÚ])/g, ' $1')
+    const key = normalizeKey(sil);
+    if (SILHOUETTE_DISPLAY[key]) return SILHOUETTE_DISPLAY[key];
+    // Generic fallback: split separators, title-case each word
+    return sil
+      .replace(/[-_]+/g, ' ')
       .replace(/\s+/g, ' ')
-      .trim();
-    // Capitalize first letter of each word
-    return formatted.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+      .trim()
+      .split(' ')
+      .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+      .join(' ');
   };
 
   const formattedBodyType = formatSilhouette(rawBodyType);
-  const displayBodyType = formattedBodyType || 'Tu silueta';
+  const displayBodyType = formattedBodyType || '';
 
   // Debug log
   console.log('[ResultPreview] Extracted data:', {
