@@ -38,6 +38,81 @@ const log = {
   }
 };
 
+/**
+ * Clean joined words in text strings (e.g., "subtonoFrío" -> "subtono frío")
+ * Uses regex to insert spaces between lowercase-uppercase transitions and other patterns
+ */
+function cleanJoinedWords(text) {
+  if (typeof text !== 'string') return text;
+
+  let cleaned = text;
+
+  // Pattern 1: Insert space between lowercase and uppercase (camelCase)
+  // e.g., "subtonoFrío" -> "subtono Frío"
+  cleaned = cleaned.replace(/([a-záéíóúüñ])([A-ZÁÉÍÓÚÜÑ])/g, '$1 $2');
+
+  // Pattern 2: Insert space after number before letter
+  // e.g., "color1Azul" -> "color 1 Azul"
+  cleaned = cleaned.replace(/(\d)([A-Za-záéíóúüñ])/g, '$1 $2');
+
+  // Pattern 3: Insert space before capital letter followed by lowercase
+  // e.g., "ycon" -> "y con" (but avoid double spaces)
+  cleaned = cleaned.replace(/([a-záéíóúüñ])([A-Z])/g, '$1 $2');
+
+  // Pattern 4: Common Spanish joined words patterns
+  // "del" + capitalized -> "del" + space
+  cleaned = cleaned.replace(/\b(del)([A-Z])/g, '$1 $2');
+
+  // Pattern 5: "con" + capitalized -> "con" + space
+  cleaned = cleaned.replace(/\b(con)([A-Z])/g, '$1 $2');
+
+  // Pattern 6: "que" + capitalized -> "que" + space
+  cleaned = cleaned.replace(/\b(que)([A-Z])/g, '$1 $2');
+
+  // Pattern 7: Fix specific known patterns
+  cleaned = cleaned.replace(/Temporada([A-Z])/g, 'Temporada $1');
+  cleaned = cleaned.replace(/colorescon/g, 'colores con');
+  cleaned = cleaned.replace(/delInvierno/g, 'del Invierno');
+  cleaned = cleaned.replace(/delOtoño/g, 'del Otoño');
+  cleaned = cleaned.replace(/delVerano/g, 'del Verano');
+  cleaned = cleaned.replace(/delPrimavera/g, 'del Primavera');
+
+  // Pattern 8: Fix silhouette joined words
+  cleaned = cleaned.replace(/SILUETA([A-Z])/g, 'SILUETA $1');
+  cleaned = cleaned.replace(/silueta([A-Z])/g, 'silueta $1');
+  cleaned = cleaned.replace(/([a-záéíóúüñ])([A-ZÁÉÍÓÚÜÑ]{2,})/g, '$1 $2');
+
+  // Title case specific silhouette names if ALL CAPS
+  if (cleaned === cleaned.toUpperCase() && cleaned.length > 3 && cleaned.length < 30) {
+    cleaned = cleaned.charAt(0).toUpperCase() + cleaned.slice(1).toLowerCase();
+  }
+
+  // Normalize multiple spaces to single space
+  cleaned = cleaned.replace(/\s+/g, ' ').trim();
+
+  return cleaned;
+}
+
+/**
+ * Recursively clean all string values in an object
+ */
+function cleanObjectStrings(obj) {
+  if (typeof obj === 'string') {
+    return cleanJoinedWords(obj);
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(item => cleanObjectStrings(item));
+  }
+  if (obj !== null && typeof obj === 'object') {
+    const cleaned = {};
+    for (const key in obj) {
+      cleaned[key] = cleanObjectStrings(obj[key]);
+    }
+    return cleaned;
+  }
+  return obj;
+}
+
 // OpenAI API configuration
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
@@ -46,6 +121,13 @@ const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
 const SYSTEM_PROMPT = `Eres el motor de análisis de imagen y estilo de PRYSM.
 
 Tu función es analizar de forma integral la información proporcionada por el usuario y generar un perfil de estilo personalizado.
+
+IMPORTANTE - FORMATO DE TEXTO:
+- SIEMPRE separa las palabras con espacios normales. NUNCA pegues palabras juntas.
+- Ejemplos de ERROR: "subtonoFrío", "profundidadMedia", "delInvierno", "colorescon", "TemporadaInviernocon"
+- Ejemplos de CORRECTO: "subtono frío", "profundidad media", "del Invierno", "colores con", "Temporada Invierno con"
+- Cada oración debe estar COMPLETA, nunca truncada por límite de tokens
+- Usa puntuación adecuada: punto, coma, dos puntos
 
 IMPORTANTE:
 - No debes modificar el diseño, estructura visual, navegación ni componentes visuales existentes de PRYSM
@@ -84,11 +166,13 @@ IMPORTANTE:
 - Nunca fuerces una estación únicamente porque falten datos
 
 Genera:
-- colores protagonistas (los que más favorecen)
-- colores secundarios (buena opción, versátil)
-- neutros recomendados
-- colores de acento
-- colores que conviene evitar
+- colores protagonistas (MÍNIMO 4 colores que más favorecen, idealmente 6)
+- colores secundarios (MÍNIMO 4 colores buena opción, idealmente 6)
+- neutros recomendados (MÍNIMO 2)
+- colores de acento (MÍNIMO 2)
+- colores que conviene evitar (MÍNIMO 3)
+
+TOTAL MÍNIMO: 12 colores en paleta protagonista + secundarios + neutros + acento.
 
 Para cada color proporciona el hex code y una breve explicación.
 
@@ -134,10 +218,27 @@ Genera listas específicas:
 
 OCASIONES:
 Prioriza las ocasiones seleccionadas por el usuario.
+El tipo de silueta del usuario es CRÍTICO para generar outfits diferentes. La MISMA ocasión DEBE producir outfits DIFERENTES según la silueta:
+- Reloj de Arena: favorece piezas ajustadas en cintura, escotes pronunciados, telas que marcan curves
+- Triángulo: equilibra con volumen en parte superior,下半身más ajustados
+- Triángulo Invertido: añade volumen abajo,淡化了上身视觉
+- Rectángulo: crea ilusión de cintura con layering, cinturones, peças estruturadas
+- Ovalada/Manzana: favorece piezas que allentan el torso, escotes en V, líneas verticales
+- Diamante: equilibra con accesorios y colores, piezas que disfractan atención
+
+CRITICAL: Genera outfits UNICOS y DIFERENTES para cada silueta. No repitas las mismas prendas para siluetas distintas.
+
+BOLSOS RECOMENDADOS:
+Genera una lista de 6-8 bolsos específicos que complementen la silueta del usuario:
+- Tipo de bolso ideal para su silueta
+- Tamaño proporcionado a su frame
+- Forma que equilibre su figura
+- Colores de la paleta que funcionen
+- Estilo que combine con su arquetipo
 
 Genera looks específicos para cada ocasión relevante con:
 - nombre del look
-- piezas específicas
+- piezas específicas (ADAPTADAS a su silueta específica)
 - colores de la paleta
 - sensación a proyectar
 - descripción del resultado
@@ -239,6 +340,16 @@ Devuelve EXACTAMENTE este JSON structure:
     "piedras": ["piedra 1", "piedra 2", ...],
     "explicacion": "por qué este metal favorece"
   },
+  "bolsos": [
+    {
+      "tipo": "tipo de bolso",
+      "tamano": "pequeño|mediano|grande|proporcional",
+      "forma": "forma del bolso",
+      "color": "color recomendado de la paleta",
+      "estilo": "estilo que combina",
+      "razon": "por qué favorece a esta silueta"
+    }
+  ],
   "perfil": {
     "descubrimiento": "qué descubriste del usuario",
     "explicacion": "por qué llegaste a esas conclusiones",
@@ -430,7 +541,7 @@ Responde SOLO con el JSON válido, sin texto adicional ni explicaciones.`;
           { role: 'user', content: analysisPrompt }
         ],
         temperature: 0.7,
-        max_tokens: 8000,
+        max_tokens: 15000,
         response_format: { type: 'json_object' }
       })
     });
@@ -452,7 +563,43 @@ Responde SOLO con el JSON válido, sin texto adicional ni explicaciones.`;
     log.info('OpenAI response received: true');
 
     // Parse the JSON response
-    const analysisData = JSON.parse(content);
+    let analysisData = JSON.parse(content);
+
+    // Clean joined words in all string values
+    analysisData = cleanObjectStrings(analysisData);
+
+    // Calculate differentiated PRYSM score based on multiple factors
+    const confianza = analysisData.analisisColor?.confianza || 0.85;
+    const hasPhotos = photos && photos.length > 0;
+    const hasAnswers = answers && Object.keys(answers).length >= 5;
+    const hasSilhouette = !!analysisData.silueta?.tipoCuerpo;
+    const hasStyle = !!analysisData.estilo?.principal?.nombre;
+    const hasPalette = (analysisData.analisisColor?.paleta?.protagonistas?.length || 0) >= 4;
+    const hasOutfits = (analysisData.ocasiones?.length || 0) >= 1;
+    const hasBolsos = (analysisData.bolsos?.length || 0) >= 3;
+
+    // Base score from AI confidence (0-1 -> 0-10)
+    let baseScore = confianza * 10;
+
+    // Bonus for comprehensive data (each factor adds differentiation)
+    let bonus = 0;
+    if (hasPhotos) bonus += 0.2;  // Photo analysis adds precision
+    if (hasAnswers) bonus += 0.1;  // Quiz answers add context
+    if (hasSilueta) bonus += 0.1;  // Silhouette analysis
+    if (hasStyle) bonus += 0.1;    // Style identification
+    if (hasPalette) bonus += 0.1;  // Complete palette
+    if (hasOutfits) bonus += 0.1;  // Outfit recommendations
+    if (hasBolsos) bonus += 0.1;   // Bag recommendations
+
+    // Penalty for low confidence in analysis
+    if (confianza < 0.7) bonus -= 0.3;
+    if (confianza < 0.5) bonus -= 0.5;
+
+    // Final score: differentiated based on data completeness
+    const prysmScore = Math.min(10, Math.max(5, baseScore + bonus));
+
+    // Add score to analysis data
+    analysisData.prysmScore = parseFloat(prysmScore.toFixed(1));
 
     const processingTime = Date.now() - startTime;
 
